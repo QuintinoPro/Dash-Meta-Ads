@@ -562,9 +562,11 @@ export default function Dashboard() {
                       plugins: {
                         tooltip: {
                           callbacks: {
-                            label: (ctx: { dataset: { label?: string }; parsed: { x: number } }) => {
-                              const label = ctx.dataset.label || "";
-                              const val = ctx.parsed.x;
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            label: (ctx: any) => {
+                              const label = ctx.dataset?.label || "";
+                              const val = ctx.parsed?.x;
+                              if (val == null) return "";
                               return label.includes("Custo") ? `${label}: R$ ${val.toFixed(2)}` : `${label}: ${val}`;
                             },
                           },
