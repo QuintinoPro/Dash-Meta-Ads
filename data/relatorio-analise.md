@@ -1,0 +1,2724 @@
+# RELATORIO DE ANALISE - META ADS
+Data: 2026-03-26
+
+## RESUMO GERAL
+- Contas ativas com dados: 8
+- Total de campanhas: 77
+- Campanhas com insights: 62
+- Gasto total: R$ 7,245.34
+- Impressoes totais: 698,006
+- Cliques totais: 9,018
+- Alcance total: 456,654
+- CTR medio: 1.29%
+- CPC medio: R$ 0.80
+- CPM medio: R$ 10.38
+
+## ANALISE POR CONTA
+
+### Lucas Quintino (act_198012423714825)
+- Campanhas: 8 (com dados: 7)
+- Gasto: R$ 1,101.56
+- Impressoes: 132,766
+- Cliques: 1,561
+- CTR: 1.18%
+- CPC: R$ 0.71
+- Alcance: 58,915
+
+### Espaco Giselli (act_1399964494989542)
+- Campanhas: 3 (com dados: 3)
+- Gasto: R$ 736.00
+- Impressoes: 56,435
+- Cliques: 754
+- CTR: 1.34%
+- CPC: R$ 0.98
+- Alcance: 13,936
+
+### CA01 - Orlando (act_797345075818440)
+- Campanhas: 32 (com dados: 30)
+- Gasto: R$ 2,161.36
+- Impressoes: 215,209
+- Cliques: 3,814
+- CTR: 1.77%
+- CPC: R$ 0.57
+- Alcance: 189,745
+
+### VENDAS EBOOK (act_659470363670883)
+- Campanhas: 3 (com dados: 3)
+- Gasto: R$ 60.00
+- Impressoes: 2,232
+- Cliques: 60
+- CTR: 2.69%
+- CPC: R$ 1.00
+- Alcance: 1,904
+
+### mr micro (act_1848489825719905)
+- Campanhas: 10 (com dados: 9)
+- Gasto: R$ 1,300.00
+- Impressoes: 116,400
+- Cliques: 1,281
+- CTR: 1.10%
+- CPC: R$ 1.01
+- Alcance: 54,676
+
+### CA - Aerodex (act_867190515635615)
+- Campanhas: 2 (com dados: 2)
+- Gasto: R$ 300.00
+- Impressoes: 50,598
+- Cliques: 111
+- CTR: 0.22%
+- CPC: R$ 2.70
+- Alcance: 39,441
+
+### CA - Cripto Lawyer (act_1120927059656929)
+- Campanhas: 7 (com dados: 6)
+- Gasto: R$ 1,240.64
+- Impressoes: 88,251
+- Cliques: 1,166
+- CTR: 1.32%
+- CPC: R$ 1.06
+- Alcance: 69,562
+
+### CA - AMANDA CARNEIRO (act_2686781478344946)
+- Campanhas: 2 (com dados: 2)
+- Gasto: R$ 345.78
+- Impressoes: 36,115
+- Cliques: 271
+- CTR: 0.75%
+- CPC: R$ 1.28
+- Alcance: 28,475
+
+## DETALHAMENTO POR CAMPANHA
+
+### CBO - VENDAS - WPP - 27/08
+- Conta: mr micro
+- Status: ACTIVE
+- Objetivo: OUTCOME_SALES
+- Periodo: 2025-06-02 a 2026-03-26
+- Gasto: R$ 665.24
+- Impressoes: 38,194
+- Cliques: 708
+- CTR: 1.85%
+- CPC: R$ 0.94
+- CPM: R$ 17.42
+- Alcance: 14,254
+- Frequencia: 2.68
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 122
+  - link_click: 207
+  - page_engagement: 7331
+  - comment: 5
+  - like: 6
+  - post_interaction_gross: 159
+  - onsite_conversion.messaging_user_depth_2_message_send: 73
+  - onsite_conversion.messaging_first_reply: 103
+  - post: 11
+  - onsite_conversion.post_save: 2
+  - onsite_conversion.messaging_user_depth_3_message_send: 49
+  - post_engagement: 7325
+  - onsite_conversion.post_net_like: 141
+  - onsite_conversion.post_net_save: 2
+  - onsite_conversion.messaging_conversation_started_7d: 108
+  - video_view: 6959
+  - post_reaction: 141
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 5.45
+  - video_view: R$ 0.10
+  - link_click: R$ 3.21
+  - like: R$ 110.87
+  - post_interaction_gross: R$ 4.18
+  - onsite_conversion.messaging_user_depth_2_message_send: R$ 9.11
+  - onsite_conversion.messaging_user_depth_3_message_send: R$ 13.58
+  - post_engagement: R$ 0.09
+  - page_engagement: R$ 0.09
+  - onsite_conversion.messaging_first_reply: R$ 6.46
+  - onsite_conversion.messaging_conversation_started_7d: R$ 6.16
+
+### LEADS - IMERSÃO - 14/10
+- Conta: CA - Cripto Lawyer
+- Status: PAUSED
+- Objetivo: OUTCOME_LEADS
+- Periodo: 2025-09-23 a 2026-03-26
+- Gasto: R$ 567.66
+- Impressoes: 15,429
+- Cliques: 357
+- CTR: 2.31%
+- CPC: R$ 1.59
+- CPM: R$ 36.79
+- Alcance: 5,533
+- Frequencia: 2.79
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 4
+  - offsite_complete_registration_add_meta_leads: 100
+  - link_click: 180
+  - page_engagement: 332
+  - landing_page_view: 3
+  - omni_landing_page_view: 3
+  - comment: 4
+  - post_interaction_gross: 118
+  - onsite_conversion.messaging_user_depth_2_message_send: 2
+  - onsite_conversion.messaging_first_reply: 1
+  - post: 17
+  - onsite_conversion.post_save: 21
+  - onsite_conversion.messaging_user_depth_3_message_send: 1
+  - post_engagement: 332
+  - offsite_search_add_meta_leads: 100
+  - onsite_conversion.post_net_like: 76
+  - onsite_conversion.post_net_save: 21
+  - lead: 100
+  - offsite_content_view_add_meta_leads: 100
+  - onsite_conversion.messaging_conversation_started_7d: 3
+  - onsite_conversion.lead_grouped: 100
+  - video_view: 34
+  - post_reaction: 76
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 141.91
+  - offsite_submit_application_add_meta_leads: R$ 5.68
+  - offsite_search_add_meta_leads: R$ 5.68
+  - offsite_complete_registration_add_meta_leads: R$ 5.68
+  - video_view: R$ 16.70
+  - link_click: R$ 3.15
+  - onsite_conversion.lead_grouped: R$ 5.68
+  - post_interaction_gross: R$ 4.81
+  - onsite_conversion.messaging_user_depth_2_message_send: R$ 283.83
+  - onsite_conversion.messaging_user_depth_3_message_send: R$ 567.66
+  - lead: R$ 5.68
+  - post_engagement: R$ 1.71
+  - offsite_content_view_add_meta_leads: R$ 5.68
+  - landing_page_view: R$ 189.22
+  - offsite_contact_website_add_meta_leads: R$ 5.68
+  - page_engagement: R$ 1.71
+  - onsite_conversion.messaging_first_reply: R$ 567.66
+  - omni_landing_page_view: R$ 189.22
+  - onsite_conversion.messaging_conversation_started_7d: R$ 189.22
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### ENGAJAMENTO - LEADS - WPP - 03/02
+- Conta: Lucas Quintino
+- Status: PAUSED
+- Objetivo: OUTCOME_ENGAGEMENT
+- Periodo: 2023-02-26 a 2026-03-26
+- Gasto: R$ 486.72
+- Impressoes: 56,673
+- Cliques: 473
+- CTR: 0.83%
+- CPC: R$ 1.03
+- CPM: R$ 8.59
+- Alcance: 16,206
+- Frequencia: 3.50
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 67
+  - onsite_conversion.lead: 2
+  - offsite_complete_registration_add_meta_leads: 2
+  - onsite_conversion.messaging_block: 1
+  - link_click: 244
+  - page_engagement: 3896
+  - onsite_conversion.messaging_welcome_message_view: 12
+  - comment: 1
+  - like: 1
+  - post_interaction_gross: 97
+  - onsite_conversion.messaging_user_depth_2_message_send: 44
+  - onsite_conversion.messaging_first_reply: 59
+  - onsite_web_lead: 2
+  - post: 7
+  - onsite_conversion.post_unsave: 1
+  - onsite_conversion.post_save: 4
+  - onsite_conversion.messaging_user_depth_3_message_send: 30
+  - post_engagement: 3895
+  - onsite_conversion.post_unlike: 7
+  - offsite_search_add_meta_leads: 2
+  - onsite_conversion.post_net_like: 78
+  - onsite_conversion.post_net_save: 3
+  - lead: 2
+  - offsite_content_view_add_meta_leads: 2
+  - onsite_conversion.messaging_conversation_started_7d: 59
+  - onsite_conversion.messaging_conversation_replied_7d: 2
+  - onsite_conversion.lead_grouped: 2
+  - video_view: 3554
+  - post_reaction: 85
+- Custo por acao:
+  - onsite_conversion.lead: R$ 243.36
+  - onsite_conversion.total_messaging_connection: R$ 7.26
+  - offsite_submit_application_add_meta_leads: R$ 243.36
+  - offsite_search_add_meta_leads: R$ 243.36
+  - offsite_complete_registration_add_meta_leads: R$ 243.36
+  - video_view: R$ 0.14
+  - link_click: R$ 1.99
+  - like: R$ 486.72
+  - onsite_conversion.lead_grouped: R$ 243.36
+  - post_interaction_gross: R$ 5.02
+  - onsite_web_lead: R$ 243.36
+  - onsite_conversion.messaging_user_depth_2_message_send: R$ 11.06
+  - onsite_conversion.messaging_conversation_replied_7d: R$ 243.36
+  - onsite_conversion.messaging_user_depth_3_message_send: R$ 16.22
+  - lead: R$ 243.36
+  - post_engagement: R$ 0.12
+  - offsite_content_view_add_meta_leads: R$ 243.36
+  - offsite_contact_website_add_meta_leads: R$ 243.36
+  - page_engagement: R$ 0.12
+  - onsite_conversion.messaging_first_reply: R$ 8.25
+  - onsite_conversion.messaging_welcome_message_view: R$ 40.56
+  - onsite_conversion.messaging_conversation_started_7d: R$ 8.25
+- RECOMENDACOES:
+  - Frequencia alta - trocar criativos ou expandir publico
+
+### ANIVERSARIO - CBO - ENGAJAMENTO - WPP - 12/03
+- Conta: Espaco Giselli
+- Status: ACTIVE
+- Objetivo: OUTCOME_ENGAGEMENT
+- Periodo: 2025-11-09 a 2026-03-26
+- Gasto: R$ 464.81
+- Impressoes: 43,473
+- Cliques: 451
+- CTR: 1.04%
+- CPC: R$ 1.03
+- CPM: R$ 10.69
+- Alcance: 7,602
+- Frequencia: 5.72
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 65
+  - onsite_conversion.messaging_block: 1
+  - link_click: 166
+  - page_engagement: 2741
+  - like: 4
+  - post_interaction_gross: 135
+  - onsite_conversion.messaging_user_depth_2_message_send: 24
+  - onsite_conversion.messaging_first_reply: 34
+  - post: 11
+  - onsite_conversion.post_save: 4
+  - onsite_conversion.messaging_user_depth_3_message_send: 16
+  - post_engagement: 2737
+  - onsite_conversion.post_unlike: 5
+  - onsite_conversion.post_net_like: 115
+  - onsite_conversion.messaging_user_depth_5_message_send: 54
+  - onsite_conversion.post_net_save: 4
+  - onsite_conversion.messaging_conversation_started_7d: 49
+  - onsite_conversion.messaging_conversation_replied_7d: 8
+  - video_view: 2436
+  - post_reaction: 120
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 7.15
+  - video_view: R$ 0.19
+  - link_click: R$ 2.80
+  - like: R$ 116.20
+  - post_interaction_gross: R$ 3.44
+  - onsite_conversion.messaging_user_depth_5_message_send: R$ 8.61
+  - onsite_conversion.messaging_user_depth_2_message_send: R$ 19.37
+  - onsite_conversion.messaging_conversation_replied_7d: R$ 58.10
+  - onsite_conversion.messaging_user_depth_3_message_send: R$ 29.05
+  - post_engagement: R$ 0.17
+  - page_engagement: R$ 0.17
+  - onsite_conversion.messaging_first_reply: R$ 13.67
+  - onsite_conversion.messaging_conversation_started_7d: R$ 9.49
+- RECOMENDACOES:
+  - Frequencia alta - trocar criativos ou expandir publico
+
+### ENGAJAMENTO - LEADS - CBO - WPP - 09/03
+- Conta: Lucas Quintino
+- Status: ACTIVE
+- Objetivo: OUTCOME_ENGAGEMENT
+- Periodo: 2023-02-26 a 2026-03-26
+- Gasto: R$ 447.68
+- Impressoes: 54,686
+- Cliques: 805
+- CTR: 1.47%
+- CPC: R$ 0.56
+- CPM: R$ 8.19
+- Alcance: 22,489
+- Frequencia: 2.43
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 144
+  - onsite_conversion.lead: 2
+  - offsite_complete_registration_add_meta_leads: 2
+  - link_click: 347
+  - page_engagement: 6750
+  - onsite_conversion.messaging_welcome_message_view: 2
+  - comment: 10
+  - like: 5
+  - post_interaction_gross: 188
+  - onsite_conversion.messaging_user_depth_2_message_send: 118
+  - onsite_conversion.messaging_first_reply: 130
+  - onsite_web_lead: 2
+  - post: 21
+  - onsite_conversion.post_save: 13
+  - onsite_conversion.messaging_user_depth_3_message_send: 89
+  - post_engagement: 6745
+  - onsite_conversion.post_unlike: 4
+  - offsite_search_add_meta_leads: 2
+  - onsite_conversion.post_net_like: 140
+  - onsite_conversion.messaging_user_depth_5_message_send: 68
+  - onsite_conversion.post_net_save: 13
+  - lead: 2
+  - offsite_content_view_add_meta_leads: 2
+  - onsite_conversion.messaging_conversation_started_7d: 138
+  - onsite_conversion.lead_grouped: 2
+  - video_view: 6210
+  - post_reaction: 144
+- Custo por acao:
+  - onsite_conversion.lead: R$ 223.84
+  - onsite_conversion.total_messaging_connection: R$ 3.11
+  - offsite_submit_application_add_meta_leads: R$ 223.84
+  - offsite_search_add_meta_leads: R$ 223.84
+  - offsite_complete_registration_add_meta_leads: R$ 223.84
+  - video_view: R$ 0.07
+  - link_click: R$ 1.29
+  - like: R$ 89.54
+  - onsite_conversion.lead_grouped: R$ 223.84
+  - post_interaction_gross: R$ 2.38
+  - onsite_web_lead: R$ 223.84
+  - onsite_conversion.messaging_user_depth_5_message_send: R$ 6.58
+  - onsite_conversion.messaging_user_depth_2_message_send: R$ 3.79
+  - onsite_conversion.messaging_user_depth_3_message_send: R$ 5.03
+  - lead: R$ 223.84
+  - post_engagement: R$ 0.07
+  - offsite_content_view_add_meta_leads: R$ 223.84
+  - offsite_contact_website_add_meta_leads: R$ 223.84
+  - page_engagement: R$ 0.07
+  - onsite_conversion.messaging_first_reply: R$ 3.44
+  - onsite_conversion.messaging_welcome_message_view: R$ 223.84
+  - onsite_conversion.messaging_conversation_started_7d: R$ 3.24
+
+### VENDAS - SITE - 16/06
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: OUTCOME_SALES
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 339.54
+- Impressoes: 12,444
+- Cliques: 330
+- CTR: 2.65%
+- CPC: R$ 1.03
+- CPM: R$ 27.29
+- Alcance: 8,799
+- Frequencia: 1.41
+- Acoes:
+  - web_in_store_purchase: 3
+  - omni_purchase: 3
+  - link_click: 200
+  - omni_add_to_cart: 45
+  - omni_initiated_checkout: 45
+  - page_engagement: 762
+  - purchase: 3
+  - landing_page_view: 41
+  - add_to_cart: 45
+  - omni_landing_page_view: 41
+  - onsite_web_add_to_cart: 45
+  - comment: 4
+  - onsite_web_app_purchase: 3
+  - post_interaction_gross: 212
+  - offsite_conversion.fb_pixel_purchase: 3
+  - onsite_conversion.messaging_first_reply: 3
+  - post: 7
+  - onsite_conversion.post_save: 8
+  - web_app_in_store_purchase: 3
+  - onsite_web_app_add_to_cart: 45
+  - post_engagement: 762
+  - onsite_conversion.post_net_like: 193
+  - onsite_web_initiate_checkout: 45
+  - onsite_conversion.post_net_save: 8
+  - onsite_web_purchase: 3
+  - onsite_conversion.messaging_conversation_started_7d: 3
+  - video_view: 350
+  - offsite_conversion.fb_pixel_add_to_cart: 45
+  - post_reaction: 193
+  - offsite_conversion.fb_pixel_initiate_checkout: 45
+  - initiate_checkout: 45
+- Custo por acao:
+  - web_in_store_purchase: R$ 113.18
+  - omni_purchase: R$ 113.18
+  - initiate_checkout: R$ 7.55
+  - video_view: R$ 0.97
+  - link_click: R$ 1.70
+  - post_interaction_gross: R$ 1.60
+  - onsite_web_initiate_checkout: R$ 7.55
+  - onsite_web_purchase: R$ 113.18
+  - post_engagement: R$ 0.45
+  - landing_page_view: R$ 8.28
+  - purchase: R$ 113.18
+  - page_engagement: R$ 0.45
+  - onsite_conversion.messaging_first_reply: R$ 113.18
+  - omni_landing_page_view: R$ 8.28
+  - omni_initiated_checkout: R$ 7.55
+  - omni_add_to_cart: R$ 7.55
+  - onsite_conversion.messaging_conversation_started_7d: R$ 113.18
+  - add_to_cart: R$ 7.55
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### Engajamento - Adavantage
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: OUTCOME_ENGAGEMENT
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 226.47
+- Impressoes: 50,342
+- Cliques: 1,127
+- CTR: 2.24%
+- CPC: R$ 0.20
+- CPM: R$ 4.50
+- Alcance: 41,976
+- Frequencia: 1.20
+- Acoes:
+  - link_click: 61
+  - page_engagement: 31619
+  - landing_page_view: 1
+  - omni_landing_page_view: 1
+  - comment: 7
+  - like: 1
+  - post_interaction_gross: 836
+  - post: 6
+  - onsite_conversion.post_save: 2
+  - post_engagement: 31618
+  - onsite_conversion.post_net_like: 821
+  - onsite_conversion.post_net_save: 2
+  - video_view: 30721
+  - post_reaction: 821
+- Custo por acao:
+  - video_view: R$ 0.01
+  - link_click: R$ 3.71
+  - like: R$ 226.47
+  - post_interaction_gross: R$ 0.27
+  - post_engagement: R$ 0.01
+  - landing_page_view: R$ 226.47
+  - page_engagement: R$ 0.01
+  - omni_landing_page_view: R$ 226.47
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### ENGAJAMENTO - SEGUIDORES - 11/09
+- Conta: CA - Aerodex
+- Status: PAUSED
+- Objetivo: OUTCOME_ENGAGEMENT
+- Periodo: 2025-09-11 a 2026-03-26
+- Gasto: R$ 226.10
+- Impressoes: 48,941
+- Cliques: 54
+- CTR: 0.11%
+- CPC: R$ 4.19
+- CPM: R$ 4.62
+- Alcance: 37,993
+- Frequencia: 1.29
+- Acoes:
+  - link_click: 1
+  - page_engagement: 24501
+  - comment: 8
+  - post_interaction_gross: 1357
+  - post: 16
+  - onsite_conversion.post_save: 7
+  - post_engagement: 24501
+  - onsite_conversion.post_net_like: 1326
+  - onsite_conversion.post_net_save: 7
+  - video_view: 23143
+  - post_reaction: 1326
+- Custo por acao:
+  - video_view: R$ 0.01
+  - link_click: R$ 226.10
+  - post_interaction_gross: R$ 0.17
+  - post_engagement: R$ 0.01
+  - page_engagement: R$ 0.01
+- RECOMENDACOES:
+  - CTR baixo - testar novos criativos e hooks
+
+### LASER DAY - ENGAJAMENTO - MSGS WPP - 07/02
+- Conta: Espaco Giselli
+- Status: PAUSED
+- Objetivo: OUTCOME_ENGAGEMENT
+- Periodo: 2025-11-09 a 2026-03-26
+- Gasto: R$ 215.16
+- Impressoes: 10,632
+- Cliques: 259
+- CTR: 2.44%
+- CPC: R$ 0.83
+- CPM: R$ 20.24
+- Alcance: 5,157
+- Frequencia: 2.06
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 63
+  - link_click: 99
+  - page_engagement: 3020
+  - comment: 5
+  - like: 4
+  - post_interaction_gross: 93
+  - onsite_conversion.messaging_user_depth_2_message_send: 26
+  - onsite_conversion.messaging_first_reply: 43
+  - post: 10
+  - onsite_conversion.post_save: 3
+  - onsite_conversion.messaging_user_depth_3_message_send: 14
+  - post_engagement: 3016
+  - onsite_conversion.post_unlike: 4
+  - onsite_conversion.post_net_like: 71
+  - onsite_conversion.post_net_save: 3
+  - onsite_conversion.messaging_conversation_started_7d: 47
+  - onsite_conversion.messaging_conversation_replied_7d: 14
+  - video_view: 2824
+  - post_reaction: 75
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 3.42
+  - video_view: R$ 0.08
+  - link_click: R$ 2.17
+  - like: R$ 53.79
+  - post_interaction_gross: R$ 2.31
+  - onsite_conversion.messaging_user_depth_2_message_send: R$ 8.28
+  - onsite_conversion.messaging_conversation_replied_7d: R$ 15.37
+  - onsite_conversion.messaging_user_depth_3_message_send: R$ 15.37
+  - post_engagement: R$ 0.07
+  - page_engagement: R$ 0.07
+  - onsite_conversion.messaging_first_reply: R$ 5.00
+  - onsite_conversion.messaging_conversation_started_7d: R$ 4.58
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### CBO - SORTEIO - LEADS - WPP - 09-11
+- Conta: mr micro
+- Status: ACTIVE
+- Objetivo: OUTCOME_LEADS
+- Periodo: 2025-06-02 a 2026-03-26
+- Gasto: R$ 212.89
+- Impressoes: 11,344
+- Cliques: 102
+- CTR: 0.90%
+- CPC: R$ 2.09
+- CPM: R$ 18.77
+- Alcance: 5,057
+- Frequencia: 2.24
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 11
+  - link_click: 53
+  - page_engagement: 1279
+  - post_interaction_gross: 28
+  - onsite_conversion.messaging_user_depth_2_message_send: 7
+  - onsite_conversion.messaging_first_reply: 11
+  - onsite_conversion.post_save: 2
+  - onsite_conversion.messaging_user_depth_3_message_send: 3
+  - post_engagement: 1279
+  - onsite_conversion.post_net_like: 26
+  - onsite_conversion.post_net_save: 2
+  - onsite_conversion.messaging_conversation_started_7d: 11
+  - video_view: 1198
+  - post_reaction: 26
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 19.35
+  - video_view: R$ 0.18
+  - link_click: R$ 4.02
+  - post_interaction_gross: R$ 7.60
+  - onsite_conversion.messaging_user_depth_2_message_send: R$ 30.41
+  - onsite_conversion.messaging_user_depth_3_message_send: R$ 70.96
+  - post_engagement: R$ 0.17
+  - page_engagement: R$ 0.17
+  - onsite_conversion.messaging_first_reply: R$ 19.35
+  - onsite_conversion.messaging_conversation_started_7d: R$ 19.35
+
+### LEADS - WPP - 05/01
+- Conta: CA - AMANDA CARNEIRO
+- Status: PAUSED
+- Objetivo: OUTCOME_LEADS
+- Periodo: 2025-12-11 a 2026-03-26
+- Gasto: R$ 205.47
+- Impressoes: 5,261
+- Cliques: 161
+- CTR: 3.06%
+- CPC: R$ 1.28
+- CPM: R$ 39.06
+- Alcance: 3,258
+- Frequencia: 1.61
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 33
+  - link_click: 47
+  - page_engagement: 1307
+  - comment: 4
+  - post_interaction_gross: 36
+  - onsite_conversion.messaging_user_depth_2_message_send: 16
+  - onsite_conversion.messaging_first_reply: 26
+  - onsite_conversion.post_save: 2
+  - onsite_conversion.messaging_user_depth_3_message_send: 13
+  - post_engagement: 1307
+  - onsite_conversion.post_unlike: 2
+  - onsite_conversion.post_net_like: 28
+  - onsite_conversion.post_net_save: 2
+  - onsite_conversion.messaging_conversation_started_7d: 27
+  - video_view: 1224
+  - post_reaction: 30
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 6.23
+  - video_view: R$ 0.17
+  - link_click: R$ 4.37
+  - post_interaction_gross: R$ 5.71
+  - onsite_conversion.messaging_user_depth_2_message_send: R$ 12.84
+  - onsite_conversion.messaging_user_depth_3_message_send: R$ 15.81
+  - post_engagement: R$ 0.16
+  - page_engagement: R$ 0.16
+  - onsite_conversion.messaging_first_reply: R$ 7.90
+  - onsite_conversion.messaging_conversation_started_7d: R$ 7.61
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### VENDAS - MENTORIA - DM - 14/10
+- Conta: CA - Cripto Lawyer
+- Status: PAUSED
+- Objetivo: OUTCOME_SALES
+- Periodo: 2025-09-23 a 2026-03-26
+- Gasto: R$ 202.40
+- Impressoes: 3,366
+- Cliques: 56
+- CTR: 1.66%
+- CPC: R$ 3.61
+- CPM: R$ 60.13
+- Alcance: 1,698
+- Frequencia: 1.98
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 12
+  - link_click: 19
+  - page_engagement: 516
+  - comment: 2
+  - post_interaction_gross: 45
+  - onsite_conversion.messaging_user_depth_2_message_send: 4
+  - onsite_conversion.messaging_first_reply: 4
+  - post: 4
+  - onsite_conversion.messaging_user_depth_3_message_send: 1
+  - post_engagement: 516
+  - onsite_conversion.post_net_like: 39
+  - onsite_conversion.messaging_conversation_started_7d: 9
+  - video_view: 452
+  - post_reaction: 39
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 16.87
+  - video_view: R$ 0.45
+  - link_click: R$ 10.65
+  - post_interaction_gross: R$ 4.50
+  - onsite_conversion.messaging_user_depth_2_message_send: R$ 50.60
+  - onsite_conversion.messaging_user_depth_3_message_send: R$ 202.40
+  - post_engagement: R$ 0.39
+  - page_engagement: R$ 0.39
+  - onsite_conversion.messaging_first_reply: R$ 50.60
+  - onsite_conversion.messaging_conversation_started_7d: R$ 22.49
+- RECOMENDACOES:
+  - Pausada com bom CTR - considerar reativacao
+
+### TRAFEGO - SEGUIDORES - 19/08
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: LINK_CLICKS
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 201.61
+- Impressoes: 35,142
+- Cliques: 360
+- CTR: 1.02%
+- CPC: R$ 0.56
+- CPM: R$ 5.74
+- Alcance: 34,455
+- Frequencia: 1.02
+- Acoes:
+  - onsite_conversion.messaging_block: 6
+  - link_click: 298
+  - page_engagement: 3417
+  - comment: 1
+  - like: 1
+  - post_interaction_gross: 70
+  - onsite_conversion.messaging_first_reply: 4
+  - post: 2
+  - onsite_conversion.post_save: 3
+  - post_engagement: 3416
+  - onsite_conversion.post_net_like: 64
+  - onsite_conversion.post_net_save: 3
+  - onsite_conversion.messaging_conversation_started_7d: 4
+  - video_view: 3048
+  - post_reaction: 64
+- Custo por acao:
+  - video_view: R$ 0.07
+  - link_click: R$ 0.68
+  - like: R$ 201.61
+  - post_interaction_gross: R$ 2.88
+  - post_engagement: R$ 0.06
+  - page_engagement: R$ 0.06
+  - onsite_conversion.messaging_first_reply: R$ 50.40
+  - onsite_conversion.messaging_conversation_started_7d: R$ 50.40
+
+### VENDA - ABO - 03/06
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: OUTCOME_SALES
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 188.70
+- Impressoes: 5,930
+- Cliques: 214
+- CTR: 3.61%
+- CPC: R$ 0.88
+- CPM: R$ 31.82
+- Alcance: 3,921
+- Frequencia: 1.51
+- Acoes:
+  - web_in_store_purchase: 3
+  - omni_purchase: 3
+  - link_click: 120
+  - omni_add_to_cart: 32
+  - omni_initiated_checkout: 31
+  - page_engagement: 231
+  - purchase: 3
+  - landing_page_view: 28
+  - add_to_cart: 32
+  - omni_landing_page_view: 28
+  - onsite_web_add_to_cart: 32
+  - offsite_conversion.fb_pixel_add_payment_info: 2
+  - comment: 3
+  - onsite_web_app_purchase: 3
+  - post_interaction_gross: 103
+  - offsite_conversion.fb_pixel_purchase: 3
+  - onsite_conversion.messaging_first_reply: 1
+  - post: 8
+  - onsite_conversion.post_save: 3
+  - web_app_in_store_purchase: 3
+  - onsite_web_app_add_to_cart: 32
+  - post_engagement: 231
+  - onsite_conversion.post_net_like: 89
+  - onsite_web_initiate_checkout: 31
+  - onsite_conversion.post_net_save: 3
+  - onsite_web_purchase: 3
+  - onsite_conversion.messaging_conversation_started_7d: 1
+  - add_payment_info: 2
+  - video_view: 8
+  - offsite_conversion.fb_pixel_add_to_cart: 32
+  - post_reaction: 89
+  - offsite_conversion.fb_pixel_initiate_checkout: 31
+  - initiate_checkout: 31
+- Custo por acao:
+  - web_in_store_purchase: R$ 62.90
+  - omni_purchase: R$ 62.90
+  - initiate_checkout: R$ 6.09
+  - video_view: R$ 23.59
+  - link_click: R$ 1.57
+  - post_interaction_gross: R$ 1.83
+  - onsite_web_initiate_checkout: R$ 6.09
+  - onsite_web_purchase: R$ 62.90
+  - post_engagement: R$ 0.82
+  - landing_page_view: R$ 6.74
+  - purchase: R$ 62.90
+  - page_engagement: R$ 0.82
+  - onsite_conversion.messaging_first_reply: R$ 188.70
+  - omni_landing_page_view: R$ 6.74
+  - omni_initiated_checkout: R$ 6.09
+  - omni_add_to_cart: R$ 5.90
+  - onsite_conversion.messaging_conversation_started_7d: R$ 188.70
+  - add_to_cart: R$ 5.90
+  - add_payment_info: R$ 94.35
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### ENGAJAMENTO -  CBO - 26/09
+- Conta: CA - Cripto Lawyer
+- Status: PAUSED
+- Objetivo: OUTCOME_ENGAGEMENT
+- Periodo: 2025-09-23 a 2026-03-26
+- Gasto: R$ 181.30
+- Impressoes: 41,614
+- Cliques: 88
+- CTR: 0.21%
+- CPC: R$ 2.06
+- CPM: R$ 4.36
+- Alcance: 39,952
+- Frequencia: 1.04
+- Acoes:
+  - link_click: 31
+  - page_engagement: 23733
+  - onsite_conversion.messaging_welcome_message_view: 7
+  - post_interaction_gross: 635
+  - post: 2
+  - onsite_conversion.post_save: 1
+  - post_engagement: 23733
+  - onsite_conversion.post_net_like: 632
+  - onsite_conversion.post_net_save: 1
+  - onsite_conversion.messaging_conversation_started_7d: 1
+  - video_view: 23067
+  - post_reaction: 632
+- Custo por acao:
+  - video_view: R$ 0.01
+  - link_click: R$ 5.85
+  - post_interaction_gross: R$ 0.29
+  - post_engagement: R$ 0.01
+  - page_engagement: R$ 0.01
+  - onsite_conversion.messaging_welcome_message_view: R$ 25.90
+  - onsite_conversion.messaging_conversation_started_7d: R$ 181.30
+- RECOMENDACOES:
+  - CTR baixo - testar novos criativos e hooks
+
+### ENGAJAMENTO - 16/12
+- Conta: CA - AMANDA CARNEIRO
+- Status: PAUSED
+- Objetivo: OUTCOME_ENGAGEMENT
+- Periodo: 2025-12-11 a 2026-03-26
+- Gasto: R$ 140.31
+- Impressoes: 30,854
+- Cliques: 110
+- CTR: 0.36%
+- CPC: R$ 1.28
+- CPM: R$ 4.55
+- Alcance: 25,217
+- Frequencia: 1.22
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 1
+  - link_click: 55
+  - page_engagement: 15619
+  - comment: 1
+  - post_interaction_gross: 896
+  - onsite_conversion.messaging_user_depth_2_message_send: 1
+  - post: 3
+  - onsite_conversion.post_save: 5
+  - onsite_conversion.messaging_user_depth_3_message_send: 1
+  - post_engagement: 15619
+  - onsite_conversion.post_unlike: 20
+  - onsite_conversion.post_net_like: 867
+  - onsite_conversion.post_net_save: 5
+  - video_view: 14668
+  - post_reaction: 887
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 140.31
+  - video_view: R$ 0.01
+  - link_click: R$ 2.55
+  - post_interaction_gross: R$ 0.16
+  - onsite_conversion.messaging_user_depth_2_message_send: R$ 140.31
+  - onsite_conversion.messaging_user_depth_3_message_send: R$ 140.31
+  - post_engagement: R$ 0.01
+  - page_engagement: R$ 0.01
+- RECOMENDACOES:
+  - CTR baixo - testar novos criativos e hooks
+
+### VENDA - ABO - 16/05
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: OUTCOME_SALES
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 130.79
+- Impressoes: 4,737
+- Cliques: 244
+- CTR: 5.15%
+- CPC: R$ 0.54
+- CPM: R$ 27.61
+- Alcance: 3,136
+- Frequencia: 1.51
+- Acoes:
+  - web_in_store_purchase: 2
+  - omni_purchase: 2
+  - link_click: 109
+  - omni_add_to_cart: 13
+  - omni_initiated_checkout: 13
+  - page_engagement: 229
+  - purchase: 2
+  - landing_page_view: 11
+  - add_to_cart: 13
+  - omni_landing_page_view: 11
+  - onsite_web_add_to_cart: 13
+  - comment: 4
+  - onsite_web_app_purchase: 2
+  - post_interaction_gross: 114
+  - offsite_conversion.fb_pixel_purchase: 2
+  - post: 7
+  - onsite_conversion.post_save: 3
+  - web_app_in_store_purchase: 2
+  - onsite_web_app_add_to_cart: 13
+  - post_engagement: 229
+  - onsite_conversion.post_net_like: 100
+  - onsite_web_initiate_checkout: 13
+  - onsite_conversion.post_net_save: 3
+  - onsite_web_purchase: 2
+  - onsite_conversion.messaging_conversation_started_7d: 1
+  - video_view: 6
+  - offsite_conversion.fb_pixel_add_to_cart: 13
+  - post_reaction: 100
+  - offsite_conversion.fb_pixel_initiate_checkout: 13
+  - initiate_checkout: 13
+- Custo por acao:
+  - web_in_store_purchase: R$ 65.39
+  - omni_purchase: R$ 65.39
+  - initiate_checkout: R$ 10.06
+  - video_view: R$ 21.80
+  - link_click: R$ 1.20
+  - post_interaction_gross: R$ 1.15
+  - onsite_web_initiate_checkout: R$ 10.06
+  - onsite_web_purchase: R$ 65.39
+  - post_engagement: R$ 0.57
+  - landing_page_view: R$ 11.89
+  - purchase: R$ 65.39
+  - page_engagement: R$ 0.57
+  - omni_landing_page_view: R$ 11.89
+  - omni_initiated_checkout: R$ 10.06
+  - omni_add_to_cart: R$ 10.06
+  - onsite_conversion.messaging_conversation_started_7d: R$ 130.79
+  - add_to_cart: R$ 10.06
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### VENDAS - CBO - SITE - 12/08
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: OUTCOME_SALES
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 119.48
+- Impressoes: 6,104
+- Cliques: 430
+- CTR: 7.04%
+- CPC: R$ 0.28
+- CPM: R$ 19.57
+- Alcance: 4,816
+- Frequencia: 1.27
+- Acoes:
+  - link_click: 278
+  - omni_add_to_cart: 54
+  - omni_initiated_checkout: 53
+  - page_engagement: 539
+  - landing_page_view: 50
+  - add_to_cart: 54
+  - omni_landing_page_view: 50
+  - onsite_web_add_to_cart: 54
+  - comment: 1
+  - like: 3
+  - post_interaction_gross: 86
+  - post: 4
+  - onsite_conversion.post_save: 4
+  - onsite_web_app_add_to_cart: 54
+  - post_engagement: 536
+  - onsite_conversion.post_net_like: 77
+  - onsite_web_initiate_checkout: 53
+  - onsite_conversion.post_net_save: 4
+  - video_view: 172
+  - offsite_conversion.fb_pixel_add_to_cart: 54
+  - post_reaction: 77
+  - offsite_conversion.fb_pixel_initiate_checkout: 53
+  - initiate_checkout: 53
+- Custo por acao:
+  - initiate_checkout: R$ 2.25
+  - video_view: R$ 0.69
+  - link_click: R$ 0.43
+  - like: R$ 39.83
+  - post_interaction_gross: R$ 1.39
+  - onsite_web_initiate_checkout: R$ 2.25
+  - post_engagement: R$ 0.22
+  - landing_page_view: R$ 2.39
+  - page_engagement: R$ 0.22
+  - omni_landing_page_view: R$ 2.39
+  - omni_initiated_checkout: R$ 2.25
+  - omni_add_to_cart: R$ 2.21
+  - add_to_cart: R$ 2.21
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### VENDAS - SITE - 07/07
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: OUTCOME_SALES
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 114.90
+- Impressoes: 4,529
+- Cliques: 125
+- CTR: 2.76%
+- CPC: R$ 0.92
+- CPM: R$ 25.37
+- Alcance: 2,670
+- Frequencia: 1.70
+- Acoes:
+  - web_in_store_purchase: 1
+  - omni_purchase: 1
+  - link_click: 69
+  - omni_add_to_cart: 24
+  - omni_initiated_checkout: 24
+  - page_engagement: 145
+  - purchase: 1
+  - landing_page_view: 20
+  - add_to_cart: 24
+  - omni_landing_page_view: 20
+  - onsite_web_add_to_cart: 24
+  - offsite_conversion.fb_pixel_add_payment_info: 1
+  - comment: 3
+  - onsite_web_app_purchase: 1
+  - like: 1
+  - post_interaction_gross: 69
+  - offsite_conversion.fb_pixel_purchase: 1
+  - post: 3
+  - onsite_conversion.post_save: 2
+  - web_app_in_store_purchase: 1
+  - onsite_web_app_add_to_cart: 24
+  - post_engagement: 144
+  - onsite_conversion.post_net_like: 61
+  - onsite_web_initiate_checkout: 24
+  - onsite_conversion.post_net_save: 2
+  - onsite_web_purchase: 1
+  - add_payment_info: 1
+  - video_view: 6
+  - offsite_conversion.fb_pixel_add_to_cart: 24
+  - post_reaction: 61
+  - offsite_conversion.fb_pixel_initiate_checkout: 24
+  - initiate_checkout: 24
+- Custo por acao:
+  - web_in_store_purchase: R$ 114.90
+  - omni_purchase: R$ 114.90
+  - initiate_checkout: R$ 4.79
+  - video_view: R$ 19.15
+  - link_click: R$ 1.67
+  - like: R$ 114.90
+  - post_interaction_gross: R$ 1.67
+  - onsite_web_initiate_checkout: R$ 4.79
+  - onsite_web_purchase: R$ 114.90
+  - post_engagement: R$ 0.80
+  - landing_page_view: R$ 5.75
+  - purchase: R$ 114.90
+  - page_engagement: R$ 0.79
+  - omni_landing_page_view: R$ 5.75
+  - omni_initiated_checkout: R$ 4.79
+  - omni_add_to_cart: R$ 4.79
+  - add_to_cart: R$ 4.79
+  - add_payment_info: R$ 114.90
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### TRAFEGO - MENTORIA - FORM - 11/02
+- Conta: CA - Cripto Lawyer
+- Status: PAUSED
+- Objetivo: LINK_CLICKS
+- Periodo: 2025-09-23 a 2026-03-26
+- Gasto: R$ 106.48
+- Impressoes: 3,106
+- Cliques: 324
+- CTR: 10.43%
+- CPC: R$ 0.33
+- CPM: R$ 34.28
+- Alcance: 2,787
+- Frequencia: 1.11
+- Acoes:
+  - onsite_conversion.messaging_block: 25
+  - link_click: 293
+  - page_engagement: 1836
+  - landing_page_view: 292
+  - omni_landing_page_view: 292
+  - post_interaction_gross: 21
+  - post: 2
+  - onsite_conversion.post_save: 2
+  - post_engagement: 1836
+  - onsite_conversion.post_net_like: 17
+  - onsite_conversion.post_net_save: 2
+  - video_view: 1522
+  - post_reaction: 17
+- Custo por acao:
+  - video_view: R$ 0.07
+  - link_click: R$ 0.36
+  - post_interaction_gross: R$ 5.07
+  - post_engagement: R$ 0.06
+  - landing_page_view: R$ 0.36
+  - page_engagement: R$ 0.06
+  - omni_landing_page_view: R$ 0.36
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### ENGAJAMENTO - 16/09
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: OUTCOME_ENGAGEMENT
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 104.85
+- Impressoes: 7,764
+- Cliques: 207
+- CTR: 2.67%
+- CPC: R$ 0.51
+- CPM: R$ 13.50
+- Alcance: 7,191
+- Frequencia: 1.08
+- Acoes:
+  - link_click: 29
+  - page_engagement: 3682
+  - post_interaction_gross: 789
+  - post: 2
+  - post_engagement: 3682
+  - onsite_conversion.post_net_like: 787
+  - video_view: 2864
+  - post_reaction: 787
+- Custo por acao:
+  - video_view: R$ 0.04
+  - link_click: R$ 3.62
+  - post_interaction_gross: R$ 0.13
+  - post_engagement: R$ 0.03
+  - page_engagement: R$ 0.03
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### CONVERSÃO - VENDAS - CRIPTO LAWYER START
+- Conta: CA - Cripto Lawyer
+- Status: PAUSED
+- Objetivo: OUTCOME_SALES
+- Periodo: 2025-09-23 a 2026-03-26
+- Gasto: R$ 95.53
+- Impressoes: 2,966
+- Cliques: 56
+- CTR: 1.89%
+- CPC: R$ 1.71
+- CPM: R$ 32.21
+- Alcance: 1,813
+- Frequencia: 1.64
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 6
+  - link_click: 29
+  - omni_add_to_cart: 2
+  - page_engagement: 589
+  - landing_page_view: 16
+  - add_to_cart: 2
+  - omni_landing_page_view: 16
+  - onsite_web_view_content: 2
+  - onsite_web_add_to_cart: 2
+  - comment: 1
+  - post_interaction_gross: 21
+  - onsite_conversion.messaging_user_depth_2_message_send: 2
+  - onsite_web_app_view_content: 2
+  - post: 7
+  - view_content: 2
+  - onsite_conversion.messaging_user_depth_3_message_send: 1
+  - onsite_web_app_add_to_cart: 2
+  - post_engagement: 589
+  - onsite_conversion.post_net_like: 13
+  - offsite_content_view_add_meta_leads: 2
+  - onsite_conversion.messaging_conversation_started_7d: 4
+  - video_view: 539
+  - omni_view_content: 2
+  - offsite_conversion.fb_pixel_view_content: 2
+  - offsite_conversion.fb_pixel_add_to_cart: 2
+  - post_reaction: 13
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 15.92
+  - omni_view_content: R$ 47.77
+  - video_view: R$ 0.18
+  - link_click: R$ 3.29
+  - post_interaction_gross: R$ 4.55
+  - onsite_conversion.messaging_user_depth_2_message_send: R$ 47.77
+  - onsite_conversion.messaging_user_depth_3_message_send: R$ 95.53
+  - view_content: R$ 47.77
+  - post_engagement: R$ 0.16
+  - offsite_content_view_add_meta_leads: R$ 47.77
+  - landing_page_view: R$ 5.97
+  - page_engagement: R$ 0.16
+  - omni_landing_page_view: R$ 5.97
+  - omni_add_to_cart: R$ 47.77
+  - onsite_conversion.messaging_conversation_started_7d: R$ 23.88
+  - add_to_cart: R$ 47.77
+- RECOMENDACOES:
+  - Pausada com bom CTR - considerar reativacao
+
+### TRAFEGO - IMERSÃO - 21/10
+- Conta: CA - Cripto Lawyer
+- Status: PAUSED
+- Objetivo: LINK_CLICKS
+- Periodo: 2025-09-23 a 2026-03-26
+- Gasto: R$ 87.27
+- Impressoes: 21,770
+- Cliques: 285
+- CTR: 1.31%
+- CPC: R$ 0.31
+- CPM: R$ 4.01
+- Alcance: 17,779
+- Frequencia: 1.22
+- Acoes:
+  - onsite_conversion.messaging_block: 11
+  - link_click: 259
+  - page_engagement: 374
+  - landing_page_view: 210
+  - omni_landing_page_view: 210
+  - post_interaction_gross: 25
+  - post: 1
+  - post_engagement: 374
+  - onsite_conversion.post_net_like: 24
+  - video_view: 90
+  - post_reaction: 24
+- Custo por acao:
+  - video_view: R$ 0.97
+  - link_click: R$ 0.34
+  - post_interaction_gross: R$ 3.49
+  - post_engagement: R$ 0.23
+  - landing_page_view: R$ 0.42
+  - page_engagement: R$ 0.23
+  - omni_landing_page_view: R$ 0.42
+
+### CBO 10-06 CLICKS VENDAS
+- Conta: mr micro
+- Status: PAUSED
+- Objetivo: OUTCOME_ENGAGEMENT
+- Periodo: 2025-06-02 a 2026-03-26
+- Gasto: R$ 78.07
+- Impressoes: 7,146
+- Cliques: 79
+- CTR: 1.11%
+- CPC: R$ 0.99
+- CPM: R$ 10.92
+- Alcance: 3,074
+- Frequencia: 2.32
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 6
+  - link_click: 20
+  - page_engagement: 841
+  - comment: 1
+  - post_interaction_gross: 20
+  - onsite_conversion.messaging_user_depth_2_message_send: 5
+  - onsite_conversion.messaging_first_reply: 7
+  - post: 6
+  - onsite_conversion.messaging_user_depth_3_message_send: 3
+  - post_engagement: 841
+  - onsite_conversion.post_net_like: 13
+  - onsite_conversion.messaging_conversation_started_7d: 9
+  - video_view: 801
+  - post_reaction: 13
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 13.01
+  - video_view: R$ 0.10
+  - link_click: R$ 3.90
+  - post_interaction_gross: R$ 3.90
+  - onsite_conversion.messaging_user_depth_2_message_send: R$ 15.61
+  - onsite_conversion.messaging_user_depth_3_message_send: R$ 26.02
+  - post_engagement: R$ 0.09
+  - page_engagement: R$ 0.09
+  - onsite_conversion.messaging_first_reply: R$ 11.15
+  - onsite_conversion.messaging_conversation_started_7d: R$ 8.67
+
+### Livro - Venda - 07/02
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: OUTCOME_ENGAGEMENT
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 75.73
+- Impressoes: 6,407
+- Cliques: 104
+- CTR: 1.62%
+- CPC: R$ 0.73
+- CPM: R$ 11.82
+- Alcance: 6,019
+- Frequencia: 1.06
+- Acoes:
+  - link_click: 97
+  - page_engagement: 103
+  - post_interaction_gross: 6
+  - onsite_conversion.post_save: 2
+  - post_engagement: 103
+  - onsite_conversion.post_net_like: 4
+  - onsite_conversion.post_net_save: 2
+  - post_reaction: 4
+- Custo por acao:
+  - link_click: R$ 0.78
+  - post_interaction_gross: R$ 12.62
+  - post_engagement: R$ 0.74
+  - page_engagement: R$ 0.74
+- RECOMENDACOES:
+  - Pausada com bom CTR - considerar reativacao
+
+### TRAFEGO - CBO - 23/09
+- Conta: CA - Aerodex
+- Status: PAUSED
+- Objetivo: LINK_CLICKS
+- Periodo: 2025-09-11 a 2026-03-26
+- Gasto: R$ 73.90
+- Impressoes: 1,657
+- Cliques: 57
+- CTR: 3.44%
+- CPC: R$ 1.30
+- CPM: R$ 44.60
+- Alcance: 1,448
+- Frequencia: 1.14
+- Acoes:
+  - link_click: 61
+  - page_engagement: 596
+  - comment: 1
+  - post_interaction_gross: 29
+  - post: 1
+  - onsite_conversion.post_save: 2
+  - post_engagement: 596
+  - onsite_conversion.post_net_like: 25
+  - onsite_conversion.post_net_save: 2
+  - video_view: 506
+  - post_reaction: 25
+- Custo por acao:
+  - video_view: R$ 0.15
+  - link_click: R$ 1.21
+  - post_interaction_gross: R$ 2.55
+  - post_engagement: R$ 0.12
+  - page_engagement: R$ 0.12
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### CBO-15-08-MSG
+- Conta: mr micro
+- Status: PAUSED
+- Objetivo: OUTCOME_ENGAGEMENT
+- Periodo: 2025-06-02 a 2026-03-26
+- Gasto: R$ 71.68
+- Impressoes: 7,202
+- Cliques: 86
+- CTR: 1.19%
+- CPC: R$ 0.83
+- CPM: R$ 9.95
+- Alcance: 3,418
+- Frequencia: 2.11
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 10
+  - link_click: 24
+  - page_engagement: 1080
+  - comment: 1
+  - like: 2
+  - post_interaction_gross: 28
+  - onsite_conversion.messaging_user_depth_2_message_send: 7
+  - onsite_conversion.messaging_first_reply: 9
+  - post: 4
+  - onsite_conversion.messaging_user_depth_3_message_send: 4
+  - post_engagement: 1078
+  - onsite_conversion.post_net_like: 23
+  - onsite_conversion.messaging_conversation_started_7d: 10
+  - video_view: 1026
+  - post_reaction: 23
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 7.17
+  - video_view: R$ 0.07
+  - link_click: R$ 2.99
+  - like: R$ 35.84
+  - post_interaction_gross: R$ 2.56
+  - onsite_conversion.messaging_user_depth_2_message_send: R$ 10.24
+  - onsite_conversion.messaging_user_depth_3_message_send: R$ 17.92
+  - post_engagement: R$ 0.07
+  - page_engagement: R$ 0.07
+  - onsite_conversion.messaging_first_reply: R$ 7.96
+  - onsite_conversion.messaging_conversation_started_7d: R$ 7.17
+
+### CBO VENDAS EBOOK 17/07
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: OUTCOME_SALES
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 69.08
+- Impressoes: 1,052
+- Cliques: 24
+- CTR: 2.28%
+- CPC: R$ 2.88
+- CPM: R$ 65.67
+- Alcance: 852
+- Frequencia: 1.23
+- Acoes:
+  - onsite_conversion.messaging_block: 2
+  - link_click: 12
+  - page_engagement: 17
+  - landing_page_view: 1
+  - omni_landing_page_view: 1
+  - post_interaction_gross: 5
+  - onsite_conversion.post_save: 2
+  - post_engagement: 17
+  - onsite_conversion.post_net_like: 3
+  - onsite_conversion.post_net_save: 2
+  - onsite_conversion.messaging_conversation_started_7d: 2
+  - post_reaction: 3
+- Custo por acao:
+  - link_click: R$ 5.76
+  - post_interaction_gross: R$ 13.82
+  - post_engagement: R$ 4.06
+  - landing_page_view: R$ 69.08
+  - page_engagement: R$ 4.06
+  - omni_landing_page_view: R$ 69.08
+  - onsite_conversion.messaging_conversation_started_7d: R$ 34.54
+- RECOMENDACOES:
+  - Pausada com bom CTR - considerar reativacao
+
+### Nova campanha de Vendas
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: OUTCOME_SALES
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 68.49
+- Impressoes: 1,286
+- Cliques: 26
+- CTR: 2.02%
+- CPC: R$ 2.63
+- CPM: R$ 53.26
+- Alcance: 1,054
+- Frequencia: 1.22
+- Acoes:
+  - link_click: 16
+  - page_engagement: 25
+  - post_interaction_gross: 9
+  - post: 1
+  - onsite_conversion.post_save: 1
+  - post_engagement: 25
+  - onsite_conversion.post_net_like: 7
+  - onsite_conversion.post_net_save: 1
+  - onsite_conversion.messaging_conversation_started_7d: 1
+  - post_reaction: 7
+- Custo por acao:
+  - link_click: R$ 4.28
+  - post_interaction_gross: R$ 7.61
+  - post_engagement: R$ 2.74
+  - page_engagement: R$ 2.74
+  - onsite_conversion.messaging_conversation_started_7d: R$ 68.49
+- RECOMENDACOES:
+  - Pausada com bom CTR - considerar reativacao
+
+### 03-06 RECONHECIMENTO
+- Conta: mr micro
+- Status: PAUSED
+- Objetivo: OUTCOME_AWARENESS
+- Periodo: 2025-06-02 a 2026-03-26
+- Gasto: R$ 66.68
+- Impressoes: 31,277
+- Cliques: 58
+- CTR: 0.19%
+- CPC: R$ 1.15
+- CPM: R$ 2.13
+- Alcance: 17,718
+- Frequencia: 1.77
+- Acoes:
+  - link_click: 15
+  - page_engagement: 1560
+  - post_interaction_gross: 20
+  - post: 1
+  - post_engagement: 1560
+  - onsite_conversion.post_net_like: 19
+  - video_view: 1525
+  - post_reaction: 19
+- Custo por acao:
+  - video_view: R$ 0.04
+  - link_click: R$ 4.45
+  - post_interaction_gross: R$ 3.33
+  - post_engagement: R$ 0.04
+  - page_engagement: R$ 0.04
+- RECOMENDACOES:
+  - CTR baixo - testar novos criativos e hooks
+
+### CBO VENDAS EBOOK 20/04 PIXEL
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: OUTCOME_SALES
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 65.09
+- Impressoes: 1,278
+- Cliques: 30
+- CTR: 2.35%
+- CPC: R$ 2.17
+- CPM: R$ 50.93
+- Alcance: 1,014
+- Frequencia: 1.26
+- Acoes:
+  - link_click: 14
+  - omni_add_to_cart: 4
+  - omni_initiated_checkout: 4
+  - page_engagement: 24
+  - landing_page_view: 4
+  - add_to_cart: 4
+  - omni_landing_page_view: 4
+  - onsite_web_add_to_cart: 4
+  - post_interaction_gross: 10
+  - onsite_conversion.messaging_first_reply: 1
+  - post: 2
+  - onsite_conversion.post_save: 1
+  - onsite_web_app_add_to_cart: 4
+  - post_engagement: 24
+  - onsite_conversion.post_net_like: 7
+  - onsite_web_initiate_checkout: 4
+  - onsite_conversion.post_net_save: 1
+  - onsite_conversion.messaging_conversation_started_7d: 1
+  - offsite_conversion.fb_pixel_add_to_cart: 4
+  - post_reaction: 7
+  - offsite_conversion.fb_pixel_initiate_checkout: 4
+  - initiate_checkout: 4
+- Custo por acao:
+  - initiate_checkout: R$ 16.27
+  - link_click: R$ 4.65
+  - post_interaction_gross: R$ 6.51
+  - onsite_web_initiate_checkout: R$ 16.27
+  - post_engagement: R$ 2.71
+  - landing_page_view: R$ 16.27
+  - page_engagement: R$ 2.71
+  - onsite_conversion.messaging_first_reply: R$ 65.09
+  - omni_landing_page_view: R$ 16.27
+  - omni_initiated_checkout: R$ 16.27
+  - omni_add_to_cart: R$ 16.27
+  - onsite_conversion.messaging_conversation_started_7d: R$ 65.09
+  - add_to_cart: R$ 16.27
+- RECOMENDACOES:
+  - Pausada com bom CTR - considerar reativacao
+
+### 01-07 CBO MSG LEDS — Cópia
+- Conta: mr micro
+- Status: PAUSED
+- Objetivo: OUTCOME_ENGAGEMENT
+- Periodo: 2025-06-02 a 2026-03-26
+- Gasto: R$ 65.05
+- Impressoes: 6,851
+- Cliques: 72
+- CTR: 1.05%
+- CPC: R$ 0.90
+- CPM: R$ 9.49
+- Alcance: 3,548
+- Frequencia: 1.93
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 11
+  - link_click: 24
+  - page_engagement: 1182
+  - comment: 2
+  - like: 1
+  - post_interaction_gross: 23
+  - onsite_conversion.messaging_user_depth_2_message_send: 9
+  - onsite_conversion.messaging_first_reply: 11
+  - onsite_conversion.messaging_user_depth_3_message_send: 8
+  - post_engagement: 1181
+  - onsite_conversion.post_net_like: 21
+  - onsite_conversion.messaging_conversation_started_7d: 11
+  - video_view: 1134
+  - post_reaction: 21
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 5.91
+  - video_view: R$ 0.06
+  - link_click: R$ 2.71
+  - like: R$ 65.05
+  - post_interaction_gross: R$ 2.83
+  - onsite_conversion.messaging_user_depth_2_message_send: R$ 7.23
+  - onsite_conversion.messaging_user_depth_3_message_send: R$ 8.13
+  - post_engagement: R$ 0.06
+  - page_engagement: R$ 0.06
+  - onsite_conversion.messaging_first_reply: R$ 5.91
+  - onsite_conversion.messaging_conversation_started_7d: R$ 5.91
+
+### 01-07 CBO MSG LEDS
+- Conta: mr micro
+- Status: PAUSED
+- Objetivo: OUTCOME_ENGAGEMENT
+- Periodo: 2025-06-02 a 2026-03-26
+- Gasto: R$ 62.70
+- Impressoes: 6,963
+- Cliques: 72
+- CTR: 1.03%
+- CPC: R$ 0.87
+- CPM: R$ 9.00
+- Alcance: 3,406
+- Frequencia: 2.04
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 8
+  - link_click: 16
+  - page_engagement: 1316
+  - post_interaction_gross: 39
+  - onsite_conversion.messaging_user_depth_2_message_send: 7
+  - onsite_conversion.messaging_first_reply: 9
+  - onsite_conversion.post_save: 1
+  - onsite_conversion.messaging_user_depth_3_message_send: 5
+  - post_engagement: 1316
+  - onsite_conversion.post_net_like: 38
+  - onsite_conversion.post_net_save: 1
+  - onsite_conversion.messaging_conversation_started_7d: 11
+  - video_view: 1261
+  - post_reaction: 38
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 7.84
+  - video_view: R$ 0.05
+  - link_click: R$ 3.92
+  - post_interaction_gross: R$ 1.61
+  - onsite_conversion.messaging_user_depth_2_message_send: R$ 8.96
+  - onsite_conversion.messaging_user_depth_3_message_send: R$ 12.54
+  - post_engagement: R$ 0.05
+  - page_engagement: R$ 0.05
+  - onsite_conversion.messaging_first_reply: R$ 6.97
+  - onsite_conversion.messaging_conversation_started_7d: R$ 5.70
+
+### CBO VENDAS EBOOK 27/04
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: OUTCOME_SALES
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 59.50
+- Impressoes: 2,082
+- Cliques: 62
+- CTR: 2.98%
+- CPC: R$ 0.96
+- CPM: R$ 28.58
+- Alcance: 1,648
+- Frequencia: 1.26
+- Acoes:
+  - link_click: 38
+  - omni_add_to_cart: 8
+  - omni_initiated_checkout: 8
+  - page_engagement: 45
+  - landing_page_view: 8
+  - add_to_cart: 8
+  - omni_landing_page_view: 8
+  - onsite_web_add_to_cart: 8
+  - offsite_conversion.fb_pixel_add_payment_info: 1
+  - like: 1
+  - post_interaction_gross: 6
+  - post: 1
+  - onsite_web_app_add_to_cart: 8
+  - post_engagement: 44
+  - onsite_conversion.post_net_like: 5
+  - onsite_web_initiate_checkout: 8
+  - add_payment_info: 1
+  - offsite_conversion.fb_pixel_add_to_cart: 8
+  - post_reaction: 5
+  - offsite_conversion.fb_pixel_initiate_checkout: 8
+  - initiate_checkout: 8
+- Custo por acao:
+  - initiate_checkout: R$ 7.44
+  - link_click: R$ 1.57
+  - like: R$ 59.50
+  - post_interaction_gross: R$ 9.92
+  - onsite_web_initiate_checkout: R$ 7.44
+  - post_engagement: R$ 1.35
+  - landing_page_view: R$ 7.44
+  - page_engagement: R$ 1.32
+  - omni_landing_page_view: R$ 7.44
+  - omni_initiated_checkout: R$ 7.44
+  - omni_add_to_cart: R$ 7.44
+  - add_to_cart: R$ 7.44
+  - add_payment_info: R$ 59.50
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### Engajamento
+- Conta: Espaco Giselli
+- Status: PAUSED
+- Objetivo: OUTCOME_ENGAGEMENT
+- Periodo: 2025-11-09 a 2026-03-26
+- Gasto: R$ 56.03
+- Impressoes: 2,330
+- Cliques: 44
+- CTR: 1.89%
+- CPC: R$ 1.27
+- CPM: R$ 24.05
+- Alcance: 1,177
+- Frequencia: 1.98
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 21
+  - link_click: 13
+  - page_engagement: 355
+  - like: 1
+  - post_interaction_gross: 23
+  - onsite_conversion.messaging_user_depth_2_message_send: 2
+  - onsite_conversion.messaging_first_reply: 7
+  - post: 2
+  - onsite_conversion.post_save: 1
+  - onsite_conversion.messaging_user_depth_3_message_send: 3
+  - post_engagement: 354
+  - onsite_conversion.post_net_like: 20
+  - onsite_conversion.post_net_save: 1
+  - onsite_conversion.messaging_conversation_started_7d: 7
+  - video_view: 318
+  - post_reaction: 20
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 2.67
+  - video_view: R$ 0.18
+  - link_click: R$ 4.31
+  - like: R$ 56.03
+  - post_interaction_gross: R$ 2.44
+  - onsite_conversion.messaging_user_depth_2_message_send: R$ 28.02
+  - onsite_conversion.messaging_user_depth_3_message_send: R$ 18.68
+  - post_engagement: R$ 0.16
+  - page_engagement: R$ 0.16
+  - onsite_conversion.messaging_first_reply: R$ 8.00
+  - onsite_conversion.messaging_conversation_started_7d: R$ 8.00
+- RECOMENDACOES:
+  - Pausada com bom CTR - considerar reativacao
+
+### CBO VENDAS LP 14-05
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: OUTCOME_SALES
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 50.47
+- Impressoes: 907
+- Cliques: 30
+- CTR: 3.31%
+- CPC: R$ 1.68
+- CPM: R$ 55.64
+- Alcance: 632
+- Frequencia: 1.44
+- Acoes:
+  - link_click: 21
+  - omni_add_to_cart: 5
+  - omni_initiated_checkout: 5
+  - page_engagement: 33
+  - landing_page_view: 4
+  - add_to_cart: 5
+  - omni_landing_page_view: 4
+  - onsite_web_add_to_cart: 5
+  - post_interaction_gross: 12
+  - onsite_conversion.messaging_first_reply: 1
+  - post: 2
+  - onsite_conversion.post_save: 1
+  - onsite_web_app_add_to_cart: 5
+  - post_engagement: 33
+  - onsite_conversion.post_net_like: 9
+  - onsite_web_initiate_checkout: 5
+  - onsite_conversion.post_net_save: 1
+  - onsite_conversion.messaging_conversation_started_7d: 1
+  - offsite_conversion.fb_pixel_add_to_cart: 5
+  - post_reaction: 9
+  - offsite_conversion.fb_pixel_initiate_checkout: 5
+  - initiate_checkout: 5
+- Custo por acao:
+  - initiate_checkout: R$ 10.09
+  - link_click: R$ 2.40
+  - post_interaction_gross: R$ 4.21
+  - onsite_web_initiate_checkout: R$ 10.09
+  - post_engagement: R$ 1.53
+  - landing_page_view: R$ 12.62
+  - page_engagement: R$ 1.53
+  - onsite_conversion.messaging_first_reply: R$ 50.47
+  - omni_landing_page_view: R$ 12.62
+  - omni_initiated_checkout: R$ 10.09
+  - omni_add_to_cart: R$ 10.09
+  - onsite_conversion.messaging_conversation_started_7d: R$ 50.47
+  - add_to_cart: R$ 10.09
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### ABO-22-08-MSG
+- Conta: mr micro
+- Status: PAUSED
+- Objetivo: OUTCOME_ENGAGEMENT
+- Periodo: 2025-06-02 a 2026-03-26
+- Gasto: R$ 50.19
+- Impressoes: 4,263
+- Cliques: 73
+- CTR: 1.71%
+- CPC: R$ 0.69
+- CPM: R$ 11.77
+- Alcance: 2,274
+- Frequencia: 1.87
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 4
+  - link_click: 27
+  - page_engagement: 723
+  - comment: 3
+  - post_interaction_gross: 33
+  - onsite_conversion.messaging_user_depth_2_message_send: 2
+  - onsite_conversion.messaging_first_reply: 2
+  - post: 3
+  - onsite_conversion.messaging_user_depth_3_message_send: 2
+  - post_engagement: 723
+  - onsite_conversion.post_net_like: 27
+  - onsite_conversion.messaging_conversation_started_7d: 4
+  - video_view: 663
+  - post_reaction: 27
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 12.55
+  - video_view: R$ 0.08
+  - link_click: R$ 1.86
+  - post_interaction_gross: R$ 1.52
+  - onsite_conversion.messaging_user_depth_2_message_send: R$ 25.09
+  - onsite_conversion.messaging_user_depth_3_message_send: R$ 25.09
+  - post_engagement: R$ 0.07
+  - page_engagement: R$ 0.07
+  - onsite_conversion.messaging_first_reply: R$ 25.09
+  - onsite_conversion.messaging_conversation_started_7d: R$ 12.55
+- RECOMENDACOES:
+  - Pausada com bom CTR - considerar reativacao
+
+### Reconhecimento instagram
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: OUTCOME_AWARENESS
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 48.16
+- Impressoes: 37,580
+- Cliques: 28
+- CTR: 0.07%
+- CPC: R$ 1.72
+- CPM: R$ 1.28
+- Alcance: 35,864
+- Frequencia: 1.05
+- Acoes:
+  - link_click: 7
+  - page_engagement: 1238
+  - post_interaction_gross: 19
+  - post_engagement: 1238
+  - onsite_conversion.post_net_like: 19
+  - video_view: 1212
+  - post_reaction: 19
+- Custo por acao:
+  - video_view: R$ 0.04
+  - link_click: R$ 6.88
+  - post_interaction_gross: R$ 2.53
+  - post_engagement: R$ 0.04
+  - page_engagement: R$ 0.04
+- RECOMENDACOES:
+  - CTR baixo - testar novos criativos e hooks
+
+### EBOOK - VENDAS
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: OUTCOME_SALES
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 43.45
+- Impressoes: 1,263
+- Cliques: 12
+- CTR: 0.95%
+- CPC: R$ 3.62
+- CPM: R$ 34.40
+- Alcance: 1,129
+- Frequencia: 1.12
+- Acoes:
+  - link_click: 7
+  - omni_add_to_cart: 3
+  - omni_initiated_checkout: 3
+  - page_engagement: 20
+  - landing_page_view: 1
+  - add_to_cart: 3
+  - omni_landing_page_view: 1
+  - onsite_web_add_to_cart: 3
+  - post_interaction_gross: 12
+  - onsite_conversion.post_save: 1
+  - onsite_web_app_add_to_cart: 3
+  - post_engagement: 20
+  - onsite_conversion.post_net_like: 11
+  - onsite_web_initiate_checkout: 3
+  - onsite_conversion.post_net_save: 1
+  - video_view: 1
+  - offsite_conversion.fb_pixel_add_to_cart: 3
+  - post_reaction: 11
+  - offsite_conversion.fb_pixel_initiate_checkout: 3
+  - initiate_checkout: 3
+- Custo por acao:
+  - initiate_checkout: R$ 14.48
+  - video_view: R$ 43.45
+  - link_click: R$ 6.21
+  - post_interaction_gross: R$ 3.62
+  - onsite_web_initiate_checkout: R$ 14.48
+  - post_engagement: R$ 2.17
+  - landing_page_view: R$ 43.45
+  - page_engagement: R$ 2.17
+  - omni_landing_page_view: R$ 43.45
+  - omni_initiated_checkout: R$ 14.48
+  - omni_add_to_cart: R$ 14.48
+  - add_to_cart: R$ 14.48
+
+### VENDAS - SITE
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: OUTCOME_SALES
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 37.39
+- Impressoes: 826
+- Cliques: 23
+- CTR: 2.78%
+- CPC: R$ 1.63
+- CPM: R$ 45.27
+- Alcance: 656
+- Frequencia: 1.26
+- Acoes:
+  - link_click: 16
+  - omni_add_to_cart: 3
+  - omni_initiated_checkout: 3
+  - page_engagement: 25
+  - landing_page_view: 3
+  - add_to_cart: 3
+  - omni_landing_page_view: 3
+  - onsite_web_add_to_cart: 3
+  - post_interaction_gross: 8
+  - onsite_web_app_add_to_cart: 3
+  - post_engagement: 25
+  - onsite_conversion.post_net_like: 8
+  - onsite_web_initiate_checkout: 3
+  - video_view: 1
+  - offsite_conversion.fb_pixel_add_to_cart: 3
+  - post_reaction: 8
+  - offsite_conversion.fb_pixel_initiate_checkout: 3
+  - initiate_checkout: 3
+- Custo por acao:
+  - initiate_checkout: R$ 12.46
+  - video_view: R$ 37.39
+  - link_click: R$ 2.34
+  - post_interaction_gross: R$ 4.67
+  - onsite_web_initiate_checkout: R$ 12.46
+  - post_engagement: R$ 1.50
+  - landing_page_view: R$ 12.46
+  - page_engagement: R$ 1.50
+  - omni_landing_page_view: R$ 12.46
+  - omni_initiated_checkout: R$ 12.46
+  - omni_add_to_cart: R$ 12.46
+  - add_to_cart: R$ 12.46
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### Post do Instagram: Postar é apenas a ponta do...
+- Conta: Lucas Quintino
+- Status: PAUSED
+- Objetivo: LINK_CLICKS
+- Periodo: 2023-02-26 a 2026-03-26
+- Gasto: R$ 35.33
+- Impressoes: 5,504
+- Cliques: 78
+- CTR: 1.42%
+- CPC: R$ 0.45
+- CPM: R$ 6.42
+- Alcance: 5,323
+- Frequencia: 1.03
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 1
+  - onsite_conversion.messaging_block: 1
+  - link_click: 72
+  - page_engagement: 91
+  - post_interaction_gross: 13
+  - onsite_conversion.messaging_first_reply: 1
+  - post: 2
+  - onsite_conversion.post_save: 7
+  - post_engagement: 91
+  - onsite_conversion.post_net_like: 4
+  - onsite_conversion.post_net_save: 7
+  - onsite_conversion.messaging_conversation_started_7d: 1
+  - video_view: 6
+  - post_reaction: 4
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 35.33
+  - video_view: R$ 5.89
+  - link_click: R$ 0.49
+  - post_interaction_gross: R$ 2.72
+  - post_engagement: R$ 0.39
+  - page_engagement: R$ 0.39
+  - onsite_conversion.messaging_first_reply: R$ 35.33
+  - onsite_conversion.messaging_conversation_started_7d: R$ 35.33
+
+### Post do Instagram: Tráfego pago sozinho não faz...
+- Conta: Lucas Quintino
+- Status: PAUSED
+- Objetivo: LINK_CLICKS
+- Periodo: 2023-02-26 a 2026-03-26
+- Gasto: R$ 34.95
+- Impressoes: 6,855
+- Cliques: 56
+- CTR: 0.82%
+- CPC: R$ 0.62
+- CPM: R$ 5.10
+- Alcance: 6,659
+- Frequencia: 1.03
+- Acoes:
+  - onsite_conversion.messaging_block: 1
+  - link_click: 56
+  - page_engagement: 76
+  - post_interaction_gross: 14
+  - onsite_conversion.post_unsave: 1
+  - onsite_conversion.post_save: 6
+  - post_engagement: 76
+  - onsite_conversion.post_unlike: 1
+  - onsite_conversion.post_net_like: 7
+  - onsite_conversion.post_net_save: 5
+  - video_view: 6
+  - post_reaction: 8
+- Custo por acao:
+  - video_view: R$ 5.83
+  - link_click: R$ 0.62
+  - post_interaction_gross: R$ 2.50
+  - post_engagement: R$ 0.46
+  - page_engagement: R$ 0.46
+
+### Instagram post: MARKETING NÃO É SÓ POSTAR. ✋📱
+
+💡...
+- Conta: Lucas Quintino
+- Status: PAUSED
+- Objetivo: LINK_CLICKS
+- Periodo: 2023-02-26 a 2026-03-26
+- Gasto: R$ 33.52
+- Impressoes: 3,479
+- Cliques: 48
+- CTR: 1.38%
+- CPC: R$ 0.70
+- CPM: R$ 9.63
+- Alcance: 3,182
+- Frequencia: 1.09
+- Acoes:
+  - onsite_conversion.messaging_block: 1
+  - link_click: 47
+  - page_engagement: 79
+  - post_interaction_gross: 29
+  - post: 1
+  - onsite_conversion.post_save: 6
+  - post_engagement: 79
+  - onsite_conversion.post_net_like: 22
+  - onsite_conversion.post_net_save: 6
+  - video_view: 3
+  - post_reaction: 22
+- Custo por acao:
+  - video_view: R$ 11.17
+  - link_click: R$ 0.71
+  - post_interaction_gross: R$ 1.16
+  - post_engagement: R$ 0.42
+  - page_engagement: R$ 0.42
+
+### Instagram post: 🚨 Tráfego pago sozinho não faz...
+- Conta: Lucas Quintino
+- Status: PAUSED
+- Objetivo: LINK_CLICKS
+- Periodo: 2023-02-26 a 2026-03-26
+- Gasto: R$ 32.78
+- Impressoes: 3,772
+- Cliques: 68
+- CTR: 1.80%
+- CPC: R$ 0.48
+- CPM: R$ 8.69
+- Alcance: 3,382
+- Frequencia: 1.12
+- Acoes:
+  - link_click: 68
+  - page_engagement: 77
+  - post_interaction_gross: 9
+  - post: 2
+  - post_engagement: 77
+  - onsite_conversion.post_net_like: 7
+  - post_reaction: 7
+- Custo por acao:
+  - link_click: R$ 0.48
+  - post_interaction_gross: R$ 3.64
+  - post_engagement: R$ 0.43
+  - page_engagement: R$ 0.43
+- RECOMENDACOES:
+  - Pausada com bom CTR - considerar reativacao
+
+### VENDAS - 29/09
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: OUTCOME_SALES
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 31.29
+- Impressoes: 1,648
+- Cliques: 95
+- CTR: 5.76%
+- CPC: R$ 0.33
+- CPM: R$ 18.99
+- Alcance: 1,491
+- Frequencia: 1.11
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 3
+  - onsite_conversion.messaging_block: 2
+  - link_click: 63
+  - page_engagement: 546
+  - comment: 2
+  - post_interaction_gross: 13
+  - onsite_conversion.messaging_first_reply: 1
+  - post_engagement: 546
+  - onsite_conversion.post_net_like: 11
+  - onsite_conversion.messaging_conversation_started_7d: 1
+  - video_view: 470
+  - post_reaction: 11
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 10.43
+  - video_view: R$ 0.07
+  - link_click: R$ 0.50
+  - post_interaction_gross: R$ 2.41
+  - post_engagement: R$ 0.06
+  - page_engagement: R$ 0.06
+  - onsite_conversion.messaging_first_reply: R$ 31.29
+  - onsite_conversion.messaging_conversation_started_7d: R$ 31.29
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### CBO VENDAS EBOOK 21/04
+- Conta: VENDAS EBOOK
+- Status: PAUSED
+- Objetivo: OUTCOME_SALES
+- Periodo: 2025-04-21 a 2026-03-26
+- Gasto: R$ 30.59
+- Impressoes: 785
+- Cliques: 19
+- CTR: 2.42%
+- CPC: R$ 1.61
+- CPM: R$ 38.97
+- Alcance: 616
+- Frequencia: 1.27
+- Acoes:
+  - link_click: 10
+  - omni_add_to_cart: 7
+  - omni_initiated_checkout: 7
+  - page_engagement: 17
+  - landing_page_view: 6
+  - add_to_cart: 7
+  - omni_landing_page_view: 6
+  - onsite_web_add_to_cart: 7
+  - post_interaction_gross: 7
+  - onsite_web_app_add_to_cart: 7
+  - post_engagement: 17
+  - onsite_conversion.post_net_like: 7
+  - onsite_web_initiate_checkout: 7
+  - offsite_conversion.fb_pixel_add_to_cart: 7
+  - post_reaction: 7
+  - offsite_conversion.fb_pixel_initiate_checkout: 7
+  - initiate_checkout: 7
+- Custo por acao:
+  - initiate_checkout: R$ 4.37
+  - link_click: R$ 3.06
+  - post_interaction_gross: R$ 4.37
+  - onsite_web_initiate_checkout: R$ 4.37
+  - post_engagement: R$ 1.80
+  - landing_page_view: R$ 5.10
+  - page_engagement: R$ 1.80
+  - omni_landing_page_view: R$ 5.10
+  - omni_initiated_checkout: R$ 4.37
+  - omni_add_to_cart: R$ 4.37
+  - add_to_cart: R$ 4.37
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### Instagram post: 🤖 A inteligência artificial não é...
+- Conta: Lucas Quintino
+- Status: PAUSED
+- Objetivo: LINK_CLICKS
+- Periodo: 2023-02-26 a 2026-03-26
+- Gasto: R$ 30.58
+- Impressoes: 1,797
+- Cliques: 33
+- CTR: 1.84%
+- CPC: R$ 0.93
+- CPM: R$ 17.02
+- Alcance: 1,674
+- Frequencia: 1.07
+- Acoes:
+  - onsite_conversion.messaging_block: 1
+  - link_click: 33
+  - page_engagement: 50
+  - post_interaction_gross: 2
+  - post_engagement: 50
+  - onsite_conversion.post_net_like: 2
+  - video_view: 15
+  - post_reaction: 2
+- Custo por acao:
+  - video_view: R$ 2.04
+  - link_click: R$ 0.93
+  - post_interaction_gross: R$ 15.29
+  - post_engagement: R$ 0.61
+  - page_engagement: R$ 0.61
+- RECOMENDACOES:
+  - Pausada com bom CTR - considerar reativacao
+
+### Publicação do Instagram: Sem risada. #poeta...
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: LINK_CLICKS
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 27.98
+- Impressoes: 1,576
+- Cliques: 52
+- CTR: 3.30%
+- CPC: R$ 0.54
+- CPM: R$ 17.75
+- Alcance: 1,350
+- Frequencia: 1.17
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 10
+  - onsite_conversion.messaging_block: 2
+  - link_click: 54
+  - page_engagement: 560
+  - post_interaction_gross: 54
+  - onsite_conversion.messaging_user_depth_2_message_send: 4
+  - onsite_conversion.messaging_first_reply: 5
+  - onsite_conversion.post_save: 1
+  - onsite_conversion.messaging_user_depth_3_message_send: 4
+  - post_engagement: 560
+  - onsite_conversion.post_net_like: 53
+  - onsite_conversion.post_net_save: 1
+  - onsite_conversion.messaging_conversation_started_7d: 5
+  - video_view: 452
+  - post_reaction: 53
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 2.80
+  - video_view: R$ 0.06
+  - link_click: R$ 0.52
+  - post_interaction_gross: R$ 0.52
+  - onsite_conversion.messaging_user_depth_2_message_send: R$ 7.00
+  - onsite_conversion.messaging_user_depth_3_message_send: R$ 7.00
+  - post_engagement: R$ 0.05
+  - page_engagement: R$ 0.05
+  - onsite_conversion.messaging_first_reply: R$ 5.60
+  - onsite_conversion.messaging_conversation_started_7d: R$ 5.60
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### CBO 17-06 CLICKS VENDAs
+- Conta: mr micro
+- Status: PAUSED
+- Objetivo: OUTCOME_ENGAGEMENT
+- Periodo: 2025-06-02 a 2026-03-26
+- Gasto: R$ 27.50
+- Impressoes: 3,160
+- Cliques: 31
+- CTR: 0.98%
+- CPC: R$ 0.89
+- CPM: R$ 8.70
+- Alcance: 1,927
+- Frequencia: 1.64
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 3
+  - link_click: 7
+  - page_engagement: 382
+  - post_interaction_gross: 11
+  - onsite_conversion.messaging_user_depth_2_message_send: 2
+  - onsite_conversion.messaging_first_reply: 3
+  - post: 1
+  - onsite_conversion.messaging_user_depth_3_message_send: 2
+  - post_engagement: 382
+  - onsite_conversion.post_net_like: 10
+  - onsite_conversion.messaging_conversation_started_7d: 3
+  - video_view: 364
+  - post_reaction: 10
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 9.17
+  - video_view: R$ 0.08
+  - link_click: R$ 3.93
+  - post_interaction_gross: R$ 2.50
+  - onsite_conversion.messaging_user_depth_2_message_send: R$ 13.75
+  - onsite_conversion.messaging_user_depth_3_message_send: R$ 13.75
+  - post_engagement: R$ 0.07
+  - page_engagement: R$ 0.07
+  - onsite_conversion.messaging_first_reply: R$ 9.17
+  - onsite_conversion.messaging_conversation_started_7d: R$ 9.17
+
+### Publicação do Instagram: Uma boa construção… 🏡...
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: LINK_CLICKS
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 27.36
+- Impressoes: 1,614
+- Cliques: 34
+- CTR: 2.11%
+- CPC: R$ 0.80
+- CPM: R$ 16.95
+- Alcance: 1,387
+- Frequencia: 1.16
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 1
+  - link_click: 35
+  - page_engagement: 635
+  - comment: 1
+  - post_interaction_gross: 66
+  - onsite_conversion.messaging_first_reply: 1
+  - post: 6
+  - onsite_conversion.post_save: 2
+  - post_engagement: 635
+  - onsite_conversion.post_net_like: 57
+  - onsite_conversion.post_net_save: 2
+  - onsite_conversion.messaging_conversation_started_7d: 1
+  - video_view: 534
+  - post_reaction: 57
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 27.36
+  - video_view: R$ 0.05
+  - link_click: R$ 0.78
+  - post_interaction_gross: R$ 0.41
+  - post_engagement: R$ 0.04
+  - page_engagement: R$ 0.04
+  - onsite_conversion.messaging_first_reply: R$ 27.36
+  - onsite_conversion.messaging_conversation_started_7d: R$ 27.36
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### Publicação do Instagram: NOS TRILHOS # poesia #poeta
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: LINK_CLICKS
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 25.91
+- Impressoes: 1,517
+- Cliques: 43
+- CTR: 2.83%
+- CPC: R$ 0.60
+- CPM: R$ 17.08
+- Alcance: 1,335
+- Frequencia: 1.14
+- Acoes:
+  - link_click: 46
+  - page_engagement: 583
+  - post_interaction_gross: 82
+  - onsite_conversion.post_save: 6
+  - post_engagement: 583
+  - onsite_conversion.post_net_like: 76
+  - onsite_conversion.post_net_save: 6
+  - video_view: 455
+  - post_reaction: 76
+- Custo por acao:
+  - video_view: R$ 0.06
+  - link_click: R$ 0.56
+  - post_interaction_gross: R$ 0.32
+  - post_engagement: R$ 0.04
+  - page_engagement: R$ 0.04
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### CBO 24/04 VENDAS CHECKOUT
+- Conta: VENDAS EBOOK
+- Status: PAUSED
+- Objetivo: OUTCOME_SALES
+- Periodo: 2025-04-21 a 2026-03-26
+- Gasto: R$ 25.00
+- Impressoes: 976
+- Cliques: 26
+- CTR: 2.66%
+- CPC: R$ 0.96
+- CPM: R$ 25.61
+- Alcance: 819
+- Frequencia: 1.19
+- Acoes:
+  - link_click: 16
+  - omni_add_to_cart: 14
+  - omni_initiated_checkout: 14
+  - page_engagement: 24
+  - landing_page_view: 11
+  - add_to_cart: 14
+  - omni_landing_page_view: 11
+  - onsite_web_add_to_cart: 14
+  - post_interaction_gross: 8
+  - onsite_conversion.post_save: 1
+  - onsite_web_app_add_to_cart: 14
+  - post_engagement: 24
+  - onsite_conversion.post_net_like: 7
+  - onsite_web_initiate_checkout: 14
+  - onsite_conversion.post_net_save: 1
+  - offsite_conversion.fb_pixel_add_to_cart: 14
+  - post_reaction: 7
+  - offsite_conversion.fb_pixel_initiate_checkout: 14
+  - initiate_checkout: 14
+- Custo por acao:
+  - initiate_checkout: R$ 1.79
+  - link_click: R$ 1.56
+  - post_interaction_gross: R$ 3.12
+  - onsite_web_initiate_checkout: R$ 1.79
+  - post_engagement: R$ 1.04
+  - landing_page_view: R$ 2.27
+  - page_engagement: R$ 1.04
+  - omni_landing_page_view: R$ 2.27
+  - omni_initiated_checkout: R$ 1.79
+  - omni_add_to_cart: R$ 1.79
+  - add_to_cart: R$ 1.79
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### Nova campanha de Reconhecimento
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: OUTCOME_AWARENESS
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 24.77
+- Impressoes: 23,815
+- Cliques: 32
+- CTR: 0.13%
+- CPC: R$ 0.77
+- CPM: R$ 1.04
+- Alcance: 23,524
+- Frequencia: 1.01
+- Acoes:
+  - onsite_conversion.messaging_block: 1
+  - link_click: 6
+  - page_engagement: 2016
+  - onsite_conversion.messaging_welcome_message_view: 2
+  - post_interaction_gross: 13
+  - post_engagement: 2016
+  - onsite_conversion.post_net_like: 13
+  - video_view: 1997
+  - post_reaction: 13
+- Custo por acao:
+  - video_view: R$ 0.01
+  - link_click: R$ 4.13
+  - post_interaction_gross: R$ 1.91
+  - post_engagement: R$ 0.01
+  - page_engagement: R$ 0.01
+  - onsite_conversion.messaging_welcome_message_view: R$ 12.38
+- RECOMENDACOES:
+  - CTR baixo - testar novos criativos e hooks
+
+### ABO LP 24/04 TESTE
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: LINK_CLICKS
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 18.30
+- Impressoes: 1,691
+- Cliques: 63
+- CTR: 3.73%
+- CPC: R$ 0.29
+- CPM: R$ 10.82
+- Alcance: 1,619
+- Frequencia: 1.04
+- Acoes:
+  - link_click: 45
+  - page_engagement: 47
+  - post_interaction_gross: 2
+  - post_engagement: 47
+  - onsite_conversion.post_net_like: 2
+  - post_reaction: 2
+- Custo por acao:
+  - link_click: R$ 0.41
+  - post_interaction_gross: R$ 9.15
+  - post_engagement: R$ 0.39
+  - page_engagement: R$ 0.39
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### CBO VENDAS EBOOK 25/04 - Cópia
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: OUTCOME_SALES
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 14.05
+- Impressoes: 449
+- Cliques: 8
+- CTR: 1.78%
+- CPC: R$ 1.76
+- CPM: R$ 31.29
+- Alcance: 315
+- Frequencia: 1.43
+- Acoes:
+  - link_click: 4
+  - page_engagement: 7
+  - post_interaction_gross: 3
+  - post_engagement: 7
+  - onsite_conversion.post_net_like: 3
+  - post_reaction: 3
+- Custo por acao:
+  - link_click: R$ 3.51
+  - post_interaction_gross: R$ 4.68
+  - post_engagement: R$ 2.01
+  - page_engagement: R$ 2.01
+- RECOMENDACOES:
+  - Pausada com bom CTR - considerar reativacao
+
+### Crescimento do Instagram - 10/03
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: LINK_CLICKS
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 13.14
+- Impressoes: 954
+- Cliques: 72
+- CTR: 7.55%
+- CPC: R$ 0.18
+- CPM: R$ 13.77
+- Alcance: 685
+- Frequencia: 1.39
+- Acoes:
+  - link_click: 1
+  - page_engagement: 281
+  - like: 1
+  - post_interaction_gross: 6
+  - onsite_conversion.post_save: 1
+  - post_engagement: 280
+  - onsite_conversion.post_net_like: 5
+  - onsite_conversion.post_net_save: 1
+  - video_view: 273
+  - post_reaction: 5
+- Custo por acao:
+  - video_view: R$ 0.05
+  - link_click: R$ 13.14
+  - like: R$ 13.14
+  - post_interaction_gross: R$ 2.19
+  - post_engagement: R$ 0.05
+  - page_engagement: R$ 0.05
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### Publicação do Instagram: Ainda #real
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: LINK_CLICKS
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 9.44
+- Impressoes: 620
+- Cliques: 3
+- CTR: 0.48%
+- CPC: R$ 3.15
+- CPM: R$ 15.23
+- Alcance: 601
+- Frequencia: 1.03
+- Acoes:
+  - link_click: 3
+  - page_engagement: 120
+  - post_interaction_gross: 10
+  - post_engagement: 120
+  - onsite_conversion.post_net_like: 10
+  - video_view: 107
+  - post_reaction: 10
+- Custo por acao:
+  - video_view: R$ 0.09
+  - link_click: R$ 3.15
+  - post_interaction_gross: R$ 0.94
+  - post_engagement: R$ 0.08
+  - page_engagement: R$ 0.08
+- RECOMENDACOES:
+  - CTR baixo - testar novos criativos e hooks
+
+### Publicação do Instagram: Refeito - Uma poesia...
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: LINK_CLICKS
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 7.58
+- Impressoes: 210
+- Cliques: 2
+- CTR: 0.95%
+- CPC: R$ 3.79
+- CPM: R$ 36.10
+- Alcance: 210
+- Frequencia: 1.00
+- Acoes:
+  - link_click: 2
+  - page_engagement: 88
+  - post_interaction_gross: 9
+  - post_engagement: 88
+  - onsite_conversion.post_net_like: 9
+  - video_view: 77
+  - post_reaction: 9
+- Custo por acao:
+  - video_view: R$ 0.10
+  - link_click: R$ 3.79
+  - post_interaction_gross: R$ 0.84
+  - post_engagement: R$ 0.09
+  - page_engagement: R$ 0.09
+
+### CBO VENDAS TRÁFEGO EBOOK 23/04
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: LINK_CLICKS
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 7.58
+- Impressoes: 777
+- Cliques: 25
+- CTR: 3.22%
+- CPC: R$ 0.30
+- CPM: R$ 9.76
+- Alcance: 777
+- Frequencia: 1.00
+- Acoes:
+  - link_click: 17
+  - page_engagement: 18
+  - post_interaction_gross: 1
+  - post_engagement: 18
+  - onsite_conversion.post_net_like: 1
+  - post_reaction: 1
+- Custo por acao:
+  - link_click: R$ 0.45
+  - post_interaction_gross: R$ 7.58
+  - post_engagement: R$ 0.42
+  - page_engagement: R$ 0.42
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### Engajamento Orlando - 20/02/25
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: OUTCOME_ENGAGEMENT
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 7.09
+- Impressoes: 485
+- Cliques: 9
+- CTR: 1.86%
+- CPC: R$ 0.79
+- CPM: R$ 14.62
+- Alcance: 441
+- Frequencia: 1.10
+- Acoes:
+  - onsite_conversion.total_messaging_connection: 4
+  - link_click: 3
+  - page_engagement: 5
+  - onsite_conversion.messaging_welcome_message_view: 2
+  - post_interaction_gross: 2
+  - onsite_conversion.messaging_first_reply: 4
+  - post_engagement: 5
+  - onsite_conversion.post_net_like: 2
+  - onsite_conversion.messaging_conversation_started_7d: 4
+  - post_reaction: 2
+- Custo por acao:
+  - onsite_conversion.total_messaging_connection: R$ 1.77
+  - link_click: R$ 2.36
+  - post_interaction_gross: R$ 3.54
+  - post_engagement: R$ 1.42
+  - page_engagement: R$ 1.42
+  - onsite_conversion.messaging_first_reply: R$ 1.77
+  - onsite_conversion.messaging_welcome_message_view: R$ 3.54
+  - onsite_conversion.messaging_conversation_started_7d: R$ 1.77
+- RECOMENDACOES:
+  - Pausada com bom CTR - considerar reativacao
+
+### CBO 23/04 TRAFEGO EBOOK
+- Conta: VENDAS EBOOK
+- Status: PAUSED
+- Objetivo: LINK_CLICKS
+- Periodo: 2025-04-21 a 2026-03-26
+- Gasto: R$ 4.41
+- Impressoes: 471
+- Cliques: 15
+- CTR: 3.18%
+- CPC: R$ 0.29
+- CPM: R$ 9.36
+- Alcance: 469
+- Frequencia: 1.00
+- Acoes:
+  - link_click: 11
+  - omni_add_to_cart: 4
+  - omni_initiated_checkout: 4
+  - page_engagement: 13
+  - landing_page_view: 4
+  - add_to_cart: 4
+  - omni_landing_page_view: 4
+  - onsite_web_add_to_cart: 4
+  - post_interaction_gross: 2
+  - onsite_web_app_add_to_cart: 4
+  - post_engagement: 13
+  - onsite_conversion.post_net_like: 2
+  - onsite_web_initiate_checkout: 4
+  - offsite_conversion.fb_pixel_add_to_cart: 4
+  - post_reaction: 2
+  - offsite_conversion.fb_pixel_initiate_checkout: 4
+  - initiate_checkout: 4
+- Custo por acao:
+  - initiate_checkout: R$ 1.10
+  - link_click: R$ 0.40
+  - post_interaction_gross: R$ 2.21
+  - onsite_web_initiate_checkout: R$ 1.10
+  - post_engagement: R$ 0.34
+  - landing_page_view: R$ 1.10
+  - page_engagement: R$ 0.34
+  - omni_landing_page_view: R$ 1.10
+  - omni_initiated_checkout: R$ 1.10
+  - omni_add_to_cart: R$ 1.10
+  - add_to_cart: R$ 1.10
+- RECOMENDACOES:
+  - Performance boa - candidata a escalar orcamento
+  - Pausada com bom CTR - considerar reativacao
+
+### Publicação do Instagram: Uma poesia de natal e um...
+- Conta: CA01 - Orlando
+- Status: PAUSED
+- Objetivo: LINK_CLICKS
+- Periodo: 2024-11-19 a 2026-03-26
+- Gasto: R$ 3.17
+- Impressoes: 180
+- Cliques: 0
+- CTR: 0.00%
+- CPC: N/A (sem cliques)
+- CPM: R$ 17.61
+- Alcance: 178
+- Frequencia: 1.01
+- Acoes:
+  - page_engagement: 29
+  - post_interaction_gross: 2
+  - post_engagement: 29
+  - onsite_conversion.post_net_like: 2
+  - video_view: 27
+  - post_reaction: 2
+- Custo por acao:
+  - video_view: R$ 0.12
+  - post_interaction_gross: R$ 1.58
+  - post_engagement: R$ 0.11
+  - page_engagement: R$ 0.11
