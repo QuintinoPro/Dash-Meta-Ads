@@ -6,3 +6,10 @@ node_modules/
 .DS_Store
 Thumbs.db
 .claude/
+
+# Dados sensíveis (contém IDs reais de contas e dados de negócio)
+dashboard/src/data.json
+data/consolidated.json
+data/campaigns_*.json
+data/insights_*.json
+data/daily_real_*.json
