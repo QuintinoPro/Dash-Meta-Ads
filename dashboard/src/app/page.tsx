@@ -217,6 +217,7 @@ export default function Dashboard() {
   const [showSettings, setShowSettings] = useState(false);
   const [pendingSettings, setPendingSettings] = useState<typeof defaultSettings | null>(null);
   const [settingsSaved, setSettingsSaved] = useState(false);
+  const [showReport, setShowReport] = useState(false);
 
   const defaultSettings = {
     userName: "",
@@ -668,7 +669,16 @@ export default function Dashboard() {
               </p>
             )}
           </div>
-          <p className="text-xs text-slate-600">Graph API v21.0 &middot; {new Date().toLocaleDateString("pt-BR")}</p>
+          <div className="flex items-center gap-3">
+            {selectedCampaign !== "all" && (
+              <button onClick={() => setShowReport(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-600 text-white hover:bg-blue-500 transition-colors">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                Gerar Relatorio
+              </button>
+            )}
+            <p className="text-xs text-slate-600">Graph API v21.0 &middot; {new Date().toLocaleDateString("pt-BR")}</p>
+          </div>
         </div>
 
         <div className="p-6">
@@ -1129,6 +1139,612 @@ export default function Dashboard() {
           </div>
         </div>
       )}
+
+      {/* ══════════ REPORT MODAL ══════════ */}
+      {showReport && selectedCampaign !== "all" && (() => {
+        const campaign = data.campaigns.find(c => c.id === selectedCampaign);
+        const insight = filteredInsights[0];
+        if (!insight) return null;
+
+        const campName = insight.campaign_name;
+        const objective = insight.objective || campaign?.objective || "";
+        const objLabel = objectiveLabels[objective] || objective;
+        const spend = safeFloat(insight.spend);
+        const impressions = safeInt(insight.impressions);
+        const clicks = safeInt(insight.clicks);
+        const reach = safeInt(insight.reach);
+        const frequency = safeFloat(insight.frequency);
+        const ctr = safeFloat(insight.ctr);
+        const cpc = clicks > 0 ? spend / clicks : 0;
+        const cpm = impressions > 0 ? (spend / impressions) * 1000 : 0;
+        const linkClicks = getActionValue(insight.actions, "link_click");
+        const resultInfo = detectResult(insight.actions, objective);
+        const costPerResult = resultInfo.value > 0 ? spend / resultInfo.value : 0;
+        const videoViews = getActionValue(insight.actions, "video_view");
+        const postEngagement = getActionValue(insight.actions, "post_engagement");
+        const postReaction = getActionValue(insight.actions, "post_reaction");
+        const saves = getActionValue(insight.actions, "onsite_conversion.post_save");
+        const shares = getActionValue(insight.actions, "post");
+        const dailyBudget = campaign?.daily_budget ? safeFloat(campaign.daily_budget) / 100 : 0;
+
+        // Daily data for this campaign
+        const dailyItems = data.daily_insights
+          .filter(d => d.campaign_id === selectedCampaign)
+          .sort((a, b) => a.date_start.localeCompare(b.date_start));
+
+        // Calculate dates from actual daily data
+        const startDate = dailyItems.length > 0
+          ? new Date(dailyItems[0].date_start + "T12:00:00").toLocaleDateString("pt-BR")
+          : campaign?.start_time ? new Date(campaign.start_time).toLocaleDateString("pt-BR") : insight.date_start;
+        const endDate = dailyItems.length > 0
+          ? new Date(dailyItems[dailyItems.length - 1].date_start + "T12:00:00").toLocaleDateString("pt-BR")
+          : new Date().toLocaleDateString("pt-BR");
+
+        // Calculate campaign duration in days
+        const durationDays = dailyItems.length || 1;
+
+        // Determine performance analysis
+        const analysisPositive: string[] = [];
+        const analysisAttention: string[] = [];
+
+        if (costPerResult > 0 && costPerResult < 10) analysisPositive.push(`Custo por resultado competitivo (R$ ${fmt(costPerResult)})`);
+        if (ctr > 1.5) analysisPositive.push(`CTR acima da media do mercado (${pct(ctr)})`);
+        if (postEngagement > 1000) analysisPositive.push(`Alto volume de engajamento (${fmtInt(postEngagement)} interacoes)`);
+        if (videoViews > 500) analysisPositive.push(`${fmtInt(videoViews)} visualizacoes de video a R$ ${fmt(videoViews > 0 ? spend / videoViews : 0)} por view`);
+        if (resultInfo.value > 0) analysisPositive.push(`${fmtInt(resultInfo.value)} ${resultInfo.label.toLowerCase()} gerados ao longo da campanha`);
+        if (linkClicks > 0 && resultInfo.value > 0) {
+          const convRate = ((resultInfo.value / linkClicks) * 100).toFixed(1);
+          if (parseFloat(convRate) > 20) analysisPositive.push(`Taxa de conversao clique→resultado de ${convRate}%`);
+        }
+        if (postReaction > 50) analysisPositive.push(`${fmtInt(postReaction)} reacoes na publicacao demonstram identificacao com o publico`);
+
+        if (frequency > 3) analysisAttention.push(`Frequencia de ${frequency.toFixed(2)}x — cada pessoa viu o anuncio em media ${frequency.toFixed(0)} vezes, indicando possivel saturacao`);
+        if (ctr < 0.8) analysisAttention.push(`CTR baixo (${pct(ctr)}) — considerar testar novos criativos`);
+        if (costPerResult > 20) analysisAttention.push(`Custo por resultado alto (R$ ${fmt(costPerResult)}) — otimizar segmentacao e criativos`);
+        if (impressions > 10000 && clicks < 100) analysisAttention.push("Muitas impressoes com poucos cliques — criativo pode nao estar gerando interesse suficiente");
+
+        // Find best and worst days
+        let bestDay = dailyItems[0];
+        let worstDay = dailyItems[0];
+        dailyItems.forEach(d => {
+          const dResults = detectResult(d.actions, objective).value;
+          const bestResults = bestDay ? detectResult(bestDay.actions, objective).value : 0;
+          const worstResults = worstDay ? detectResult(worstDay.actions, objective).value : 0;
+          if (dResults > bestResults) bestDay = d;
+          if (dResults < worstResults || (dResults === worstResults && safeFloat(d.spend) > safeFloat(worstDay?.spend || "0"))) worstDay = d;
+        });
+
+        const exportPDF = () => {
+          // Capture chart canvases as images before opening print window
+          const reportEl = document.getElementById("campaign-report");
+          const canvases = reportEl?.querySelectorAll("canvas") || [];
+          const chartImages: string[] = [];
+          canvases.forEach(c => chartImages.push((c as HTMLCanvasElement).toDataURL("image/png")));
+
+          const dailyRows = dailyItems.map((d, idx) => {
+            const dSpend = safeFloat(d.spend);
+            const dResults = detectResult(d.actions, objective).value;
+            const dLinkClicks = getActionValue(d.actions, "link_click");
+            const dCpr = dResults > 0 ? dSpend / dResults : 0;
+            const dateStr = new Date(d.date_start + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+            return `<tr style="border-bottom:1px solid #e5e7eb">
+              <td style="padding:8px 12px;color:#374151">${dateStr}</td>
+              <td style="padding:8px 12px;text-align:right;color:#374151">R$ ${fmt(dSpend)}</td>
+              <td style="padding:8px 12px;text-align:right;color:#6b7280">${fmtInt(safeInt(d.impressions))}</td>
+              <td style="padding:8px 12px;text-align:right;color:#6b7280">${fmtInt(safeInt(d.reach))}</td>
+              <td style="padding:8px 12px;text-align:right;color:#6b7280">${fmtInt(dLinkClicks)}</td>
+              <td style="padding:8px 12px;text-align:right;font-weight:600;color:#059669">${fmtInt(dResults)}</td>
+              <td style="padding:8px 12px;text-align:right;color:${dCpr > 0 && dCpr < 10 ? '#059669' : dCpr > 0 && dCpr < 20 ? '#d97706' : dCpr > 0 ? '#dc2626' : '#9ca3af'}">${dCpr > 0 ? `R$ ${fmt(dCpr)}` : '-'}</td>
+            </tr>`;
+          }).join("");
+
+          const chartsHtml = chartImages.length >= 2 ? `
+            <div style="margin-bottom:32px">
+              <div style="display:flex;gap:24px">
+                <div style="flex:1;border:1px solid #e5e7eb;border-radius:8px;padding:16px">
+                  <h3 style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">Gasto x Resultados (Diario)</h3>
+                  <img src="${chartImages[0]}" style="width:100%;height:auto" />
+                </div>
+                <div style="flex:1;border:1px solid #e5e7eb;border-radius:8px;padding:16px">
+                  <h3 style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px">Custo por Resultado (Diario)</h3>
+                  <img src="${chartImages[1]}" style="width:100%;height:auto" />
+                </div>
+              </div>
+            </div>` : "";
+
+          const positiveHtml = analysisPositive.length > 0 ? `
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:16px;margin-bottom:12px">
+              <p style="font-weight:600;color:#059669;margin-bottom:8px;font-size:14px">Pontos Positivos</p>
+              <ul style="list-style:none;padding:0;margin:0">${analysisPositive.map(i => `<li style="color:#166534;font-size:13px;padding:3px 0">+ ${i}</li>`).join("")}</ul>
+            </div>` : "";
+
+          const attentionHtml = analysisAttention.length > 0 ? `
+            <div style="background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:16px;margin-bottom:12px">
+              <p style="font-weight:600;color:#d97706;margin-bottom:8px;font-size:14px">Pontos de Atencao</p>
+              <ul style="list-style:none;padding:0;margin:0">${analysisAttention.map(i => `<li style="color:#92400e;font-size:13px;padding:3px 0">! ${i}</li>`).join("")}</ul>
+            </div>` : "";
+
+          const metricCard = (label: string, value: string, color?: string) =>
+            `<div style="border:1px solid #e5e7eb;border-radius:8px;padding:16px">
+              <p style="font-size:11px;color:#6b7280;margin-bottom:4px">${label}</p>
+              <p style="font-size:24px;font-weight:700;color:${color || '#1f2937'};margin:0">${value}</p>
+            </div>`;
+
+          const engagementCards: string[] = [];
+          if (postEngagement > 0) engagementCards.push(metricCard("Engajamento Total", fmtInt(postEngagement)));
+          if (videoViews > 0) engagementCards.push(metricCard("Views de Video", `${fmtInt(videoViews)}`) + ``);
+          engagementCards.push(metricCard("Cliques no Link", fmtInt(linkClicks)));
+          engagementCards.push(metricCard("CTR", pct(ctr), ctr >= 2 ? '#059669' : ctr >= 1 ? '#d97706' : '#dc2626'));
+          if (postReaction > 0) engagementCards.push(metricCard("Reacoes", fmtInt(postReaction)));
+          if (saves > 0) engagementCards.push(metricCard("Salvamentos", fmtInt(saves)));
+          if (shares > 0) engagementCards.push(metricCard("Compartilhamentos", fmtInt(shares)));
+          engagementCards.push(metricCard("Cliques Totais", fmtInt(clicks)));
+
+          const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Relatorio - ${campName}</title>
+            <style>
+              * { margin: 0; padding: 0; box-sizing: border-box; }
+              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1f2937; line-height: 1.5; }
+              @page { margin: 1.2cm; size: A4; }
+              @media print { body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } .no-print { display: none !important; } }
+            </style></head><body>
+            <div class="no-print" style="background:#1e40af;color:white;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0">
+              <span style="font-size:14px">Pre-visualizacao do relatorio</span>
+              <div style="display:flex;gap:8px">
+                <button onclick="window.print()" style="background:white;color:#1e40af;border:none;padding:8px 20px;border-radius:6px;font-weight:600;cursor:pointer;font-size:13px">Salvar como PDF</button>
+                <button onclick="window.close()" style="background:rgba(255,255,255,0.2);color:white;border:none;padding:8px 20px;border-radius:6px;cursor:pointer;font-size:13px">Fechar</button>
+              </div>
+            </div>
+            <div style="max-width:800px;margin:0 auto;padding:32px 24px">
+              <!-- Header -->
+              <div style="background:linear-gradient(135deg,#2563eb,#1e40af);border-radius:12px;padding:32px;margin-bottom:32px;color:white">
+                <p style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;opacity:0.8;margin-bottom:4px">Relatorio de Campanha</p>
+                <h1 style="font-size:22px;font-weight:700;margin-bottom:6px">${campName}</h1>
+                <p style="font-size:14px;opacity:0.85">${startDate} a ${endDate} &middot; ${durationDays} dias &middot; ${objLabel}</p>
+              </div>
+
+              <!-- Investimento -->
+              <div style="margin-bottom:32px">
+                <h2 style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:16px">Investimento</h2>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+                  ${metricCard("Investimento Total", `R$ ${fmt(spend)}`)}
+                  ${metricCard("Orcamento Diario", `R$ ${fmt(dailyBudget > 0 ? dailyBudget : spend / durationDays)}`)}
+                  ${metricCard("Duracao", `${durationDays} dias`)}
+                </div>
+              </div>
+
+              <!-- Resultados Principais -->
+              <div style="margin-bottom:32px">
+                <h2 style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:16px">Resultados Principais</h2>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                  <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:20px">
+                    <p style="font-size:11px;color:#059669;margin-bottom:4px">${resultInfo.label}</p>
+                    <p style="font-size:36px;font-weight:700;color:#059669">${fmtInt(resultInfo.value)}</p>
+                  </div>
+                  <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:20px">
+                    <p style="font-size:11px;color:#059669;margin-bottom:4px">Custo por ${resultInfo.label.toLowerCase().replace(/s$/, "")}</p>
+                    <p style="font-size:36px;font-weight:700;color:#059669">R$ ${fmt(costPerResult)}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Alcance -->
+              <div style="margin-bottom:32px">
+                <h2 style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:16px">Alcance e Visibilidade</h2>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px">
+                  ${metricCard("Impressoes", fmtInt(impressions))}
+                  ${metricCard("Alcance (pessoas)", fmtInt(reach))}
+                  ${metricCard("CPM", `R$ ${fmt(cpm)}`)}
+                  ${metricCard("Frequencia", `${frequency.toFixed(2)}x`, frequency > 3 ? '#d97706' : '#1f2937')}
+                </div>
+              </div>
+
+              <!-- Charts -->
+              ${chartsHtml}
+
+              <!-- Engajamento -->
+              <div style="margin-bottom:32px">
+                <h2 style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:16px">Engajamento</h2>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px">
+                  ${engagementCards.join("")}
+                </div>
+              </div>
+
+              <!-- Tabela diaria -->
+              ${dailyItems.length > 1 ? `
+              <div style="margin-bottom:32px">
+                <h2 style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:16px">Evolucao Diaria</h2>
+                <table style="width:100%;border-collapse:collapse;font-size:13px">
+                  <thead><tr style="border-bottom:2px solid #9ca3af">
+                    <th style="padding:8px 12px;text-align:left;color:#6b7280;font-weight:600">Data</th>
+                    <th style="padding:8px 12px;text-align:right;color:#6b7280;font-weight:600">Investido</th>
+                    <th style="padding:8px 12px;text-align:right;color:#6b7280;font-weight:600">Impressoes</th>
+                    <th style="padding:8px 12px;text-align:right;color:#6b7280;font-weight:600">Alcance</th>
+                    <th style="padding:8px 12px;text-align:right;color:#6b7280;font-weight:600">Cliques Link</th>
+                    <th style="padding:8px 12px;text-align:right;color:#6b7280;font-weight:600">${resultInfo.label}</th>
+                    <th style="padding:8px 12px;text-align:right;color:#6b7280;font-weight:600">Custo/Res.</th>
+                  </tr></thead>
+                  <tbody>${dailyRows}</tbody>
+                  <tfoot><tr style="border-top:2px solid #6b7280;font-weight:700">
+                    <td style="padding:8px 12px;color:#1f2937">Total</td>
+                    <td style="padding:8px 12px;text-align:right;color:#1f2937">R$ ${fmt(spend)}</td>
+                    <td style="padding:8px 12px;text-align:right;color:#374151">${fmtInt(impressions)}</td>
+                    <td style="padding:8px 12px;text-align:right;color:#374151">${fmtInt(reach)}</td>
+                    <td style="padding:8px 12px;text-align:right;color:#374151">${fmtInt(linkClicks)}</td>
+                    <td style="padding:8px 12px;text-align:right;color:#059669">${fmtInt(resultInfo.value)}</td>
+                    <td style="padding:8px 12px;text-align:right;color:#059669">${costPerResult > 0 ? `R$ ${fmt(costPerResult)}` : '-'}</td>
+                  </tr></tfoot>
+                </table>
+              </div>` : ""}
+
+              <!-- Analise -->
+              <div style="margin-bottom:32px">
+                <h2 style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:16px">Analise e Observacoes</h2>
+                ${positiveHtml}
+                ${attentionHtml}
+              </div>
+
+              <!-- Resumo Final -->
+              <div style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #93c5fd;border-radius:12px;padding:24px;margin-bottom:24px">
+                <h3 style="font-size:13px;font-weight:600;color:#2563eb;margin-bottom:16px">Resumo Final</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;text-align:center">
+                  <div><p style="font-size:11px;color:#6b7280">Investido</p><p style="font-size:18px;font-weight:700;color:#1f2937">R$ ${fmt(spend)}</p></div>
+                  <div><p style="font-size:11px;color:#6b7280">Resultado Principal</p><p style="font-size:18px;font-weight:700;color:#059669">${fmtInt(resultInfo.value)} ${resultInfo.label.toLowerCase()}</p></div>
+                  <div><p style="font-size:11px;color:#6b7280">Custo Medio</p><p style="font-size:18px;font-weight:700;color:#1f2937">R$ ${fmt(costPerResult)}</p></div>
+                  <div><p style="font-size:11px;color:#6b7280">Pessoas Alcancadas</p><p style="font-size:18px;font-weight:700;color:#1f2937">${fmtInt(reach)}</p></div>
+                </div>
+              </div>
+
+              <!-- Footer -->
+              <p style="text-align:center;font-size:11px;color:#9ca3af;padding-top:16px;border-top:1px solid #e5e7eb">Relatorio gerado em ${new Date().toLocaleDateString("pt-BR")} &middot; Dados da API Meta Ads (Graph API v21.0)</p>
+            </div>
+          </body></html>`;
+
+          const w = window.open("", "_blank");
+          if (w) { w.document.write(html); w.document.close(); }
+        };
+
+        return (
+          <div id="campaign-report-overlay" className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto" style={{ backgroundColor: "rgba(0,0,0,0.7)" }}>
+            <div className="w-full max-w-[900px] my-8 mx-4">
+              {/* Report content */}
+              <div className="bg-[#0f1729] rounded-xl border border-slate-700 shadow-2xl" id="campaign-report">
+
+                {/* Report Header */}
+                <div className="report-header bg-gradient-to-r from-blue-600 to-blue-800 rounded-t-xl px-8 py-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-blue-200 text-xs font-medium uppercase tracking-wider mb-1">Relatorio de Campanha</p>
+                      <h2 className="text-xl font-bold text-white">{campName}</h2>
+                      <p className="text-blue-200 text-sm mt-1">{startDate} a {endDate} &middot; {durationDays} dias &middot; {objLabel}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button onClick={exportPDF}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-medium transition-colors" title="Exportar PDF">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        Exportar PDF
+                      </button>
+                      <button onClick={() => setShowReport(false)}
+                        className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors" title="Fechar">
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="px-8 py-6 space-y-8">
+
+                  {/* Resumo Investimento */}
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Investimento</h3>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                        <p className="text-xs text-slate-500 mb-1">Investimento Total</p>
+                        <p className="text-2xl font-bold text-white">R$ {fmt(spend)}</p>
+                      </div>
+                      <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                        <p className="text-xs text-slate-500 mb-1">Orcamento Diario</p>
+                        <p className="text-2xl font-bold text-white">R$ {fmt(dailyBudget > 0 ? dailyBudget : spend / durationDays)}</p>
+                      </div>
+                      <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                        <p className="text-xs text-slate-500 mb-1">Duracao</p>
+                        <p className="text-2xl font-bold text-white">{durationDays} dias</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Resultados Principais */}
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Resultados Principais</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-green-900/20 rounded-lg p-5 border border-green-800/30">
+                        <p className="text-xs text-green-400/70 mb-1">{resultInfo.label}</p>
+                        <p className="text-4xl font-bold text-green-400">{fmtInt(resultInfo.value)}</p>
+                      </div>
+                      <div className="bg-green-900/20 rounded-lg p-5 border border-green-800/30">
+                        <p className="text-xs text-green-400/70 mb-1">Custo por {resultInfo.label.toLowerCase().replace(/s$/, "")}</p>
+                        <p className="text-4xl font-bold text-green-400">R$ {fmt(costPerResult)}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Alcance e Visibilidade */}
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Alcance e Visibilidade</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                        <p className="text-xs text-slate-500 mb-1">Impressoes</p>
+                        <p className="text-2xl font-bold text-white">{fmtInt(impressions)}</p>
+                      </div>
+                      <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                        <p className="text-xs text-slate-500 mb-1">Alcance (pessoas)</p>
+                        <p className="text-2xl font-bold text-white">{fmtInt(reach)}</p>
+                      </div>
+                      <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                        <p className="text-xs text-slate-500 mb-1">CPM</p>
+                        <p className="text-2xl font-bold text-white">R$ {fmt(cpm)}</p>
+                      </div>
+                      <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                        <p className="text-xs text-slate-500 mb-1">Frequencia</p>
+                        <p className={`text-2xl font-bold ${frequency > 3 ? "text-yellow-400" : "text-white"}`}>{frequency.toFixed(2)}x</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Graficos */}
+                  {dailyItems.length > 1 && (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {/* Grafico: Gasto x Resultados diarios */}
+                      <div className="bg-slate-800/30 rounded-lg p-5 border border-slate-700/50">
+                        <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Gasto x Resultados (Diario)</h3>
+                        <Line
+                          data={{
+                            labels: dailyItems.map(d => new Date(d.date_start + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })),
+                            datasets: [
+                              {
+                                label: "Gasto (R$)",
+                                data: dailyItems.map(d => safeFloat(d.spend)),
+                                borderColor: "#3b82f6",
+                                backgroundColor: "rgba(59,130,246,0.1)",
+                                fill: true,
+                                tension: 0.3,
+                                yAxisID: "y",
+                              },
+                              {
+                                label: resultInfo.label,
+                                data: dailyItems.map(d => detectResult(d.actions, objective).value),
+                                borderColor: "#22c55e",
+                                backgroundColor: "rgba(34,197,94,0.1)",
+                                fill: false,
+                                tension: 0.3,
+                                yAxisID: "y1",
+                              },
+                            ],
+                          }}
+                          options={{
+                            responsive: true,
+                            animation: false as const,
+                            interaction: { mode: "index" as const, intersect: false },
+                            plugins: { legend: { labels: { boxWidth: 12, usePointStyle: true } } },
+                            scales: {
+                              y: { type: "linear" as const, position: "left" as const, title: { display: true, text: "Gasto (R$)", font: { size: 10 } }, grid: { color: "rgba(51,65,85,0.3)" } },
+                              y1: { type: "linear" as const, position: "right" as const, grid: { drawOnChartArea: false }, title: { display: true, text: resultInfo.label, font: { size: 10 } } },
+                            },
+                          }}
+                        />
+                      </div>
+
+                      {/* Grafico: Custo por Resultado ao longo do tempo */}
+                      <div className="bg-slate-800/30 rounded-lg p-5 border border-slate-700/50">
+                        <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Custo por Resultado (Diario)</h3>
+                        <Line
+                          data={{
+                            labels: dailyItems.map(d => new Date(d.date_start + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })),
+                            datasets: [{
+                              label: "Custo/Resultado (R$)",
+                              data: dailyItems.map(d => {
+                                const r = detectResult(d.actions, objective).value;
+                                return r > 0 ? safeFloat(d.spend) / r : null;
+                              }),
+                              borderColor: "#f97316",
+                              backgroundColor: "rgba(249,115,22,0.1)",
+                              fill: true,
+                              tension: 0.3,
+                              spanGaps: true,
+                              pointBackgroundColor: dailyItems.map(d => {
+                                const r = detectResult(d.actions, objective).value;
+                                const cpr = r > 0 ? safeFloat(d.spend) / r : null;
+                                return cpr === null ? "transparent" : cpr < 5 ? "#22c55e" : cpr < 15 ? "#eab308" : "#ef4444";
+                              }),
+                              pointRadius: 5,
+                            }],
+                          }}
+                          options={{
+                            responsive: true,
+                            animation: false as const,
+                            plugins: { legend: { labels: { boxWidth: 12, usePointStyle: true } } },
+                            scales: {
+                              y: { title: { display: true, text: "R$ por resultado", font: { size: 10 } }, grid: { color: "rgba(51,65,85,0.3)" } },
+                            },
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Engajamento */}
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Engajamento</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {postEngagement > 0 && (
+                        <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                          <p className="text-xs text-slate-500 mb-1">Engajamento Total</p>
+                          <p className="text-2xl font-bold text-white">{fmtInt(postEngagement)}</p>
+                          <p className="text-xs text-slate-600 mt-1">R$ {fmt(postEngagement > 0 ? spend / postEngagement : 0)} / engajamento</p>
+                        </div>
+                      )}
+                      {videoViews > 0 && (
+                        <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                          <p className="text-xs text-slate-500 mb-1">Views de Video</p>
+                          <p className="text-2xl font-bold text-white">{fmtInt(videoViews)}</p>
+                          <p className="text-xs text-slate-600 mt-1">R$ {fmt(videoViews > 0 ? spend / videoViews : 0)} / view</p>
+                        </div>
+                      )}
+                      <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                        <p className="text-xs text-slate-500 mb-1">Cliques no Link</p>
+                        <p className="text-2xl font-bold text-white">{fmtInt(linkClicks)}</p>
+                        <p className="text-xs text-slate-600 mt-1">R$ {fmt(linkClicks > 0 ? spend / linkClicks : 0)} / clique</p>
+                      </div>
+                      <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                        <p className="text-xs text-slate-500 mb-1">CTR</p>
+                        <p className={`text-2xl font-bold ${ctr >= 2 ? "text-green-400" : ctr >= 1 ? "text-yellow-400" : "text-red-400"}`}>{pct(ctr)}</p>
+                      </div>
+                      {postReaction > 0 && (
+                        <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                          <p className="text-xs text-slate-500 mb-1">Reacoes</p>
+                          <p className="text-2xl font-bold text-white">{fmtInt(postReaction)}</p>
+                        </div>
+                      )}
+                      {saves > 0 && (
+                        <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                          <p className="text-xs text-slate-500 mb-1">Salvamentos</p>
+                          <p className="text-2xl font-bold text-white">{fmtInt(saves)}</p>
+                        </div>
+                      )}
+                      {shares > 0 && (
+                        <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                          <p className="text-xs text-slate-500 mb-1">Compartilhamentos</p>
+                          <p className="text-2xl font-bold text-white">{fmtInt(shares)}</p>
+                        </div>
+                      )}
+                      <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                        <p className="text-xs text-slate-500 mb-1">Cliques Totais</p>
+                        <p className="text-2xl font-bold text-white">{fmtInt(clicks)}</p>
+                        <p className="text-xs text-slate-600 mt-1">CPC: R$ {fmt(cpc)}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Evolucao Diaria */}
+                  {dailyItems.length > 1 && (
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Evolucao Diaria</h3>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="border-b border-slate-700">
+                              <th className="text-left py-2 px-3 text-slate-500 font-medium">Data</th>
+                              <th className="text-right py-2 px-3 text-slate-500 font-medium">Investido</th>
+                              <th className="text-right py-2 px-3 text-slate-500 font-medium">Impressoes</th>
+                              <th className="text-right py-2 px-3 text-slate-500 font-medium">Alcance</th>
+                              <th className="text-right py-2 px-3 text-slate-500 font-medium">Cliques Link</th>
+                              <th className="text-right py-2 px-3 text-slate-500 font-medium">{resultInfo.label}</th>
+                              <th className="text-right py-2 px-3 text-slate-500 font-medium">Custo/Resultado</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {dailyItems.map((d, idx) => {
+                              const dSpend = safeFloat(d.spend);
+                              const dResults = detectResult(d.actions, objective).value;
+                              const dLinkClicks = getActionValue(d.actions, "link_click");
+                              const dCpr = dResults > 0 ? dSpend / dResults : 0;
+                              return (
+                                <tr key={idx} className="border-b border-slate-800/50 hover:bg-slate-800/30">
+                                  <td className="py-2 px-3 text-slate-300">{new Date(d.date_start + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })}</td>
+                                  <td className="py-2 px-3 text-right text-slate-300">R$ {fmt(dSpend)}</td>
+                                  <td className="py-2 px-3 text-right text-slate-400">{fmtInt(safeInt(d.impressions))}</td>
+                                  <td className="py-2 px-3 text-right text-slate-400">{fmtInt(safeInt(d.reach))}</td>
+                                  <td className="py-2 px-3 text-right text-slate-400">{fmtInt(dLinkClicks)}</td>
+                                  <td className="py-2 px-3 text-right font-medium text-green-400">{fmtInt(dResults)}</td>
+                                  <td className={`py-2 px-3 text-right ${dCpr > 0 && dCpr < 10 ? "text-green-400" : dCpr > 0 && dCpr < 20 ? "text-yellow-400" : dCpr > 0 ? "text-red-400" : "text-slate-600"}`}>
+                                    {dCpr > 0 ? `R$ ${fmt(dCpr)}` : "-"}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                          <tfoot>
+                            <tr className="border-t-2 border-slate-600 font-semibold">
+                              <td className="py-2 px-3 text-white">Total</td>
+                              <td className="py-2 px-3 text-right text-white">R$ {fmt(spend)}</td>
+                              <td className="py-2 px-3 text-right text-slate-300">{fmtInt(impressions)}</td>
+                              <td className="py-2 px-3 text-right text-slate-300">{fmtInt(reach)}</td>
+                              <td className="py-2 px-3 text-right text-slate-300">{fmtInt(linkClicks)}</td>
+                              <td className="py-2 px-3 text-right text-green-400">{fmtInt(resultInfo.value)}</td>
+                              <td className="py-2 px-3 text-right text-green-400">{costPerResult > 0 ? `R$ ${fmt(costPerResult)}` : "-"}</td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Analise */}
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Analise e Observacoes</h3>
+                    <div className="space-y-4">
+                      {analysisPositive.length > 0 && (
+                        <div className="bg-green-900/15 rounded-lg p-4 border border-green-800/30">
+                          <p className="text-sm font-semibold text-green-400 mb-2">Pontos Positivos</p>
+                          <ul className="space-y-1.5">
+                            {analysisPositive.map((item, i) => (
+                              <li key={i} className="text-sm text-green-300/80 flex gap-2">
+                                <span className="text-green-500 mt-0.5">+</span>
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {analysisAttention.length > 0 && (
+                        <div className="bg-yellow-900/15 rounded-lg p-4 border border-yellow-800/30">
+                          <p className="text-sm font-semibold text-yellow-400 mb-2">Pontos de Atencao</p>
+                          <ul className="space-y-1.5">
+                            {analysisAttention.map((item, i) => (
+                              <li key={i} className="text-sm text-yellow-300/80 flex gap-2">
+                                <span className="text-yellow-500 mt-0.5">!</span>
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Resumo Final */}
+                  <div className="bg-blue-900/20 rounded-lg p-5 border border-blue-800/30">
+                    <h3 className="text-sm font-semibold text-blue-400 mb-3">Resumo Final</h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                      <div>
+                        <p className="text-xs text-blue-300/60">Investido</p>
+                        <p className="text-lg font-bold text-white">R$ {fmt(spend)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-blue-300/60">Resultado Principal</p>
+                        <p className="text-lg font-bold text-green-400">{fmtInt(resultInfo.value)} {resultInfo.label.toLowerCase()}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-blue-300/60">Custo Medio</p>
+                        <p className="text-lg font-bold text-white">R$ {fmt(costPerResult)}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-blue-300/60">Pessoas Alcancadas</p>
+                        <p className="text-lg font-bold text-white">{fmtInt(reach)}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="text-center pt-4 border-t border-slate-800">
+                    <p className="text-xs text-slate-600">Relatorio gerado em {new Date().toLocaleDateString("pt-BR")} &middot; Dados da API Meta Ads (Graph API v21.0)</p>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
