@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -218,6 +219,9 @@ export default function Dashboard() {
   const [pendingSettings, setPendingSettings] = useState<typeof defaultSettings | null>(null);
   const [settingsSaved, setSettingsSaved] = useState(false);
   const [showReport, setShowReport] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [customStart, setCustomStart] = useState("");
+  const [customEnd, setCustomEnd] = useState("");
 
   // Collect state
   const [collectStatus, setCollectStatus] = useState<"idle" | "running" | "done" | "error">("idle");
@@ -374,11 +378,22 @@ export default function Dashboard() {
     if (datePeriod === "today") return daysAgo(0);
     if (datePeriod === "yesterday") return daysAgo(1);
     if (datePeriod === "7") return daysAgo(7);
+    if (datePeriod === "14") return daysAgo(14);
     if (datePeriod === "15") return daysAgo(15);
+    if (datePeriod === "28") return daysAgo(28);
     if (datePeriod === "30") return daysAgo(30);
     if (datePeriod === "90") return daysAgo(90);
+    if (datePeriod === "this_month") { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-01`; }
+    if (datePeriod === "last_month") { const d = new Date(); d.setMonth(d.getMonth()-1); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-01`; }
+    if (datePeriod === "custom") return customStart;
     return "";
-  }, [datePeriod]);
+  }, [datePeriod, customStart]);
+
+  const dateEnd = useMemo(() => {
+    if (datePeriod === "last_month") { const d = new Date(); d.setDate(0); return d.toISOString().substring(0, 10); }
+    if (datePeriod === "custom") return customEnd;
+    return "";
+  }, [datePeriod, customEnd]);
 
   const availableCampaigns = useMemo(() => {
     let ins = data.insights;
@@ -398,8 +413,9 @@ export default function Dashboard() {
     if (selectedAccount !== "all") items = items.filter((i) => i.account_id === selectedAccount);
     if (selectedCampaign !== "all") items = items.filter((i) => i.campaign_id === selectedCampaign);
     if (dateCutoff) items = items.filter((i) => i.date_start >= dateCutoff);
+    if (dateEnd) items = items.filter((i) => i.date_start <= dateEnd);
     return items;
-  }, [selectedAccount, selectedCampaign, dateCutoff]);
+  }, [selectedAccount, selectedCampaign, dateCutoff, dateEnd]);
 
   // Lookup map: campaign_id → objective (for daily records that lack it)
   const campaignObjectiveMap = useMemo(() => {
@@ -594,7 +610,12 @@ export default function Dashboard() {
   [filteredInsights]);
 
   const isSingleCampaign = selectedCampaign !== "all";
-  const periodLabel = ({ today: "Hoje", yesterday: "Ontem e hoje", "7": "7 dias", "15": "15 dias", "30": "30 dias", "90": "90 dias", all: "" } as Record<string, string>)[datePeriod] || "";
+  const periodLabel = (({
+    today: "Hoje", yesterday: "Ontem",
+    "7": "7 dias", "14": "14 dias", "15": "15 dias", "28": "28 dias", "30": "30 dias", "90": "90 dias",
+    this_month: "Este mes", last_month: "Mes passado", all: "",
+    custom: customStart && customEnd ? `${new Date(customStart+"T12:00:00").toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})} - ${new Date(customEnd+"T12:00:00").toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})}` : "Personalizado",
+  }) as Record<string, string>)[datePeriod] || "";
 
   const hasActiveFilters = selectedAccount !== "all" || selectedCampaign !== "all" || datePeriod !== "all";
 
@@ -662,31 +683,33 @@ export default function Dashboard() {
               </select>
             </div>
 
-            <div>
+            <div className="relative">
               <label className="text-[11px] text-slate-500 font-medium mb-1 block px-1">Periodo</label>
-              <div className="flex flex-col gap-0.5">
-                {[
-                  { v: "today", l: "Hoje" },
-                  { v: "yesterday", l: "Ontem e hoje" },
-                  { v: "7", l: "Ultimos 7 dias" },
-                  { v: "15", l: "Ultimos 15 dias" },
-                  { v: "30", l: "Ultimos 30 dias" },
-                  { v: "90", l: "Ultimos 90 dias" },
-                  { v: "all", l: "Maximo" },
-                ].map((p) => (
-                  <button key={p.v} onClick={() => setDatePeriod(p.v)}
-                    className="sidebar-date-item">
-                    <span className={`sidebar-date-radio ${datePeriod === p.v ? "sidebar-date-radio-active" : ""}`}>
-                      {datePeriod === p.v && <span className="sidebar-date-radio-dot" />}
-                    </span>
-                    <span className={datePeriod === p.v ? "text-blue-400 font-medium" : ""}>{p.l}</span>
-                  </button>
-                ))}
-              </div>
+              <DatePickerButton
+                datePeriod={datePeriod}
+                periodLabel={periodLabel}
+                showDatePicker={showDatePicker}
+                customStart={customStart}
+                customEnd={customEnd}
+                onToggle={() => setShowDatePicker(!showDatePicker)}
+                onSelect={(period, start, end) => {
+                  setDatePeriod(period);
+                  if (period !== "custom") {
+                    setCustomStart("");
+                    setCustomEnd("");
+                    setShowDatePicker(false);
+                  } else {
+                    if (start !== undefined) setCustomStart(start);
+                    if (end !== undefined) setCustomEnd(end);
+                  }
+                }}
+                onApplyCustom={() => setShowDatePicker(false)}
+                onClose={() => setShowDatePicker(false)}
+              />
             </div>
 
             {hasActiveFilters && (
-              <button onClick={() => { setSelectedAccount("all"); setSelectedCampaign("all"); setDatePeriod("all"); }}
+              <button onClick={() => { setSelectedAccount("all"); setSelectedCampaign("all"); setDatePeriod("all"); setCustomStart(""); setCustomEnd(""); setShowDatePicker(false); }}
                 className="w-full px-3 py-1.5 rounded-lg text-xs font-medium bg-red-900/30 text-red-400 hover:bg-red-900/50 border border-red-900/40 transition-colors mt-1">
                 Limpar filtros
               </button>
@@ -1957,6 +1980,230 @@ function FunnelChart({ data }: { data: { impressions: number; clicks: number; li
           </div>
         );
       })}
+    </div>
+  );
+}
+
+/* ──────────── Date Picker Button (with portal) ──────────── */
+function DatePickerButton({ datePeriod, periodLabel, showDatePicker, customStart, customEnd, onToggle, onSelect, onApplyCustom, onClose }: {
+  datePeriod: string; periodLabel: string; showDatePicker: boolean;
+  customStart: string; customEnd: string;
+  onToggle: () => void;
+  onSelect: (period: string, start?: string, end?: string) => void;
+  onApplyCustom: () => void;
+  onClose: () => void;
+}) {
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const [pos, setPos] = useState({ top: 0, left: 0 });
+
+  useEffect(() => {
+    if (showDatePicker && btnRef.current) {
+      const r = btnRef.current.getBoundingClientRect();
+      const popoverWidth = 580;
+      const left = Math.min(r.left, window.innerWidth - popoverWidth - 8);
+      setPos({ top: r.bottom + 4, left: Math.max(8, left) });
+    }
+  }, [showDatePicker]);
+
+  // Close on outside click
+  useEffect(() => {
+    if (!showDatePicker) return;
+    const handler = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest("[data-datepicker]") && !target.closest("[data-datepicker-btn]")) {
+        onClose();
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showDatePicker, onClose]);
+
+  return (
+    <>
+      <button ref={btnRef} data-datepicker-btn onClick={onToggle}
+        className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-sm text-slate-300 hover:border-slate-500 transition-colors">
+        <div className="flex items-center gap-2">
+          <svg className="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+          <span className={datePeriod !== "all" ? "text-blue-400" : "text-slate-400"}>{periodLabel || "Maximo"}</span>
+        </div>
+        <svg className={`w-3.5 h-3.5 text-slate-500 transition-transform ${showDatePicker ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+      </button>
+
+      {showDatePicker && typeof window !== "undefined" && createPortal(
+        <div data-datepicker style={{ position: "fixed", top: pos.top, left: pos.left, zIndex: 9999 }}>
+          <DatePickerPopover
+            datePeriod={datePeriod} customStart={customStart} customEnd={customEnd}
+            onSelect={onSelect} onApplyCustom={onApplyCustom} onClose={onClose}
+          />
+        </div>,
+        document.body
+      )}
+    </>
+  );
+}
+
+/* ──────────── Date Picker Popover ──────────── */
+const DATE_PRESETS = [
+  { v: "today", l: "Hoje" },
+  { v: "yesterday", l: "Ontem" },
+  { v: "7", l: "Ultimos 7 dias" },
+  { v: "14", l: "Ultimos 14 dias" },
+  { v: "28", l: "Ultimos 28 dias" },
+  { v: "30", l: "Ultimos 30 dias" },
+  { v: "this_month", l: "Este mes" },
+  { v: "last_month", l: "Mes passado" },
+  { v: "90", l: "Ultimos 90 dias" },
+  { v: "all", l: "Maximo" },
+  { v: "custom", l: "Personalizado" },
+];
+
+function DatePickerPopover({
+  datePeriod, customStart, customEnd, onSelect, onApplyCustom, onClose,
+}: {
+  datePeriod: string;
+  customStart: string;
+  customEnd: string;
+  onSelect: (period: string, start?: string, end?: string) => void;
+  onApplyCustom: () => void;
+  onClose: () => void;
+}) {
+  const today = new Date();
+  const todayStr = today.toISOString().substring(0, 10);
+  const [navMonth, setNavMonth] = useState({ year: today.getFullYear(), month: today.getMonth() });
+  const [selecting, setSelecting] = useState<"start" | "end">("start");
+  const [hoverDate, setHoverDate] = useState("");
+  const [tempStart, setTempStart] = useState(customStart);
+  const [tempEnd, setTempEnd] = useState(customEnd);
+
+  const prevMonth = navMonth.month === 0
+    ? { year: navMonth.year - 1, month: 11 }
+    : { year: navMonth.year, month: navMonth.month - 1 };
+
+  const nextNav = () => setNavMonth(m => m.month === 11 ? { year: m.year + 1, month: 0 } : { year: m.year, month: m.month + 1 });
+  const prevNav = () => setNavMonth(m => m.month === 0 ? { year: m.year - 1, month: 11 } : { year: m.year, month: m.month - 1 });
+
+  function buildMonth(year: number, month: number) {
+    const first = new Date(year, month, 1);
+    const last = new Date(year, month + 1, 0);
+    const startDow = first.getDay();
+    const days: (string | null)[] = [];
+    for (let i = 0; i < startDow; i++) days.push(null);
+    for (let d = 1; d <= last.getDate(); d++) {
+      days.push(`${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`);
+    }
+    return days;
+  }
+
+  function handleDayClick(day: string) {
+    if (selecting === "start" || !tempStart) {
+      setTempStart(day); setTempEnd(""); setSelecting("end");
+      onSelect("custom", day, "");
+    } else {
+      const [s, e] = day < tempStart ? [day, tempStart] : [tempStart, day];
+      setTempStart(s); setTempEnd(e); setSelecting("start");
+      onSelect("custom", s, e);
+    }
+  }
+
+  function inRange(day: string) {
+    const s = tempStart;
+    const e = selecting === "end" && hoverDate ? hoverDate : tempEnd;
+    if (!s || !e) return false;
+    const [lo, hi] = s <= e ? [s, e] : [e, s];
+    return day > lo && day < hi;
+  }
+
+  const MONTHS = ["Janeiro","Fevereiro","Marco","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+  const DOW = ["D","S","T","Q","Q","S","S"];
+  const isCustom = datePeriod === "custom";
+
+  function CalMonth({ year, month }: { year: number; month: number }) {
+    return (
+      <div className="w-[175px]">
+        <p className="text-center text-xs font-semibold text-slate-300 mb-2">{MONTHS[month]} {year}</p>
+        <div className="grid grid-cols-7">
+          {DOW.map((d, i) => <div key={i} className="text-center text-[10px] text-slate-600 py-1">{d}</div>)}
+          {buildMonth(year, month).map((day, i) => day === null ? <div key={i} /> : (
+            <button key={i} disabled={day > todayStr}
+              onClick={() => handleDayClick(day)}
+              onMouseEnter={() => { if (selecting === "end") setHoverDate(day); }}
+              onMouseLeave={() => setHoverDate("")}
+              className={[
+                "text-[11px] h-7 w-full transition-colors",
+                day > todayStr ? "text-slate-700 cursor-not-allowed" : "cursor-pointer",
+                (day === tempStart || day === (selecting === "end" && hoverDate ? hoverDate : tempEnd))
+                  ? "bg-blue-600 text-white rounded-md font-semibold z-10"
+                  : inRange(day)
+                  ? "bg-blue-500/20 text-blue-300"
+                  : day <= todayStr
+                  ? "text-slate-300 hover:bg-slate-700 rounded-md"
+                  : "",
+                day === todayStr && day !== tempStart && day !== tempEnd ? "font-bold underline" : "",
+              ].join(" ")}
+            >
+              {parseInt(day.split("-")[2], 10)}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-[#1e293b] border border-slate-700 rounded-xl shadow-2xl overflow-hidden"
+      style={{ width: "580px" }}>
+      <div className="flex">
+        {/* Presets */}
+        <div className="w-[140px] border-r border-slate-700 py-2 flex-shrink-0">
+          {DATE_PRESETS.map(p => (
+            <button key={p.v}
+              onClick={() => {
+                if (p.v !== "custom") { onSelect(p.v); }
+                else { onSelect("custom"); setTempStart(""); setTempEnd(""); setSelecting("start"); }
+              }}
+              className={`w-full text-left px-4 py-1.5 text-xs transition-colors ${
+                datePeriod === p.v
+                  ? "bg-blue-600/20 text-blue-400 font-medium"
+                  : "text-slate-400 hover:bg-slate-700/50 hover:text-slate-200"
+              }`}
+            >{p.l}</button>
+          ))}
+        </div>
+
+        {/* Calendário */}
+        <div className="flex-1 p-4">
+          <div className="flex items-start gap-1">
+            <button onClick={prevNav} className="p-1 rounded hover:bg-slate-700 text-slate-400 hover:text-white mt-1">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+            </button>
+            <div className="flex gap-3 flex-1">
+              <CalMonth year={prevMonth.year} month={prevMonth.month} />
+              <CalMonth year={navMonth.year} month={navMonth.month} />
+            </div>
+            <button onClick={nextNav} className="p-1 rounded hover:bg-slate-700 text-slate-400 hover:text-white mt-1">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between pt-3 mt-2 border-t border-slate-700">
+            <p className="text-xs text-slate-500">
+              {isCustom && tempStart && tempEnd
+                ? `${new Date(tempStart+"T12:00:00").toLocaleDateString("pt-BR")} — ${new Date(tempEnd+"T12:00:00").toLocaleDateString("pt-BR")}`
+                : isCustom && tempStart
+                ? `${new Date(tempStart+"T12:00:00").toLocaleDateString("pt-BR")} — selecione o fim`
+                : isCustom ? "Selecione a data inicial" : ""}
+            </p>
+            <div className="flex gap-2">
+              <button onClick={onClose} className="px-3 py-1.5 text-xs text-slate-400 hover:text-white">Cancelar</button>
+              {isCustom && tempStart && tempEnd && (
+                <button onClick={onApplyCustom} className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-lg hover:bg-blue-500">
+                  Aplicar
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
