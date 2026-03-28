@@ -10,10 +10,24 @@ const INSIGHT_FIELDS = [
   "date_start", "date_stop",
 ].join(",");
 
+const ADSET_INSIGHT_FIELDS = [
+  "adset_id", "adset_name", "campaign_id", "campaign_name",
+  "impressions", "clicks", "spend", "cpc", "cpm", "ctr", "reach", "frequency",
+  "actions", "cost_per_action_type", "objective",
+  "date_start", "date_stop",
+].join(",");
+
 const CAMPAIGN_FIELDS = [
   "id", "name", "status", "objective",
   "daily_budget", "lifetime_budget",
   "start_time", "stop_time", "created_time", "updated_time",
+].join(",");
+
+const ADSET_FIELDS = [
+  "id", "name", "status", "campaign_id",
+  "daily_budget", "lifetime_budget",
+  "optimization_goal", "bid_strategy",
+  "start_time", "end_time", "created_time",
 ].join(",");
 
 function apiGet(pathUrl: string): Promise<Record<string, unknown>> {
@@ -85,6 +99,9 @@ export async function POST(req: NextRequest) {
           insights: [] as object[],
           monthly_insights: [] as object[],
           daily_insights: [] as object[],
+          adsets: [] as object[],
+          adset_insights: [] as object[],
+          adset_daily_insights: [] as object[],
           last_updated: new Date().toISOString(),
         };
 
@@ -103,6 +120,9 @@ export async function POST(req: NextRequest) {
           let insights: object[] = [];
           let monthly: object[] = [];
           let daily: object[] = [];
+          let adsets: object[] = [];
+          let adset_insights: object[] = [];
+          let adset_daily: object[] = [];
 
           try {
             const raw = await getPaged(
@@ -138,6 +158,36 @@ export async function POST(req: NextRequest) {
             daily = (raw as Array<Record<string, unknown>>).map(i => ({ ...i, account_id: accountId, account_name: accountName }));
           } catch { /* sem daily */ }
 
+          await sleep(150);
+
+          // Adsets metadata
+          try {
+            const raw = await getPaged(
+              `/${apiVersion}/${accountId}/adsets?fields=${ADSET_FIELDS}&limit=200&access_token=${token}`
+            );
+            adsets = (raw as Array<Record<string, unknown>>).map(a => ({ ...a, account_id: accountId, account_name: accountName }));
+          } catch { /* sem permissão adsets */ }
+
+          await sleep(150);
+
+          // Adset aggregate insights
+          try {
+            const raw = await getPaged(
+              `/${apiVersion}/${accountId}/insights?fields=${ADSET_INSIGHT_FIELDS}&level=adset&date_preset=maximum&limit=200&access_token=${token}`
+            );
+            adset_insights = (raw as Array<Record<string, unknown>>).map(i => ({ ...i, account_id: accountId, account_name: accountName }));
+          } catch { /* sem adset insights */ }
+
+          await sleep(150);
+
+          // Adset daily insights
+          try {
+            const raw = await getPaged(
+              `/${apiVersion}/${accountId}/insights?fields=${ADSET_INSIGHT_FIELDS}&level=adset&time_increment=1&time_range=${timeRange}&limit=500&access_token=${token}`
+            );
+            adset_daily = (raw as Array<Record<string, unknown>>).map(i => ({ ...i, account_id: accountId, account_name: accountName }));
+          } catch { /* sem adset daily */ }
+
           await sleep(200);
 
           result.accounts.push({
@@ -149,8 +199,15 @@ export async function POST(req: NextRequest) {
           result.insights.push(...insights);
           result.monthly_insights.push(...monthly);
           result.daily_insights.push(...daily);
+          result.adsets.push(...adsets);
+          result.adset_insights.push(...adset_insights);
+          result.adset_daily_insights.push(...adset_daily);
 
-          send({ type: "account_done", account: accountName, campaigns: campaigns.length, insights: insights.length, daily: daily.length });
+          send({
+            type: "account_done", account: accountName,
+            campaigns: campaigns.length, insights: insights.length,
+            daily: daily.length, adsets: adsets.length,
+          });
         }
 
         // Save files
@@ -167,6 +224,8 @@ export async function POST(req: NextRequest) {
           campaigns: result.campaigns.length,
           insights: result.insights.length,
           daily: result.daily_insights.length,
+          adsets: result.adsets.length,
+          adset_insights: result.adset_insights.length,
           last_updated: result.last_updated,
         });
       } catch (e) {
