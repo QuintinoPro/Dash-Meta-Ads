@@ -30,6 +30,17 @@ const ADSET_FIELDS = [
   "start_time", "end_time", "created_time",
 ].join(",");
 
+const AD_INSIGHT_FIELDS = [
+  "ad_id", "ad_name", "adset_id", "adset_name", "campaign_id", "campaign_name",
+  "impressions", "clicks", "spend", "cpc", "cpm", "ctr", "reach", "frequency",
+  "actions", "cost_per_action_type", "objective",
+  "date_start", "date_stop",
+].join(",");
+
+const AD_FIELDS = [
+  "id", "name", "status", "adset_id", "campaign_id", "created_time",
+].join(",");
+
 function apiGet(pathUrl: string): Promise<Record<string, unknown>> {
   return new Promise((resolve, reject) => {
     https.get({ hostname: "graph.facebook.com", path: pathUrl, headers: { Accept: "application/json" } }, (res) => {
@@ -102,6 +113,9 @@ export async function POST(req: NextRequest) {
           adsets: [] as object[],
           adset_insights: [] as object[],
           adset_daily_insights: [] as object[],
+          ads: [] as object[],
+          ad_insights: [] as object[],
+          ad_daily_insights: [] as object[],
           last_updated: new Date().toISOString(),
         };
 
@@ -123,6 +137,9 @@ export async function POST(req: NextRequest) {
           let adsets: object[] = [];
           let adset_insights: object[] = [];
           let adset_daily: object[] = [];
+          let ads: object[] = [];
+          let ad_insights: object[] = [];
+          let ad_daily: object[] = [];
 
           try {
             const raw = await getPaged(
@@ -188,6 +205,34 @@ export async function POST(req: NextRequest) {
             adset_daily = (raw as Array<Record<string, unknown>>).map(i => ({ ...i, account_id: accountId, account_name: accountName }));
           } catch { /* sem adset daily */ }
 
+          // Ads metadata
+          try {
+            const raw = await getPaged(
+              `/${apiVersion}/${accountId}/ads?fields=${AD_FIELDS}&limit=200&access_token=${token}`
+            );
+            ads = (raw as Array<Record<string, unknown>>).map(a => ({ ...a, account_id: accountId, account_name: accountName }));
+          } catch { /* sem permissão ads */ }
+
+          await sleep(150);
+
+          // Ad aggregate insights
+          try {
+            const raw = await getPaged(
+              `/${apiVersion}/${accountId}/insights?fields=${AD_INSIGHT_FIELDS}&level=ad&date_preset=maximum&limit=200&access_token=${token}`
+            );
+            ad_insights = (raw as Array<Record<string, unknown>>).map(i => ({ ...i, account_id: accountId, account_name: accountName }));
+          } catch { /* sem ad insights */ }
+
+          await sleep(150);
+
+          // Ad daily insights
+          try {
+            const raw = await getPaged(
+              `/${apiVersion}/${accountId}/insights?fields=${AD_INSIGHT_FIELDS}&level=ad&time_increment=1&time_range=${timeRange}&limit=500&access_token=${token}`
+            );
+            ad_daily = (raw as Array<Record<string, unknown>>).map(i => ({ ...i, account_id: accountId, account_name: accountName }));
+          } catch { /* sem ad daily */ }
+
           await sleep(200);
 
           result.accounts.push({
@@ -202,11 +247,14 @@ export async function POST(req: NextRequest) {
           result.adsets.push(...adsets);
           result.adset_insights.push(...adset_insights);
           result.adset_daily_insights.push(...adset_daily);
+          result.ads.push(...ads);
+          result.ad_insights.push(...ad_insights);
+          result.ad_daily_insights.push(...ad_daily);
 
           send({
             type: "account_done", account: accountName,
             campaigns: campaigns.length, insights: insights.length,
-            daily: daily.length, adsets: adsets.length,
+            daily: daily.length, adsets: adsets.length, ads: ads.length,
           });
         }
 
@@ -226,6 +274,8 @@ export async function POST(req: NextRequest) {
           daily: result.daily_insights.length,
           adsets: result.adsets.length,
           adset_insights: result.adset_insights.length,
+          ads: result.ads.length,
+          ad_insights: result.ad_insights.length,
           last_updated: result.last_updated,
         });
       } catch (e) {

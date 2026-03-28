@@ -56,6 +56,21 @@ interface Adset {
   start_time?: string; end_time?: string;
   account_id: string; account_name: string;
 }
+interface AdInsight {
+  ad_id: string; ad_name: string; adset_id: string; adset_name: string;
+  campaign_id: string; campaign_name: string;
+  impressions: string; clicks: string; spend: string; cpc?: string; cpm?: string;
+  ctr: string; reach: string; frequency: string;
+  actions?: Action[]; cost_per_action_type?: CostPerAction[];
+  objective?: string; date_start: string; date_stop: string;
+  account_id: string; account_name: string;
+}
+interface Ad {
+  id: string; name: string; status: string;
+  adset_id: string; campaign_id: string;
+  created_time?: string;
+  account_id: string; account_name: string;
+}
 
 const data = rawData as {
   accounts: { id: string; name: string; total_campaigns: number; campaigns_with_data: number }[];
@@ -66,6 +81,9 @@ const data = rawData as {
   adsets?: Adset[];
   adset_insights?: AdsetInsight[];
   adset_daily_insights?: AdsetInsight[];
+  ads?: Ad[];
+  ad_insights?: AdInsight[];
+  ad_daily_insights?: AdInsight[];
 };
 
 /* ──────────── helpers ──────────── */
@@ -238,7 +256,7 @@ export default function Dashboard() {
   const [pendingSettings, setPendingSettings] = useState<typeof defaultSettings | null>(null);
   const [settingsSaved, setSettingsSaved] = useState(false);
   const [showReport, setShowReport] = useState(false);
-  const [viewLevel, setViewLevel] = useState<"campaign" | "adsets">("campaign");
+  const [viewLevel, setViewLevel] = useState<"campaign" | "adsets" | "ads">("campaign");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [customStart, setCustomStart] = useState("");
   const [customEnd, setCustomEnd] = useState("");
@@ -742,6 +760,114 @@ export default function Dashboard() {
     };
   }, [adsetRows]);
 
+  /* ──── Ad (criativo) level data ──── */
+  const filteredAdInsights = useMemo((): AdInsight[] => {
+    if (selectedCampaign === "all") return [];
+    const adDaily = (data.ad_daily_insights ?? []) as AdInsight[];
+    const adStatic = (data.ad_insights ?? []) as AdInsight[];
+
+    if (datePeriod !== "all") {
+      let items = adDaily.filter(d => d.campaign_id === selectedCampaign);
+      if (dateCutoff) items = items.filter(d => d.date_start >= dateCutoff);
+      if (dateEnd) items = items.filter(d => d.date_start <= dateEnd);
+
+      const map = new Map<string, { base: AdInsight; actionMap: Map<string, number> }>();
+      items.forEach(d => {
+        const key = d.ad_id;
+        if (!map.has(key)) {
+          const actionMap = new Map<string, number>();
+          d.actions?.forEach(a => actionMap.set(a.action_type, safeFloat(a.value)));
+          map.set(key, { base: { ...d }, actionMap });
+        } else {
+          const entry = map.get(key)!;
+          entry.base.spend = String(safeFloat(entry.base.spend) + safeFloat(d.spend));
+          entry.base.impressions = String(safeInt(entry.base.impressions) + safeInt(d.impressions));
+          entry.base.clicks = String(safeInt(entry.base.clicks) + safeInt(d.clicks));
+          entry.base.reach = String(safeInt(entry.base.reach) + safeInt(d.reach));
+          d.actions?.forEach(a => {
+            entry.actionMap.set(a.action_type, (entry.actionMap.get(a.action_type) || 0) + safeFloat(a.value));
+          });
+        }
+      });
+      return [...map.values()].map(({ base, actionMap }) => {
+        const imp = safeInt(base.impressions);
+        const clk = safeInt(base.clicks);
+        const sp = safeFloat(base.spend);
+        const actions: Action[] = [...actionMap.entries()].map(([action_type, value]) => ({ action_type, value: String(value) }));
+        return {
+          ...base, actions,
+          objective: base.objective || campaignObjectiveMap.get(base.campaign_id),
+          ctr: String(imp > 0 ? (clk / imp) * 100 : 0),
+          cpc: clk > 0 ? String(sp / clk) : undefined,
+          cpm: imp > 0 ? String((sp / imp) * 1000) : undefined,
+        } as AdInsight;
+      });
+    }
+    return adStatic.filter(i => i.campaign_id === selectedCampaign);
+  }, [selectedCampaign, datePeriod, dateCutoff, dateEnd]);
+
+  const adRows = useMemo(() => {
+    if (selectedCampaign === "all") return [];
+    const adsMeta = (data.ads ?? []) as Ad[];
+    const campAds = adsMeta.filter(a => a.campaign_id === selectedCampaign);
+    const objective = campaignObjectiveMap.get(selectedCampaign);
+
+    return campAds.map(ad => {
+      const ins = filteredAdInsights.find(i => i.ad_id === ad.id);
+      const spend = safeFloat(ins?.spend);
+      const impressions = safeInt(ins?.impressions);
+      const clicks = safeInt(ins?.clicks);
+      const resultInfo = detectResult(ins?.actions, ins?.objective || objective);
+      return {
+        id: ad.id,
+        name: ad.name,
+        status: ad.status,
+        adsetName: ins?.adset_name || "",
+        spend,
+        impressions,
+        clicks,
+        reach: safeInt(ins?.reach),
+        frequency: safeFloat(ins?.frequency),
+        ctr: impressions > 0 ? (clicks / impressions) * 100 : 0,
+        cpc: clicks > 0 ? spend / clicks : 0,
+        cpm: impressions > 0 ? (spend / impressions) * 1000 : 0,
+        results: resultInfo.value,
+        resultLabel: resultInfo.label,
+        costPerResult: resultInfo.value > 0 ? spend / resultInfo.value : 0,
+      };
+    }).sort((a, b) => b.spend - a.spend);
+  }, [filteredAdInsights, selectedCampaign, campaignObjectiveMap]);
+
+  const adSpendChart = useMemo(() => {
+    const rows = adRows.filter(r => r.spend > 0);
+    if (rows.length === 0) return null;
+    const top = rows.slice(0, 10);
+    return {
+      labels: top.map(r => r.name.length > 28 ? r.name.substring(0, 28) + "…" : r.name),
+      datasets: [{
+        label: "Gasto (R$)",
+        data: top.map(r => r.spend),
+        backgroundColor: top.map(r => r.status === "ACTIVE" ? "rgba(139,92,246,0.8)" : "rgba(100,116,139,0.5)"),
+        borderRadius: 4,
+      }],
+    };
+  }, [adRows]);
+
+  const adResultsChart = useMemo(() => {
+    const rows = adRows.filter(r => r.results > 0);
+    if (rows.length === 0) return null;
+    const top = rows.slice(0, 10);
+    return {
+      labels: top.map(r => r.name.length > 28 ? r.name.substring(0, 28) + "…" : r.name),
+      datasets: [{
+        label: "Resultados",
+        data: top.map(r => r.results),
+        backgroundColor: "rgba(34,197,94,0.7)",
+        borderRadius: 4,
+      }],
+    };
+  }, [adRows]);
+
   const isSingleCampaign = selectedCampaign !== "all";
   const periodLabel = (({
     today: "Hoje", yesterday: "Ontem",
@@ -926,6 +1052,26 @@ export default function Dashboard() {
                 </span>
               )}
               {viewLevel === "adsets" && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500 rounded-t-full" />
+              )}
+            </button>
+            <button
+              onClick={() => setViewLevel("ads")}
+              className={`relative px-4 py-2.5 text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                viewLevel === "ads"
+                  ? "text-blue-400"
+                  : "text-slate-500 hover:text-slate-300"
+              }`}
+            >
+              Criativos
+              {adRows.length > 0 && (
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-semibold ${
+                  viewLevel === "ads" ? "bg-blue-600/30 text-blue-400" : "bg-slate-700 text-slate-400"
+                }`}>
+                  {adRows.length}
+                </span>
+              )}
+              {viewLevel === "ads" && (
                 <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500 rounded-t-full" />
               )}
             </button>
@@ -1281,6 +1427,167 @@ export default function Dashboard() {
                                 <>R$ {fmt(row.budget)}<br /><span className="text-slate-500 text-[11px]">{row.budgetType}</span></>
                               ) : <span className="text-slate-600">—</span>}
                             </td>
+                            <td className="py-3 px-3 text-right text-slate-200 font-semibold text-sm">
+                              {row.spend > 0 ? `R$ ${fmt(row.spend)}` : <span className="text-slate-600">—</span>}
+                            </td>
+                            <td className="py-3 px-3 text-right text-slate-300 text-sm">{row.impressions > 0 ? fmtInt(row.impressions) : <span className="text-slate-600">—</span>}</td>
+                            <td className={`py-3 px-3 text-right text-sm font-medium ${row.ctr >= 2 ? "text-green-400" : row.ctr >= 1 ? "text-yellow-400" : row.impressions > 0 ? "text-red-400" : "text-slate-600"}`}>
+                              {row.impressions > 0 ? pct(row.ctr) : "—"}
+                            </td>
+                            <td className={`py-3 px-3 text-right text-sm ${row.cpc > 0 && row.cpc < 1 ? "text-green-400" : row.cpc <= 3 && row.cpc > 0 ? "text-yellow-400" : row.cpc > 3 ? "text-red-400" : "text-slate-600"}`}>
+                              {row.cpc > 0 ? `R$ ${fmt(row.cpc)}` : "—"}
+                            </td>
+                            <td className="py-3 px-3 text-right text-slate-400 text-sm">{row.cpm > 0 ? `R$ ${fmt(row.cpm)}` : <span className="text-slate-600">—</span>}</td>
+                            <td className={`py-3 px-3 text-right text-sm font-medium ${row.results > 0 ? "text-green-400" : "text-slate-600"}`}>
+                              {row.results > 0 ? fmtInt(row.results) : "—"}
+                            </td>
+                            <td className={`py-3 px-3 text-right text-sm ${row.costPerResult > 0 && row.costPerResult < 5 ? "text-green-400" : row.costPerResult > 0 && row.costPerResult <= 15 ? "text-yellow-400" : row.costPerResult > 15 ? "text-red-400" : "text-slate-600"}`}>
+                              {row.costPerResult > 0 ? `R$ ${fmt(row.costPerResult)}` : "—"}
+                            </td>
+                            <td className={`py-3 px-3 text-right text-sm ${row.frequency > 3 ? "text-red-400" : row.frequency > 2 ? "text-yellow-400" : row.frequency > 0 ? "text-slate-300" : "text-slate-600"}`}>
+                              {row.frequency > 0 ? row.frequency.toFixed(2) : "—"}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </>
+            );
+          })()}
+
+          {/* ══════════ ADS (CRIATIVOS) VIEW ══════════ */}
+          {viewLevel === "ads" && (() => {
+            const hasData = (data.ads ?? []).length > 0;
+            if (!hasData) return (
+              <div className="card text-center py-16">
+                <svg className="w-12 h-12 text-slate-600 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                <p className="text-slate-400 font-medium mb-1">Dados de criativos nao coletados ainda</p>
+                <p className="text-slate-500 text-sm">Va em <strong className="text-slate-400">Configuracoes → Atualizar dados</strong> para coletar dados de anuncios.</p>
+              </div>
+            );
+            if (adRows.length === 0) return (
+              <div className="card text-center py-12 text-slate-400">
+                Nenhum criativo encontrado para esta campanha.
+              </div>
+            );
+
+            const totalSpend = adRows.reduce((s, r) => s + r.spend, 0);
+            const totalImpressions = adRows.reduce((s, r) => s + r.impressions, 0);
+            const totalClicks = adRows.reduce((s, r) => s + r.clicks, 0);
+            const totalResults = adRows.reduce((s, r) => s + r.results, 0);
+            const aggCtr = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
+            const aggCpc = totalClicks > 0 ? totalSpend / totalClicks : 0;
+            const aggCpr = totalResults > 0 ? totalSpend / totalResults : 0;
+            const resultLabel = adRows.find(r => r.resultLabel)?.resultLabel || "Resultados";
+
+            const statusBadge = (status: string) => {
+              const cfg: Record<string, string> = {
+                ACTIVE: "bg-green-900/40 text-green-400 border-green-800/50",
+                PAUSED: "bg-yellow-900/40 text-yellow-400 border-yellow-800/50",
+                ARCHIVED: "bg-slate-700/50 text-slate-400 border-slate-600/50",
+                DELETED: "bg-red-900/40 text-red-400 border-red-800/50",
+              };
+              const labels: Record<string, string> = { ACTIVE: "Ativo", PAUSED: "Pausado", ARCHIVED: "Arquivado", DELETED: "Excluido" };
+              return (
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium border ${cfg[status] || cfg.ARCHIVED}`}>
+                  {labels[status] || status}
+                </span>
+              );
+            };
+
+            return (
+              <>
+                {/* KPI summary */}
+                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
+                  <KPICard label="Gasto Total" value={`R$ ${fmt(totalSpend)}`} color="blue" />
+                  <KPICard label="Impressoes" value={fmtInt(totalImpressions)} color="blue" />
+                  <KPICard label="Cliques" value={fmtInt(totalClicks)} color="blue" />
+                  <KPICard label="CTR" value={pct(aggCtr)} color={aggCtr >= 2 ? "green" : aggCtr >= 1 ? "yellow" : "red"} />
+                  <KPICard label="CPC" value={`R$ ${fmt(aggCpc)}`} color={aggCpc > 0 && aggCpc < 1 ? "green" : aggCpc <= 3 ? "yellow" : "red"} />
+                  <KPICard label={resultLabel} value={fmtInt(totalResults)} color={totalResults > 0 ? "green" : "red"} sub={aggCpr > 0 ? `R$ ${fmt(aggCpr)} / resultado` : undefined} />
+                </div>
+
+                {/* Charts */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                  <div className="card">
+                    <h3 className="text-base font-semibold text-white mb-4">Gasto por Criativo</h3>
+                    {adSpendChart ? (
+                      <Bar data={adSpendChart} plugins={[ChartDataLabels]} options={{
+                        responsive: true, indexAxis: "y" as const,
+                        layout: { padding: { right: 8 } },
+                        plugins: {
+                          legend: { display: false },
+                          datalabels: {
+                            anchor: "end", align: "end",
+                            color: "#94a3b8", font: { size: 11 },
+                            formatter: (v: number) => `R$ ${fmt(v)}`,
+                          },
+                        },
+                        scales: {
+                          x: { title: { display: true, text: "Gasto (R$)" } },
+                          y: { ticks: { font: { size: 11 } } },
+                        },
+                      }} />
+                    ) : <p className="text-slate-500 text-center py-8">Sem dados de gasto</p>}
+                  </div>
+                  <div className="card">
+                    <h3 className="text-base font-semibold text-white mb-4">Resultados por Criativo</h3>
+                    {adResultsChart ? (
+                      <Bar data={adResultsChart} plugins={[ChartDataLabels]} options={{
+                        responsive: true, indexAxis: "y" as const,
+                        layout: { padding: { right: 8 } },
+                        plugins: {
+                          legend: { display: false },
+                          datalabels: {
+                            anchor: "end", align: "end",
+                            color: "#94a3b8", font: { size: 11 },
+                            formatter: (v: number) => fmtInt(v),
+                          },
+                        },
+                        scales: {
+                          x: { title: { display: true, text: resultLabel } },
+                          y: { ticks: { font: { size: 11 } } },
+                        },
+                      }} />
+                    ) : <p className="text-slate-500 text-center py-8">Sem dados de resultados</p>}
+                  </div>
+                </div>
+
+                {/* Ads table */}
+                <div className="card overflow-hidden">
+                  <h3 className="text-base font-semibold text-white mb-4">
+                    Detalhes por Criativo
+                    <span className="ml-2 text-sm font-normal text-slate-500">{adRows.length} criativo{adRows.length !== 1 ? "s" : ""}</span>
+                  </h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-slate-700/50">
+                          <th className="text-left py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Criativo</th>
+                          <th className="text-left py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Conjunto</th>
+                          <th className="text-center py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Status</th>
+                          <th className="text-right py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Gasto</th>
+                          <th className="text-right py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Impressoes</th>
+                          <th className="text-right py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">CTR</th>
+                          <th className="text-right py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">CPC</th>
+                          <th className="text-right py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">CPM</th>
+                          <th className="text-right py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">{resultLabel}</th>
+                          <th className="text-right py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Custo/Result.</th>
+                          <th className="text-right py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Freq.</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/60">
+                        {adRows.map(row => (
+                          <tr key={row.id} className="hover:bg-slate-800/30 transition-colors">
+                            <td className="py-3 px-3">
+                              <p className="text-slate-200 font-medium text-sm leading-tight">{row.name}</p>
+                            </td>
+                            <td className="py-3 px-3">
+                              <p className="text-slate-500 text-xs">{row.adsetName || "—"}</p>
+                            </td>
+                            <td className="py-3 px-3 text-center">{statusBadge(row.status)}</td>
                             <td className="py-3 px-3 text-right text-slate-200 font-semibold text-sm">
                               {row.spend > 0 ? `R$ ${fmt(row.spend)}` : <span className="text-slate-600">—</span>}
                             </td>
