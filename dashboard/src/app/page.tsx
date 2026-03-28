@@ -926,7 +926,7 @@ export default function Dashboard() {
   }, [adRows]);
 
   const adFreqChart = useMemo(() => {
-    const rows = adRows.filter(r => r.frequency > 0).sort((a, b) => b.frequency - a.frequency).slice(0, 10);
+    const rows = adRows.filter(r => r.frequency > 0).sort((a, b) => b.frequency - a.frequency).slice(0, 6);
     if (rows.length === 0) return null;
     return {
       labels: rows.map(r => r.name.length > 28 ? r.name.substring(0, 28) + "…" : r.name),
@@ -1585,19 +1585,21 @@ export default function Dashboard() {
                   <h3 className="text-base font-semibold text-white mb-1">Gasto & {resultLabel} por Criativo</h3>
                   <p className="text-xs text-slate-500 mb-4">Investimento (roxo, eixo esq.) vs. {resultLabel.toLowerCase()} obtidos (verde, eixo dir.) por anuncio</p>
                   {adGastoResultChart ? (
-                    <Bar data={adGastoResultChart} plugins={[ChartDataLabels]} options={{
-                      responsive: true,
-                      interaction: { mode: "index" as const, intersect: false },
-                      plugins: {
-                        legend: { display: true, position: "top" as const, labels: { boxWidth: 12, font: { size: 12 } } },
-                        datalabels: { display: false },
-                      },
-                      scales: {
-                        y: { type: "linear" as const, position: "left" as const, title: { display: true, text: "Gasto (R$)" } },
-                        y1: { type: "linear" as const, position: "right" as const, grid: { drawOnChartArea: false }, title: { display: true, text: resultLabel } },
-                        x: { ticks: { font: { size: 11 } } },
-                      },
-                    }} />
+                    <div style={{ height: "260px" }}>
+                      <Bar data={adGastoResultChart} plugins={[ChartDataLabels]} options={{
+                        responsive: true, maintainAspectRatio: false,
+                        interaction: { mode: "index" as const, intersect: false },
+                        plugins: {
+                          legend: { display: true, position: "top" as const, labels: { boxWidth: 12, font: { size: 12 } } },
+                          datalabels: { display: false },
+                        },
+                        scales: {
+                          y: { type: "linear" as const, position: "left" as const, title: { display: true, text: "Gasto (R$)" } },
+                          y1: { type: "linear" as const, position: "right" as const, grid: { drawOnChartArea: false }, title: { display: true, text: resultLabel } },
+                          x: { ticks: { font: { size: 11 } } },
+                        },
+                      }} />
+                    </div>
                   ) : <p className="text-slate-500 text-center py-8">Sem dados</p>}
                 </div>
 
@@ -1663,7 +1665,7 @@ export default function Dashboard() {
                         <h3 className="text-base font-semibold text-white mb-1">Frequencia por Criativo</h3>
                         <p className="text-xs text-slate-500 mb-3">verde &lt;2 · amarelo 2–3 · vermelho &gt;3 (fadiga)</p>
                         {adFreqChart ? (
-                          <div style={{ height: "220px" }}>
+                          <div style={{ height: `${Math.max(160, (adFreqChart.labels?.length ?? 6) * 36)}px` }}>
                             <Bar data={adFreqChart} plugins={[ChartDataLabels]} options={{
                               responsive: true, maintainAspectRatio: false, indexAxis: "y" as const,
                               layout: { padding: { right: 8 } },
