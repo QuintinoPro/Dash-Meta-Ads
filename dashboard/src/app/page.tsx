@@ -1635,29 +1635,89 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                {/* Row 3 — Frequência (meia largura, menor) */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                  <div className="card">
-                    <h3 className="text-base font-semibold text-white mb-1">Frequencia por Criativo</h3>
-                    <p className="text-xs text-slate-500 mb-3">verde &lt;2 · amarelo 2–3 · vermelho &gt;3 (fadiga)</p>
-                    {adFreqChart ? (
-                      <div style={{ height: "220px" }}>
-                        <Bar data={adFreqChart} plugins={[ChartDataLabels]} options={{
-                          responsive: true, maintainAspectRatio: false, indexAxis: "y" as const,
-                          layout: { padding: { right: 8 } },
-                          plugins: {
-                            legend: { display: false },
-                            datalabels: { anchor: "end", align: "end", color: "#94a3b8", font: { size: 11 }, formatter: (v: number) => v.toFixed(2) + "×" },
-                          },
-                          scales: {
-                            x: { title: { display: true, text: "Frequencia media" }, suggestedMax: Math.max(...adFreqChart.datasets[0].data as number[]) * 1.2 },
-                            y: { ticks: { font: { size: 10 } } },
-                          },
-                        }} />
+                {/* Row 3 — Frequência + Ranking */}
+                {(() => {
+                  // Composite score: results 35% + cpr 30% + ctr 25% + frequency 10%
+                  const eligible = adRows.filter(r => r.spend > 0 && r.impressions > 0);
+                  const maxResults = Math.max(...eligible.map(r => r.results), 1);
+                  const maxCtr = Math.max(...eligible.map(r => r.ctr), 0.01);
+                  const minCpr = eligible.filter(r => r.costPerResult > 0).reduce((m, r) => Math.min(m, r.costPerResult), Infinity);
+                  const ranked = eligible.map(r => {
+                    const sResults = (r.results / maxResults) * 100;
+                    const sCtr = (r.ctr / maxCtr) * 100;
+                    const sCpr = r.costPerResult > 0 && isFinite(minCpr) ? (minCpr / r.costPerResult) * 100 : 0;
+                    const sFreq = r.frequency > 0 ? Math.max(0, 100 - ((r.frequency - 1) * 60)) : 50;
+                    const score = Math.round(sResults * 0.35 + sCtr * 0.25 + sCpr * 0.30 + sFreq * 0.10);
+                    const strengths: string[] = [];
+                    if (r.results === Math.max(...eligible.map(x => x.results))) strengths.push(`${fmtInt(r.results)} ${resultLabel.toLowerCase()}`);
+                    if (r.ctr === Math.max(...eligible.filter(x => x.impressions > 0).map(x => x.ctr))) strengths.push(`CTR ${pct(r.ctr)}`);
+                    if (r.costPerResult > 0 && r.costPerResult === Math.min(...eligible.filter(x => x.costPerResult > 0).map(x => x.costPerResult))) strengths.push(`R$ ${fmt(r.costPerResult)}/resultado`);
+                    return { ...r, score, strengths };
+                  }).sort((a, b) => b.score - a.score).slice(0, 5);
+                  const medals = ["🥇", "🥈", "🥉", "4°", "5°"];
+                  const scoreColor = (s: number) => s >= 75 ? "text-green-400" : s >= 50 ? "text-yellow-400" : "text-slate-400";
+                  const scoreBg = (s: number) => s >= 75 ? "bg-green-500/20 border-green-500/30" : s >= 50 ? "bg-yellow-500/20 border-yellow-500/30" : "bg-slate-700/40 border-slate-600/30";
+                  return (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                      <div className="card">
+                        <h3 className="text-base font-semibold text-white mb-1">Frequencia por Criativo</h3>
+                        <p className="text-xs text-slate-500 mb-3">verde &lt;2 · amarelo 2–3 · vermelho &gt;3 (fadiga)</p>
+                        {adFreqChart ? (
+                          <div style={{ height: "220px" }}>
+                            <Bar data={adFreqChart} plugins={[ChartDataLabels]} options={{
+                              responsive: true, maintainAspectRatio: false, indexAxis: "y" as const,
+                              layout: { padding: { right: 8 } },
+                              plugins: {
+                                legend: { display: false },
+                                datalabels: { anchor: "end", align: "end", color: "#94a3b8", font: { size: 11 }, formatter: (v: number) => v.toFixed(2) + "×" },
+                              },
+                              scales: {
+                                x: { title: { display: true, text: "Frequencia media" }, suggestedMax: Math.max(...adFreqChart.datasets[0].data as number[]) * 1.2 },
+                                y: { ticks: { font: { size: 10 } } },
+                              },
+                            }} />
+                          </div>
+                        ) : <p className="text-slate-500 text-center py-8">Sem dados de frequencia</p>}
                       </div>
-                    ) : <p className="text-slate-500 text-center py-8">Sem dados de frequencia</p>}
-                  </div>
-                </div>
+
+                      {/* Ranking */}
+                      <div className="card flex flex-col">
+                        <div className="mb-4">
+                          <h3 className="text-base font-semibold text-white mb-1">Ranking de Criativos</h3>
+                          <p className="text-xs text-slate-500">Score composto: resultados (35%) + custo/resultado (30%) + CTR (25%) + frequencia (10%)</p>
+                        </div>
+                        {ranked.length === 0 ? (
+                          <p className="text-slate-500 text-center py-8 text-sm">Sem dados suficientes para ranking</p>
+                        ) : (
+                          <div className="flex flex-col gap-2.5 flex-1">
+                            {ranked.map((r, i) => (
+                              <div key={r.id} className={`flex items-center gap-3 p-3 rounded-lg border ${scoreBg(r.score)}`}>
+                                <span className="text-lg w-6 text-center flex-shrink-0">{medals[i]}</span>
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center justify-between gap-2 mb-1">
+                                    <p className="text-slate-200 font-medium text-sm truncate">{r.name}</p>
+                                    <span className={`text-sm font-bold flex-shrink-0 ${scoreColor(r.score)}`}>{r.score}</span>
+                                  </div>
+                                  {/* score bar */}
+                                  <div className="h-1 bg-slate-700 rounded-full overflow-hidden mb-1.5">
+                                    <div className={`h-full rounded-full transition-all ${r.score >= 75 ? "bg-green-500" : r.score >= 50 ? "bg-yellow-500" : "bg-slate-500"}`}
+                                      style={{ width: `${r.score}%` }} />
+                                  </div>
+                                  <div className="flex flex-wrap gap-1">
+                                    <span className="text-[10px] text-slate-500">R$ {fmt(r.spend)} gasto</span>
+                                    {r.strengths.map((s, si) => (
+                                      <span key={si} className="text-[10px] px-1.5 py-0.5 rounded bg-slate-700/60 text-slate-300">{s}</span>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {/* Ads table */}
                 <div className="card overflow-hidden">
