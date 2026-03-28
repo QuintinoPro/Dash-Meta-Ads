@@ -873,6 +873,30 @@ export default function Dashboard() {
     };
   }, [adRows]);
 
+  const adGastoResultChart = useMemo(() => {
+    const rows = adRows.filter(r => r.spend > 0).slice(0, 10);
+    if (rows.length === 0) return null;
+    return {
+      labels: rows.map(r => r.name.length > 20 ? r.name.substring(0, 20) + "…" : r.name),
+      datasets: [
+        {
+          label: "Gasto (R$)",
+          data: rows.map(r => r.spend),
+          backgroundColor: "rgba(139,92,246,0.75)",
+          borderRadius: 4,
+          yAxisID: "y",
+        },
+        {
+          label: "Resultados",
+          data: rows.map(r => r.results),
+          backgroundColor: "rgba(34,197,94,0.75)",
+          borderRadius: 4,
+          yAxisID: "y1",
+        },
+      ],
+    };
+  }, [adRows]);
+
   const adCtrChart = useMemo(() => {
     const rows = adRows.filter(r => r.impressions > 0).sort((a, b) => b.ctr - a.ctr).slice(0, 10);
     if (rows.length === 0) return null;
@@ -1556,23 +1580,29 @@ export default function Dashboard() {
                   <KPICard label={resultLabel} value={fmtInt(totalResults)} color={totalResults > 0 ? "green" : "red"} sub={aggCpr > 0 ? `R$ ${fmt(aggCpr)} / resultado` : undefined} />
                 </div>
 
-                {/* Charts 2×2 */}
+                {/* Row 1 — Gasto & Resultados merged (full width) */}
+                <div className="card mb-6">
+                  <h3 className="text-base font-semibold text-white mb-1">Gasto & {resultLabel} por Criativo</h3>
+                  <p className="text-xs text-slate-500 mb-4">Investimento (roxo, eixo esq.) vs. {resultLabel.toLowerCase()} obtidos (verde, eixo dir.) por anuncio</p>
+                  {adGastoResultChart ? (
+                    <Bar data={adGastoResultChart} plugins={[ChartDataLabels]} options={{
+                      responsive: true,
+                      interaction: { mode: "index" as const, intersect: false },
+                      plugins: {
+                        legend: { display: true, position: "top" as const, labels: { boxWidth: 12, font: { size: 12 } } },
+                        datalabels: { display: false },
+                      },
+                      scales: {
+                        y: { type: "linear" as const, position: "left" as const, title: { display: true, text: "Gasto (R$)" } },
+                        y1: { type: "linear" as const, position: "right" as const, grid: { drawOnChartArea: false }, title: { display: true, text: resultLabel } },
+                        x: { ticks: { font: { size: 11 } } },
+                      },
+                    }} />
+                  ) : <p className="text-slate-500 text-center py-8">Sem dados</p>}
+                </div>
+
+                {/* Row 2 — Custo por Resultado | CTR */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                  <div className="card">
-                    <h3 className="text-base font-semibold text-white mb-1">Gasto por Criativo</h3>
-                    <p className="text-xs text-slate-500 mb-4">Investimento total por anuncio</p>
-                    {adSpendChart ? (
-                      <Bar data={adSpendChart} plugins={[ChartDataLabels]} options={{
-                        responsive: true, indexAxis: "y" as const,
-                        layout: { padding: { right: 8 } },
-                        plugins: {
-                          legend: { display: false },
-                          datalabels: { anchor: "end", align: "end", color: "#94a3b8", font: { size: 11 }, formatter: (v: number) => `R$ ${fmt(v)}` },
-                        },
-                        scales: { x: { title: { display: true, text: "Gasto (R$)" } }, y: { ticks: { font: { size: 11 } } } },
-                      }} />
-                    ) : <p className="text-slate-500 text-center py-8">Sem dados</p>}
-                  </div>
                   <div className="card">
                     <h3 className="text-base font-semibold text-white mb-1">Custo por Resultado</h3>
                     <p className="text-xs text-slate-500 mb-4">Menor = mais eficiente · verde &lt;R$5 · amarelo R$5–15 · vermelho &gt;R$15</p>
@@ -1603,41 +1633,30 @@ export default function Dashboard() {
                       }} />
                     ) : <p className="text-slate-500 text-center py-8">Sem dados de CTR</p>}
                   </div>
-                  <div className="card">
-                    <h3 className="text-base font-semibold text-white mb-1">Resultados por Criativo</h3>
-                    <p className="text-xs text-slate-500 mb-4">Volume total de {resultLabel.toLowerCase()} por anuncio</p>
-                    {adResultsChart ? (
-                      <Bar data={adResultsChart} plugins={[ChartDataLabels]} options={{
-                        responsive: true, indexAxis: "y" as const,
-                        layout: { padding: { right: 8 } },
-                        plugins: {
-                          legend: { display: false },
-                          datalabels: { anchor: "end", align: "end", color: "#94a3b8", font: { size: 11 }, formatter: (v: number) => fmtInt(v) },
-                        },
-                        scales: { x: { title: { display: true, text: resultLabel } }, y: { ticks: { font: { size: 11 } } } },
-                      }} />
-                    ) : <p className="text-slate-500 text-center py-8">Sem dados de resultados</p>}
-                  </div>
                 </div>
 
-                {/* Frequency chart — full width */}
-                <div className="card mb-6">
-                  <h3 className="text-base font-semibold text-white mb-1">Frequencia por Criativo</h3>
-                  <p className="text-xs text-slate-500 mb-4">Quantas vezes cada pessoa viu o anuncio · verde &lt;2 · amarelo 2–3 · vermelho &gt;3 (risco de fadiga)</p>
-                  {adFreqChart ? (
-                    <Bar data={adFreqChart} plugins={[ChartDataLabels]} options={{
-                      responsive: true, indexAxis: "y" as const,
-                      layout: { padding: { right: 8 } },
-                      plugins: {
-                        legend: { display: false },
-                        datalabels: { anchor: "end", align: "end", color: "#94a3b8", font: { size: 11 }, formatter: (v: number) => v.toFixed(2) + "×" },
-                      },
-                      scales: {
-                        x: { title: { display: true, text: "Frequencia media" }, suggestedMax: Math.max(...adFreqChart.datasets[0].data as number[]) * 1.15 },
-                        y: { ticks: { font: { size: 11 } } },
-                      },
-                    }} />
-                  ) : <p className="text-slate-500 text-center py-8">Sem dados de frequencia</p>}
+                {/* Row 3 — Frequência (meia largura, menor) */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                  <div className="card">
+                    <h3 className="text-base font-semibold text-white mb-1">Frequencia por Criativo</h3>
+                    <p className="text-xs text-slate-500 mb-3">verde &lt;2 · amarelo 2–3 · vermelho &gt;3 (fadiga)</p>
+                    {adFreqChart ? (
+                      <div style={{ height: "220px" }}>
+                        <Bar data={adFreqChart} plugins={[ChartDataLabels]} options={{
+                          responsive: true, maintainAspectRatio: false, indexAxis: "y" as const,
+                          layout: { padding: { right: 8 } },
+                          plugins: {
+                            legend: { display: false },
+                            datalabels: { anchor: "end", align: "end", color: "#94a3b8", font: { size: 11 }, formatter: (v: number) => v.toFixed(2) + "×" },
+                          },
+                          scales: {
+                            x: { title: { display: true, text: "Frequencia media" }, suggestedMax: Math.max(...adFreqChart.datasets[0].data as number[]) * 1.2 },
+                            y: { ticks: { font: { size: 10 } } },
+                          },
+                        }} />
+                      </div>
+                    ) : <p className="text-slate-500 text-center py-8">Sem dados de frequencia</p>}
+                  </div>
                 </div>
 
                 {/* Ads table */}
