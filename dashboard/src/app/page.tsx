@@ -869,44 +869,13 @@ export default function Dashboard() {
         {/* Top bar */}
         <div className="sticky top-0 z-10 bg-[var(--background)]/80 backdrop-blur-md border-b border-slate-800 px-6 py-3 flex items-center justify-between">
           <div>
-            <div className="flex items-center gap-4">
-              <h2 className="text-lg font-semibold text-white">
-                {tab === "overview" ? "Visao Geral" : tab === "campaigns" ? "Campanhas" : "Recomendacoes"}
-              </h2>
-              {/* Level toggle — only when a campaign is selected on the overview tab */}
-              {selectedCampaign !== "all" && tab === "overview" && (
-                <div className="flex items-center bg-slate-800 rounded-lg p-0.5 border border-slate-700">
-                  <button
-                    onClick={() => setViewLevel("campaign")}
-                    className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
-                      viewLevel === "campaign"
-                        ? "bg-blue-600 text-white"
-                        : "text-slate-400 hover:text-slate-200"
-                    }`}
-                  >
-                    Campanha
-                  </button>
-                  <button
-                    onClick={() => setViewLevel("adsets")}
-                    className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
-                      viewLevel === "adsets"
-                        ? "bg-blue-600 text-white"
-                        : "text-slate-400 hover:text-slate-200"
-                    }`}
-                  >
-                    Conjuntos
-                    {adsetRows.length > 0 && (
-                      <span className="ml-1.5 text-[10px] opacity-70">{adsetRows.length}</span>
-                    )}
-                  </button>
-                </div>
-              )}
-            </div>
+            <h2 className="text-lg font-semibold text-white">
+              {tab === "overview" ? "Visao Geral" : tab === "campaigns" ? "Campanhas" : "Recomendacoes"}
+            </h2>
             {hasActiveFilters && (
               <p className="text-xs text-slate-500 mt-0.5">
                 {selectedAccount !== "all" && <span className="text-blue-400">{data.accounts.find(a => a.id === selectedAccount)?.name}</span>}
                 {selectedCampaign !== "all" && <span className="text-blue-400">{selectedAccount !== "all" ? " > " : ""}{filteredInsights[0]?.campaign_name}</span>}
-                {selectedCampaign !== "all" && viewLevel === "adsets" && <span className="text-slate-500"> › Conjuntos</span>}
                 {selectedCampaign !== "all" && (() => { const c = data.campaigns.find(c => c.id === selectedCampaign); return c?.start_time ? <span className="text-slate-600"> · Criada em {new Date(c.start_time).toLocaleDateString("pt-BR")}</span> : null; })()}
                 {datePeriod !== "all" && <span className="text-slate-400">{(selectedAccount !== "all" || selectedCampaign !== "all") ? " · " : ""}{periodLabel}</span>}
               </p>
@@ -923,6 +892,45 @@ export default function Dashboard() {
             <p className="text-xs text-slate-600">Graph API v21.0 &middot; {new Date().toLocaleDateString("pt-BR")}</p>
           </div>
         </div>
+
+        {/* Level nav bar — sticky below top bar, visible when campaign is selected on overview */}
+        {selectedCampaign !== "all" && tab === "overview" && (
+          <div className="sticky top-[57px] z-10 bg-[var(--background)]/95 backdrop-blur-md border-b border-slate-800 px-6 flex items-center gap-1">
+            <button
+              onClick={() => setViewLevel("campaign")}
+              className={`relative px-4 py-2.5 text-sm font-medium transition-colors ${
+                viewLevel === "campaign"
+                  ? "text-blue-400"
+                  : "text-slate-500 hover:text-slate-300"
+              }`}
+            >
+              Campanha
+              {viewLevel === "campaign" && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500 rounded-t-full" />
+              )}
+            </button>
+            <button
+              onClick={() => setViewLevel("adsets")}
+              className={`relative px-4 py-2.5 text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                viewLevel === "adsets"
+                  ? "text-blue-400"
+                  : "text-slate-500 hover:text-slate-300"
+              }`}
+            >
+              Conjuntos
+              {adsetRows.length > 0 && (
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-semibold ${
+                  viewLevel === "adsets" ? "bg-blue-600/30 text-blue-400" : "bg-slate-700 text-slate-400"
+                }`}>
+                  {adsetRows.length}
+                </span>
+              )}
+              {viewLevel === "adsets" && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500 rounded-t-full" />
+              )}
+            </button>
+          </div>
+        )}
 
         <div className="p-6">
 
