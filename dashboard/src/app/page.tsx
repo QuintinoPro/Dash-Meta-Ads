@@ -219,6 +219,13 @@ export default function Dashboard() {
   const [settingsSaved, setSettingsSaved] = useState(false);
   const [showReport, setShowReport] = useState(false);
 
+  // Collect state
+  const [collectStatus, setCollectStatus] = useState<"idle" | "running" | "done" | "error">("idle");
+  const [collectProgress, setCollectProgress] = useState<{ current: number; total: number; account: string } | null>(null);
+  const [collectResult, setCollectResult] = useState<{ accounts: number; campaigns: number; insights: number; last_updated: string } | null>(null);
+  const [collectError, setCollectError] = useState<string | null>(null);
+  const [daysBack, setDaysBack] = useState<number>(90);
+
   const defaultSettings = {
     userName: "",
     apiToken: "",
@@ -305,7 +312,56 @@ export default function Dashboard() {
 
   const openSettings = () => {
     setPendingSettings({ ...settings });
+    setCollectStatus("idle");
+    setCollectProgress(null);
+    setCollectResult(null);
+    setCollectError(null);
     setShowSettings(true);
+  };
+
+  const runCollect = async () => {
+    if (!settings.apiToken) return;
+    setCollectStatus("running");
+    setCollectProgress(null);
+    setCollectResult(null);
+    setCollectError(null);
+
+    try {
+      const res = await fetch("/api/collect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: settings.apiToken, apiVersion: settings.apiVersion, daysBack }),
+      });
+
+      const reader = res.body!.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue;
+          const evt = JSON.parse(line.slice(6)) as Record<string, unknown>;
+          if (evt.type === "progress") {
+            setCollectProgress({ current: evt.current as number, total: evt.total as number, account: evt.account as string });
+          } else if (evt.type === "done") {
+            setCollectStatus("done");
+            setCollectResult({ accounts: evt.accounts as number, campaigns: evt.campaigns as number, insights: evt.insights as number, last_updated: evt.last_updated as string });
+            setCollectProgress(null);
+          } else if (evt.type === "error") {
+            setCollectStatus("error");
+            setCollectError(evt.message as string);
+          }
+        }
+      }
+    } catch (e) {
+      setCollectStatus("error");
+      setCollectError(e instanceof Error ? e.message : "Erro desconhecido");
+    }
   };
 
   const cancelSettings = () => {
@@ -1051,7 +1107,8 @@ export default function Dashboard() {
             </div>
 
             {/* Body */}
-            <div className="px-6 py-5 space-y-4">
+            <div className="px-6 py-5 space-y-5 max-h-[70vh] overflow-y-auto">
+
               {/* Profile */}
               <div>
                 <p className="settings-section-label">Perfil</p>
@@ -1072,7 +1129,9 @@ export default function Dashboard() {
                     <input type="password" value={settings.apiToken} placeholder="EAAxxxxxxx..."
                       onChange={(e) => setSettings({ ...settings, apiToken: e.target.value })}
                       className="settings-input font-mono" />
-                    <p className="text-[10px] text-slate-600 mt-1 px-1">Token de acesso do Graph API. Gere em developers.facebook.com</p>
+                    <p className="text-[10px] text-slate-600 mt-1 px-1">
+                      Token de acesso do Graph API. Gere em developers.facebook.com com permissoes <strong>ads_read</strong> e <strong>business_management</strong>.
+                    </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
@@ -1094,33 +1153,121 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  <div>
-                    <label className="settings-label">App Secret</label>
-                    <input type="password" value={settings.appSecret} placeholder="Opcional"
-                      onChange={(e) => setSettings({ ...settings, appSecret: e.target.value })}
-                      className="settings-input font-mono" />
+                  {/* Status do token */}
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800/50">
+                    <div className={`w-2 h-2 rounded-full flex-shrink-0 ${settings.apiToken ? "bg-green-500" : "bg-slate-600"}`}></div>
+                    <span className="text-xs text-slate-400">
+                      {settings.apiToken ? "Token configurado" : "Nenhum token configurado"}
+                    </span>
+                    {settings.apiToken && (
+                      <span className="text-xs text-slate-600 ml-auto font-mono">...{settings.apiToken.slice(-8)}</span>
+                    )}
                   </div>
                 </div>
               </div>
 
-              {/* Status */}
-              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800/50">
-                <div className={`w-2 h-2 rounded-full ${settings.apiToken ? "bg-green-500" : "bg-slate-600"}`}></div>
-                <span className="text-xs text-slate-400">
-                  {settings.apiToken ? "Token configurado" : "Nenhum token configurado"}
-                </span>
-                {settings.apiToken && (
-                  <span className="text-xs text-slate-600 ml-auto">
-                    ...{settings.apiToken.slice(-8)}
-                  </span>
-                )}
+              {/* Atualizar Dados */}
+              <div>
+                <p className="settings-section-label">Dados</p>
+                <div className="space-y-3">
+                  {/* Periodo */}
+                  <div>
+                    <label className="settings-label">Periodo de coleta (dias diarios)</label>
+                    <select value={daysBack} onChange={(e) => setDaysBack(Number(e.target.value))} className="settings-input">
+                      <option value={30}>Ultimos 30 dias</option>
+                      <option value={60}>Ultimos 60 dias</option>
+                      <option value={90}>Ultimos 90 dias</option>
+                      <option value={180}>Ultimos 180 dias</option>
+                    </select>
+                  </div>
+
+                  {/* Info atual */}
+                  <div className="px-3 py-2.5 rounded-lg bg-slate-800/50 text-xs text-slate-500 space-y-1">
+                    <div className="flex justify-between">
+                      <span>Contas carregadas</span>
+                      <strong className="text-slate-300">{collectResult?.accounts ?? data.accounts.length}</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Campanhas</span>
+                      <strong className="text-slate-300">{collectResult?.campaigns ?? data.campaigns.length}</strong>
+                    </div>
+                    {collectResult?.last_updated && (
+                      <div className="flex justify-between">
+                        <span>Ultima atualizacao</span>
+                        <strong className="text-slate-300">
+                          {new Date(collectResult.last_updated).toLocaleString("pt-BR")}
+                        </strong>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Progress bar */}
+                  {collectStatus === "running" && collectProgress && (
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-xs text-slate-400">
+                        <span className="truncate max-w-[200px]">{collectProgress.account}</span>
+                        <span>{collectProgress.current}/{collectProgress.total}</span>
+                      </div>
+                      <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-blue-500 rounded-full transition-all duration-300"
+                          style={{ width: `${(collectProgress.current / collectProgress.total) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                  {collectStatus === "running" && !collectProgress && (
+                    <div className="flex items-center gap-2 text-xs text-slate-400">
+                      <div className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                      <span>Conectando a API...</span>
+                    </div>
+                  )}
+
+                  {/* Resultado */}
+                  {collectStatus === "done" && collectResult && (
+                    <div className="px-3 py-2.5 rounded-lg bg-green-900/20 border border-green-800/30 text-xs text-green-400">
+                      ✓ Coleta concluida! {collectResult.accounts} contas, {collectResult.campaigns} campanhas.
+                      <span className="text-green-600 block mt-0.5">Recarregue a pagina para ver os novos dados.</span>
+                    </div>
+                  )}
+                  {collectStatus === "error" && (
+                    <div className="px-3 py-2.5 rounded-lg bg-red-900/20 border border-red-800/30 text-xs text-red-400">
+                      ✗ {collectError}
+                    </div>
+                  )}
+
+                  {/* Botao atualizar */}
+                  <button
+                    onClick={runCollect}
+                    disabled={!settings.apiToken || collectStatus === "running"}
+                    className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                      !settings.apiToken
+                        ? "bg-slate-700 text-slate-500 cursor-not-allowed"
+                        : collectStatus === "running"
+                        ? "bg-blue-800 text-blue-300 cursor-not-allowed"
+                        : "bg-blue-600 text-white hover:bg-blue-500"
+                    }`}
+                  >
+                    {collectStatus === "running" ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-blue-300 border-t-transparent rounded-full animate-spin" />
+                        Coletando dados...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        {collectStatus === "done" ? "Atualizar novamente" : "Atualizar dados agora"}
+                      </>
+                    )}
+                  </button>
+                  {!settings.apiToken && (
+                    <p className="text-[10px] text-slate-600 text-center">Configure o Access Token acima para habilitar</p>
+                  )}
+                </div>
               </div>
 
-              {/* Data info */}
-              <div className="px-3 py-2 rounded-lg bg-slate-800/50 text-xs text-slate-500">
-                <p>Dados carregados: <strong className="text-slate-300">{data.accounts.length} contas</strong>, <strong className="text-slate-300">{data.campaigns.length} campanhas</strong></p>
-                <p className="mt-1">Armazenamento: <strong className="text-slate-300">localStorage</strong> (dados sensiveis ficam apenas no seu navegador)</p>
-              </div>
             </div>
 
             {/* Footer */}
