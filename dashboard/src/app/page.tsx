@@ -16,6 +16,7 @@ import {
   Filler,
 } from "chart.js";
 import { Bar, Line } from "react-chartjs-2";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import rawData from "../data.json";
 
 ChartJS.register(
@@ -1193,9 +1194,17 @@ export default function Dashboard() {
                   <div className="card">
                     <h3 className="text-base font-semibold text-white mb-4">Gasto por Conjunto</h3>
                     {adsetSpendChart ? (
-                      <Bar data={adsetSpendChart} options={{
+                      <Bar data={adsetSpendChart} plugins={[ChartDataLabels]} options={{
                         responsive: true, indexAxis: "y" as const,
-                        plugins: { legend: { display: false } },
+                        layout: { padding: { right: 8 } },
+                        plugins: {
+                          legend: { display: false },
+                          datalabels: {
+                            anchor: "end", align: "end",
+                            color: "#94a3b8", font: { size: 11 },
+                            formatter: (v: number) => `R$ ${fmt(v)}`,
+                          },
+                        },
                         scales: {
                           x: { title: { display: true, text: "Gasto (R$)" } },
                           y: { ticks: { font: { size: 11 } } },
@@ -1206,9 +1215,17 @@ export default function Dashboard() {
                   <div className="card">
                     <h3 className="text-base font-semibold text-white mb-4">Resultados por Conjunto</h3>
                     {adsetResultsChart ? (
-                      <Bar data={adsetResultsChart} options={{
+                      <Bar data={adsetResultsChart} plugins={[ChartDataLabels]} options={{
                         responsive: true, indexAxis: "y" as const,
-                        plugins: { legend: { display: false } },
+                        layout: { padding: { right: 8 } },
+                        plugins: {
+                          legend: { display: false },
+                          datalabels: {
+                            anchor: "end", align: "end",
+                            color: "#94a3b8", font: { size: 11 },
+                            formatter: (v: number) => fmtInt(v),
+                          },
+                        },
                         scales: {
                           x: { title: { display: true, text: resultLabel } },
                           y: { ticks: { font: { size: 11 } } },
