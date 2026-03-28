@@ -834,6 +834,11 @@ export default function Dashboard() {
         results: resultInfo.value,
         resultLabel: resultInfo.label,
         costPerResult: resultInfo.value > 0 ? spend / resultInfo.value : 0,
+        engagement: getActionValue(ins?.actions, "post_engagement"),
+        reactions: getActionValue(ins?.actions, "post_reaction"),
+        comments: getActionValue(ins?.actions, "comment"),
+        shares: getActionValue(ins?.actions, "post"),
+        videoViews: getActionValue(ins?.actions, "video_view"),
       };
     }).sort((a, b) => b.spend - a.spend);
   }, [filteredAdInsights, selectedCampaign, campaignObjectiveMap]);
@@ -863,6 +868,48 @@ export default function Dashboard() {
         label: "Resultados",
         data: top.map(r => r.results),
         backgroundColor: "rgba(34,197,94,0.7)",
+        borderRadius: 4,
+      }],
+    };
+  }, [adRows]);
+
+  const adCtrChart = useMemo(() => {
+    const rows = adRows.filter(r => r.impressions > 0).sort((a, b) => b.ctr - a.ctr).slice(0, 10);
+    if (rows.length === 0) return null;
+    return {
+      labels: rows.map(r => r.name.length > 28 ? r.name.substring(0, 28) + "…" : r.name),
+      datasets: [{
+        label: "CTR (%)",
+        data: rows.map(r => r.ctr),
+        backgroundColor: rows.map(r => r.ctr >= 2 ? "rgba(34,197,94,0.75)" : r.ctr >= 1 ? "rgba(234,179,8,0.75)" : "rgba(239,68,68,0.75)"),
+        borderRadius: 4,
+      }],
+    };
+  }, [adRows]);
+
+  const adCprChart = useMemo(() => {
+    const rows = adRows.filter(r => r.costPerResult > 0).sort((a, b) => a.costPerResult - b.costPerResult).slice(0, 10);
+    if (rows.length === 0) return null;
+    return {
+      labels: rows.map(r => r.name.length > 28 ? r.name.substring(0, 28) + "…" : r.name),
+      datasets: [{
+        label: "Custo por Resultado (R$)",
+        data: rows.map(r => r.costPerResult),
+        backgroundColor: rows.map(r => r.costPerResult < 5 ? "rgba(34,197,94,0.75)" : r.costPerResult <= 15 ? "rgba(234,179,8,0.75)" : "rgba(239,68,68,0.75)"),
+        borderRadius: 4,
+      }],
+    };
+  }, [adRows]);
+
+  const adFreqChart = useMemo(() => {
+    const rows = adRows.filter(r => r.frequency > 0).sort((a, b) => b.frequency - a.frequency).slice(0, 10);
+    if (rows.length === 0) return null;
+    return {
+      labels: rows.map(r => r.name.length > 28 ? r.name.substring(0, 28) + "…" : r.name),
+      datasets: [{
+        label: "Frequência",
+        data: rows.map(r => r.frequency),
+        backgroundColor: rows.map(r => r.frequency > 3 ? "rgba(239,68,68,0.75)" : r.frequency > 2 ? "rgba(234,179,8,0.75)" : "rgba(34,197,94,0.75)"),
         borderRadius: 4,
       }],
     };
@@ -1509,50 +1556,88 @@ export default function Dashboard() {
                   <KPICard label={resultLabel} value={fmtInt(totalResults)} color={totalResults > 0 ? "green" : "red"} sub={aggCpr > 0 ? `R$ ${fmt(aggCpr)} / resultado` : undefined} />
                 </div>
 
-                {/* Charts */}
+                {/* Charts 2×2 */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                   <div className="card">
-                    <h3 className="text-base font-semibold text-white mb-4">Gasto por Criativo</h3>
+                    <h3 className="text-base font-semibold text-white mb-1">Gasto por Criativo</h3>
+                    <p className="text-xs text-slate-500 mb-4">Investimento total por anuncio</p>
                     {adSpendChart ? (
                       <Bar data={adSpendChart} plugins={[ChartDataLabels]} options={{
                         responsive: true, indexAxis: "y" as const,
                         layout: { padding: { right: 8 } },
                         plugins: {
                           legend: { display: false },
-                          datalabels: {
-                            anchor: "end", align: "end",
-                            color: "#94a3b8", font: { size: 11 },
-                            formatter: (v: number) => `R$ ${fmt(v)}`,
-                          },
+                          datalabels: { anchor: "end", align: "end", color: "#94a3b8", font: { size: 11 }, formatter: (v: number) => `R$ ${fmt(v)}` },
                         },
-                        scales: {
-                          x: { title: { display: true, text: "Gasto (R$)" } },
-                          y: { ticks: { font: { size: 11 } } },
-                        },
+                        scales: { x: { title: { display: true, text: "Gasto (R$)" } }, y: { ticks: { font: { size: 11 } } } },
                       }} />
-                    ) : <p className="text-slate-500 text-center py-8">Sem dados de gasto</p>}
+                    ) : <p className="text-slate-500 text-center py-8">Sem dados</p>}
                   </div>
                   <div className="card">
-                    <h3 className="text-base font-semibold text-white mb-4">Resultados por Criativo</h3>
+                    <h3 className="text-base font-semibold text-white mb-1">Custo por Resultado</h3>
+                    <p className="text-xs text-slate-500 mb-4">Menor = mais eficiente · verde &lt;R$5 · amarelo R$5–15 · vermelho &gt;R$15</p>
+                    {adCprChart ? (
+                      <Bar data={adCprChart} plugins={[ChartDataLabels]} options={{
+                        responsive: true, indexAxis: "y" as const,
+                        layout: { padding: { right: 8 } },
+                        plugins: {
+                          legend: { display: false },
+                          datalabels: { anchor: "end", align: "end", color: "#94a3b8", font: { size: 11 }, formatter: (v: number) => `R$ ${fmt(v)}` },
+                        },
+                        scales: { x: { title: { display: true, text: "R$ / Resultado" } }, y: { ticks: { font: { size: 11 } } } },
+                      }} />
+                    ) : <p className="text-slate-500 text-center py-8">Sem dados de custo</p>}
+                  </div>
+                  <div className="card">
+                    <h3 className="text-base font-semibold text-white mb-1">CTR por Criativo</h3>
+                    <p className="text-xs text-slate-500 mb-4">Taxa de clique · verde &gt;2% · amarelo 1–2% · vermelho &lt;1%</p>
+                    {adCtrChart ? (
+                      <Bar data={adCtrChart} plugins={[ChartDataLabels]} options={{
+                        responsive: true, indexAxis: "y" as const,
+                        layout: { padding: { right: 8 } },
+                        plugins: {
+                          legend: { display: false },
+                          datalabels: { anchor: "end", align: "end", color: "#94a3b8", font: { size: 11 }, formatter: (v: number) => pct(v) },
+                        },
+                        scales: { x: { title: { display: true, text: "CTR (%)" } }, y: { ticks: { font: { size: 11 } } } },
+                      }} />
+                    ) : <p className="text-slate-500 text-center py-8">Sem dados de CTR</p>}
+                  </div>
+                  <div className="card">
+                    <h3 className="text-base font-semibold text-white mb-1">Resultados por Criativo</h3>
+                    <p className="text-xs text-slate-500 mb-4">Volume total de {resultLabel.toLowerCase()} por anuncio</p>
                     {adResultsChart ? (
                       <Bar data={adResultsChart} plugins={[ChartDataLabels]} options={{
                         responsive: true, indexAxis: "y" as const,
                         layout: { padding: { right: 8 } },
                         plugins: {
                           legend: { display: false },
-                          datalabels: {
-                            anchor: "end", align: "end",
-                            color: "#94a3b8", font: { size: 11 },
-                            formatter: (v: number) => fmtInt(v),
-                          },
+                          datalabels: { anchor: "end", align: "end", color: "#94a3b8", font: { size: 11 }, formatter: (v: number) => fmtInt(v) },
                         },
-                        scales: {
-                          x: { title: { display: true, text: resultLabel } },
-                          y: { ticks: { font: { size: 11 } } },
-                        },
+                        scales: { x: { title: { display: true, text: resultLabel } }, y: { ticks: { font: { size: 11 } } } },
                       }} />
                     ) : <p className="text-slate-500 text-center py-8">Sem dados de resultados</p>}
                   </div>
+                </div>
+
+                {/* Frequency chart — full width */}
+                <div className="card mb-6">
+                  <h3 className="text-base font-semibold text-white mb-1">Frequencia por Criativo</h3>
+                  <p className="text-xs text-slate-500 mb-4">Quantas vezes cada pessoa viu o anuncio · verde &lt;2 · amarelo 2–3 · vermelho &gt;3 (risco de fadiga)</p>
+                  {adFreqChart ? (
+                    <Bar data={adFreqChart} plugins={[ChartDataLabels]} options={{
+                      responsive: true, indexAxis: "y" as const,
+                      layout: { padding: { right: 8 } },
+                      plugins: {
+                        legend: { display: false },
+                        datalabels: { anchor: "end", align: "end", color: "#94a3b8", font: { size: 11 }, formatter: (v: number) => v.toFixed(2) + "×" },
+                      },
+                      scales: {
+                        x: { title: { display: true, text: "Frequencia media" }, suggestedMax: Math.max(...adFreqChart.datasets[0].data as number[]) * 1.15 },
+                        y: { ticks: { font: { size: 11 } } },
+                      },
+                    }} />
+                  ) : <p className="text-slate-500 text-center py-8">Sem dados de frequencia</p>}
                 </div>
 
                 {/* Ads table */}
@@ -1575,6 +1660,7 @@ export default function Dashboard() {
                           <th className="text-right py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">CPM</th>
                           <th className="text-right py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">{resultLabel}</th>
                           <th className="text-right py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Custo/Result.</th>
+                          <th className="text-right py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Engajamento</th>
                           <th className="text-right py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Freq.</th>
                         </tr>
                       </thead>
@@ -1605,8 +1691,14 @@ export default function Dashboard() {
                             <td className={`py-3 px-3 text-right text-sm ${row.costPerResult > 0 && row.costPerResult < 5 ? "text-green-400" : row.costPerResult > 0 && row.costPerResult <= 15 ? "text-yellow-400" : row.costPerResult > 15 ? "text-red-400" : "text-slate-600"}`}>
                               {row.costPerResult > 0 ? `R$ ${fmt(row.costPerResult)}` : "—"}
                             </td>
+                            <td className="py-3 px-3 text-right text-sm">
+                              {row.engagement > 0 ? (
+                                <span className="text-slate-300">{fmtInt(row.engagement)}</span>
+                              ) : <span className="text-slate-600">—</span>}
+                              {row.reactions > 0 && <span className="block text-[10px] text-slate-500">{fmtInt(row.reactions)} reac.</span>}
+                            </td>
                             <td className={`py-3 px-3 text-right text-sm ${row.frequency > 3 ? "text-red-400" : row.frequency > 2 ? "text-yellow-400" : row.frequency > 0 ? "text-slate-300" : "text-slate-600"}`}>
-                              {row.frequency > 0 ? row.frequency.toFixed(2) : "—"}
+                              {row.frequency > 0 ? row.frequency.toFixed(2) + "×" : "—"}
                             </td>
                           </tr>
                         ))}
