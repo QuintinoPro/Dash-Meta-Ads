@@ -297,14 +297,14 @@ export default function Dashboard() {
   const CRYPTO_KEY_NAME = "meta-ads-ck";
 
   const getCryptoKey = async (): Promise<CryptoKey> => {
-    const stored = sessionStorage.getItem(CRYPTO_KEY_NAME);
+    const stored = localStorage.getItem(CRYPTO_KEY_NAME);
     if (stored) {
       const raw = Uint8Array.from(atob(stored), (c) => c.charCodeAt(0));
       return crypto.subtle.importKey("raw", raw, "AES-GCM", true, ["encrypt", "decrypt"]);
     }
     const key = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
     const exported = await crypto.subtle.exportKey("raw", key);
-    sessionStorage.setItem(CRYPTO_KEY_NAME, btoa(String.fromCharCode(...new Uint8Array(exported))));
+    localStorage.setItem(CRYPTO_KEY_NAME, btoa(String.fromCharCode(...new Uint8Array(exported))));
     return key;
   };
 
