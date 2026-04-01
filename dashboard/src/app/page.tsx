@@ -955,12 +955,26 @@ export default function Dashboard() {
   }, [adRows]);
 
   const isSingleCampaign = selectedCampaign !== "all";
-  const periodLabel = (({
-    today: "Hoje", yesterday: "Ontem",
-    "7": "7 dias", "14": "14 dias", "15": "15 dias", "28": "28 dias", "30": "30 dias", "90": "90 dias",
-    this_month: "Este mes", last_month: "Mes passado", all: "",
-    custom: customStart && customEnd ? `${new Date(customStart+"T12:00:00").toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})} - ${new Date(customEnd+"T12:00:00").toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})}` : "Personalizado",
-  }) as Record<string, string>)[datePeriod] || "";
+  const periodLabel = (() => {
+    if (datePeriod === "all") {
+      if (selectedCampaign !== "all") {
+        const camp = data.campaigns.find((c: Campaign) => c.id === selectedCampaign);
+        const startRaw = camp?.start_time || camp?.created_time;
+        if (startRaw) {
+          const start = new Date(startRaw).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "2-digit" });
+          const end = new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "2-digit" });
+          return `${start} – ${end}`;
+        }
+      }
+      return "";
+    }
+    return (({
+      today: "Hoje", yesterday: "Ontem",
+      "7": "7 dias", "14": "14 dias", "15": "15 dias", "28": "28 dias", "30": "30 dias", "90": "90 dias",
+      this_month: "Este mes", last_month: "Mes passado",
+      custom: customStart && customEnd ? `${new Date(customStart+"T12:00:00").toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})} - ${new Date(customEnd+"T12:00:00").toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"})}` : "Personalizado",
+    }) as Record<string, string>)[datePeriod] || "";
+  })();
 
   const hasActiveFilters = selectedAccount !== "all" || selectedCampaign !== "all" || datePeriod !== "all";
 
@@ -1089,7 +1103,7 @@ export default function Dashboard() {
                 {selectedAccount !== "all" && <span className="text-blue-400">{data.accounts.find(a => a.id === selectedAccount)?.name}</span>}
                 {selectedCampaign !== "all" && <span className="text-blue-400">{selectedAccount !== "all" ? " > " : ""}{filteredInsights[0]?.campaign_name}</span>}
                 {selectedCampaign !== "all" && (() => { const c = data.campaigns.find(c => c.id === selectedCampaign); return c?.start_time ? <span className="text-slate-600"> · Criada em {new Date(c.start_time).toLocaleDateString("pt-BR")}</span> : null; })()}
-                {datePeriod !== "all" && <span className="text-slate-400">{(selectedAccount !== "all" || selectedCampaign !== "all") ? " · " : ""}{periodLabel}</span>}
+                {periodLabel && <span className="text-slate-400">{(selectedAccount !== "all" || selectedCampaign !== "all") ? " · " : ""}{periodLabel}</span>}
               </p>
             )}
           </div>
@@ -1200,7 +1214,7 @@ export default function Dashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <div className="card">
                   <h3 className="text-lg font-semibold text-white mb-4">
-                    {datePeriod !== "all" ? `Gasto & Resultados (${periodLabel})` : "Gasto & Resultados ao Longo do Tempo"}
+                    {periodLabel ? `Gasto & Resultados (${periodLabel})` : "Gasto & Resultados ao Longo do Tempo"}
                   </h3>
                   {trendData ? (
                     <Line data={trendData} options={{
@@ -1214,7 +1228,7 @@ export default function Dashboard() {
                 </div>
                 <div className="card">
                   <h3 className="text-lg font-semibold text-white mb-4">
-                    {datePeriod !== "all" ? `Custo por Resultado (${periodLabel})` : "Custo por Resultado ao Longo do Tempo"}
+                    {periodLabel ? `Custo por Resultado (${periodLabel})` : "Custo por Resultado ao Longo do Tempo"}
                   </h3>
                   {cprTrendData ? (
                     <Line data={cprTrendData} options={{
@@ -1239,7 +1253,7 @@ export default function Dashboard() {
                 {/* Frequência & CTR (fadiga criativa) */}
                 <div className="card">
                   <h3 className="text-lg font-semibold text-white mb-1">
-                    {datePeriod !== "all" ? `Frequencia & CTR (${periodLabel})` : "Frequencia & CTR"}
+                    {periodLabel ? `Frequencia & CTR (${periodLabel})` : "Frequencia & CTR"}
                   </h3>
                   <p className="text-xs text-slate-500 mb-4">Freq. subindo + CTR caindo = fadiga criativa</p>
                   {fatigueTrendData ? (
