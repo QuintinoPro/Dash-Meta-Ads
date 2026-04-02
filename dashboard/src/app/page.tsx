@@ -1010,14 +1010,17 @@ export default function Dashboard() {
       {/* ══════════ SIDEBAR ══════════ */}
       <aside className="sidebar">
         {/* Logo / Brand */}
-        <div className="px-5 py-5 border-b border-slate-700/60">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-              <svg className="w-4.5 h-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+        <div className="px-5 py-4 border-b border-white/5">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
+              style={{ background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)", boxShadow: "0 4px 12px rgba(37,99,235,0.4)" }}>
+              <svg className="w-4 h-4 text-white" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
             </div>
             <div>
-              <h1 className="text-sm font-bold text-white leading-tight">Meta Ads</h1>
-              <p className="text-[10px] text-slate-500 leading-tight">Dashboard</p>
+              <h1 className="text-sm font-bold text-white leading-tight tracking-tight">Meta Ads</h1>
+              <p className="text-[10px] leading-tight" style={{ color: "var(--text-muted)" }}>Dashboard</p>
             </div>
           </div>
         </div>
@@ -1118,15 +1121,15 @@ export default function Dashboard() {
         </div>
 
         {/* Footer */}
-        <div className="px-3 py-3 border-t border-slate-700/60 mt-auto space-y-2">
-          <button onClick={openSettings}
+        <div className="px-3 py-3 mt-auto space-y-2" style={{ borderTop: "1px solid var(--border-subtle)" }}>
+          <button onClick={openSettings} aria-label="Abrir configuracoes"
             className="sidebar-nav-item w-full">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.241-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.38.138.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.38-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+            <svg className="w-5 h-5 shrink-0" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.241-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.38.138.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.38-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
             <span>Configuracoes</span>
           </button>
-          <div className="flex items-center gap-2 text-[10px] text-slate-600 px-2">
-            <div className={`w-1.5 h-1.5 rounded-full ${settings.apiToken ? "bg-green-500" : "bg-slate-600"}`}></div>
-            <span>{settings.apiToken ? "API conectada" : "API nao configurada"} &middot; {data.accounts.length} contas</span>
+          <div className="flex items-center gap-2 text-[10px] px-2" style={{ color: "var(--text-muted)" }}>
+            <div className={`w-1.5 h-1.5 rounded-full ${settings.apiToken ? "bg-green-500" : "bg-slate-700"}`} aria-hidden="true"></div>
+            <span>{settings.apiToken ? "API conectada" : "API nao configurada"} · {data.accounts.length} contas</span>
           </div>
         </div>
       </aside>
@@ -1134,29 +1137,33 @@ export default function Dashboard() {
       {/* ══════════ MAIN CONTENT ══════════ */}
       <main className="flex-1 min-h-screen overflow-y-auto">
         {/* Top bar */}
-        <div className="sticky top-0 z-10 bg-[var(--background)]/80 backdrop-blur-md border-b border-slate-800 px-6 py-3 flex items-center justify-between">
+        <div className="sticky top-0 z-10 border-b px-6 py-3 flex items-center justify-between"
+          style={{ background: "rgba(7,13,26,0.85)", backdropFilter: "blur(12px)", borderColor: "var(--border-subtle)" }}>
           <div>
-            <h2 className="text-lg font-semibold text-white">
+            <h2 className="text-base font-semibold text-white" style={{ textWrap: "balance" } as React.CSSProperties}>
               {tab === "overview" ? "Visao Geral" : tab === "campaigns" ? "Campanhas" : "Recomendacoes"}
             </h2>
             {hasActiveFilters && (
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
                 {selectedAccount !== "all" && <span className="text-blue-400">{data.accounts.find(a => a.id === selectedAccount)?.name}</span>}
-                {selectedCampaign !== "all" && <span className="text-blue-400">{selectedAccount !== "all" ? " > " : ""}{filteredInsights[0]?.campaign_name}</span>}
-                {selectedCampaign !== "all" && (() => { const c = data.campaigns.find(c => c.id === selectedCampaign); return c?.start_time ? <span className="text-slate-600"> · Criada em {new Date(c.start_time).toLocaleDateString("pt-BR")}</span> : null; })()}
-                {periodLabel && <span className="text-slate-400">{(selectedAccount !== "all" || selectedCampaign !== "all") ? " · " : ""}{periodLabel}</span>}
+                {selectedCampaign !== "all" && <span className="text-blue-400">{selectedAccount !== "all" ? " › " : ""}{filteredInsights[0]?.campaign_name}</span>}
+                {selectedCampaign !== "all" && (() => { const c = data.campaigns.find(c => c.id === selectedCampaign); return c?.start_time ? <span style={{ color: "var(--text-muted)" }}> · Criada em {new Date(c.start_time).toLocaleDateString("pt-BR")}</span> : null; })()}
+                {periodLabel && <span style={{ color: "var(--text-secondary)" }}>{(selectedAccount !== "all" || selectedCampaign !== "all") ? " · " : ""}{periodLabel}</span>}
               </p>
             )}
           </div>
           <div className="flex items-center gap-3">
             {selectedCampaign !== "all" && viewLevel === "campaign" && (
-              <button onClick={() => setShowReport(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-600 text-white hover:bg-blue-500 transition-colors">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+              <button onClick={() => setShowReport(true)} aria-label="Gerar relatório da campanha"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white transition-colors"
+                style={{ background: "linear-gradient(135deg, #2563eb, #1d4ed8)", boxShadow: "0 2px 8px rgba(37,99,235,0.35)" }}
+                onMouseEnter={e => (e.currentTarget.style.opacity = "0.9")}
+                onMouseLeave={e => (e.currentTarget.style.opacity = "1")}>
+                <svg className="w-4 h-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                 Gerar Relatorio
               </button>
             )}
-            <p className="text-xs text-slate-600">Graph API v21.0 &middot; {new Date().toLocaleDateString("pt-BR")}</p>
+            <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>Graph API v21.0 · {new Date().toLocaleDateString("pt-BR")}</p>
           </div>
         </div>
 
@@ -1254,7 +1261,7 @@ export default function Dashboard() {
               {/* Chart Row 1: Gasto & Resultados + Custo por Resultado (trend) */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <div className="card">
-                  <h3 className="text-lg font-semibold text-white mb-4">
+                  <h3 className="text-base font-semibold text-white mb-4 text-balance">
                     {periodLabel ? `Gasto & Resultados (${periodLabel})` : "Gasto & Resultados ao Longo do Tempo"}
                   </h3>
                   {trendData ? (
@@ -1268,7 +1275,7 @@ export default function Dashboard() {
                   ) : <p className="text-slate-500 text-center py-8">Sem dados de tendencia</p>}
                 </div>
                 <div className="card">
-                  <h3 className="text-lg font-semibold text-white mb-4">
+                  <h3 className="text-base font-semibold text-white mb-4 text-balance">
                     {periodLabel ? `Custo por Resultado (${periodLabel})` : "Custo por Resultado ao Longo do Tempo"}
                   </h3>
                   {cprTrendData ? (
@@ -1287,7 +1294,7 @@ export default function Dashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 {/* Funil de Conversão */}
                 <div className="card">
-                  <h3 className="text-lg font-semibold text-white mb-4">Funil de Conversao</h3>
+                  <h3 className="text-base font-semibold text-white mb-4 text-balance">Funil de Conversao</h3>
                   <FunnelChart data={funnelData} />
                 </div>
 
@@ -1328,7 +1335,7 @@ export default function Dashboard() {
                 {/* Resultados por Campanha - só aparece com múltiplas campanhas */}
                 {!isSingleCampaign && resultsByCampaignChart && (
                   <div className="card">
-                    <h3 className="text-lg font-semibold text-white mb-4">Resultados por Campanha</h3>
+                    <h3 className="text-base font-semibold text-white mb-4 text-balance">Resultados por Campanha</h3>
                     <Bar data={resultsByCampaignChart} options={{
                       responsive: true, indexAxis: "y" as const,
                       interaction: { mode: "index" as const, intersect: false },
@@ -1357,23 +1364,23 @@ export default function Dashboard() {
 
               {/* Campaigns Table */}
               <div className="card">
-                <h3 className="text-lg font-semibold text-white mb-4">
+                <h3 className="text-base font-semibold text-white mb-4 text-balance">
                   {isSingleCampaign ? "Detalhes da Campanha" : "Campanhas por Gasto"}
                 </h3>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
+                  <table className="w-full text-sm tabular-nums">
                     <thead>
-                      <tr className="text-slate-400 border-b border-slate-700">
-                        <th className="text-left py-3 px-2">Campanha</th>
-                        <th className="text-left py-3 px-2">Conta</th>
-                        <th className="text-right py-3 px-2">Orç. Diário</th>
-                        <th className="text-right py-3 px-2">Gasto</th>
-                        <th className="text-right py-3 px-2">Impressoes</th>
-                        <th className="text-right py-3 px-2">Cliques Link</th>
-                        <th className="text-right py-3 px-2">CTR</th>
-                        <th className="text-right py-3 px-2">CPC</th>
-                        <th className="text-right py-3 px-2">Resultados</th>
-                        <th className="text-right py-3 px-2">Custo/Result.</th>
+                      <tr className="text-xs text-slate-500 border-b" style={{ borderColor: "var(--border-subtle)" }}>
+                        <th className="text-left py-3 px-2 font-medium">Campanha</th>
+                        <th className="text-left py-3 px-2 font-medium">Conta</th>
+                        <th className="text-right py-3 px-2 font-medium">Orç. Diário</th>
+                        <th className="text-right py-3 px-2 font-medium">Gasto</th>
+                        <th className="text-right py-3 px-2 font-medium">Impressoes</th>
+                        <th className="text-right py-3 px-2 font-medium">Cliques Link</th>
+                        <th className="text-right py-3 px-2 font-medium">CTR</th>
+                        <th className="text-right py-3 px-2 font-medium">CPC</th>
+                        <th className="text-right py-3 px-2 font-medium">Resultados</th>
+                        <th className="text-right py-3 px-2 font-medium">Custo/Result.</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1385,7 +1392,7 @@ export default function Dashboard() {
                         const cpr = results > 0 ? spend / results : 0;
                         return (
                           <tr key={i.campaign_id}
-                            className="border-b border-slate-700/50 table-row cursor-pointer"
+                            className="table-row cursor-pointer" style={{ borderBottom: "1px solid var(--border-subtle)" }}
                             onClick={() => { if (!isSingleCampaign) setSelectedCampaign(i.campaign_id); }}
                             title={isSingleCampaign ? undefined : "Clique para filtrar"}>
                             <td className="py-3 px-2 text-white font-medium max-w-[250px] truncate">
@@ -1524,7 +1531,7 @@ export default function Dashboard() {
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="border-b border-slate-700/50">
+                        <tr className="border-b border-white/5">
                           <th className="text-left py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Conjunto</th>
                           <th className="text-center py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Status</th>
                           <th className="text-right py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Orcamento</th>
@@ -1783,7 +1790,7 @@ export default function Dashboard() {
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="border-b border-slate-700/50">
+                        <tr className="border-b border-white/5">
                           <th className="text-left py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Criativo</th>
                           <th className="text-left py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Conjunto</th>
                           <th className="text-center py-2.5 px-3 text-xs font-medium text-slate-500 uppercase tracking-wide">Status</th>
@@ -1849,24 +1856,24 @@ export default function Dashboard() {
       {/* ══════════ CAMPAIGNS TAB ══════════ */}
       {tab === "campaigns" && (
         <div className="card">
-          <h3 className="text-lg font-semibold text-white mb-4">
+          <h3 className="text-base font-semibold text-white mb-4 text-balance">
             Todas as Campanhas ({filteredCampaigns.length})
           </h3>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm tabular-nums">
               <thead>
-                <tr className="text-slate-400 border-b border-slate-700">
-                  <th className="text-left py-3 px-2">Campanha</th>
-                  <th className="text-left py-3 px-2">Conta</th>
-                  <th className="text-left py-3 px-2">Status</th>
-                  <th className="text-left py-3 px-2">Objetivo</th>
-                  <th className="text-right py-3 px-2">Orc./dia</th>
-                  <th className="text-right py-3 px-2">Gasto</th>
-                  <th className="text-right py-3 px-2">Impressoes</th>
-                  <th className="text-right py-3 px-2">CTR</th>
-                  <th className="text-right py-3 px-2">CPC</th>
-                  <th className="text-right py-3 px-2">Resultados</th>
-                  <th className="text-right py-3 px-2">Custo/Result.</th>
+                <tr className="text-xs text-slate-500 border-b border-white/5">
+                  <th className="text-left py-3 px-2 font-medium">Campanha</th>
+                  <th className="text-left py-3 px-2 font-medium">Conta</th>
+                  <th className="text-left py-3 px-2 font-medium">Status</th>
+                  <th className="text-left py-3 px-2 font-medium">Objetivo</th>
+                  <th className="text-right py-3 px-2 font-medium">Orc./dia</th>
+                  <th className="text-right py-3 px-2 font-medium">Gasto</th>
+                  <th className="text-right py-3 px-2 font-medium">Impressoes</th>
+                  <th className="text-right py-3 px-2 font-medium">CTR</th>
+                  <th className="text-right py-3 px-2 font-medium">CPC</th>
+                  <th className="text-right py-3 px-2 font-medium">Resultados</th>
+                  <th className="text-right py-3 px-2 font-medium">Custo/Result.</th>
                 </tr>
               </thead>
               <tbody>
@@ -1878,7 +1885,7 @@ export default function Dashboard() {
                   const cpr = results > 0 ? spend / results : 0;
                   return (
                     <tr key={c.id}
-                      className="border-b border-slate-700/50 table-row cursor-pointer"
+                      className="table-row cursor-pointer" style={{ borderBottom: "1px solid var(--border-subtle)" }}
                       onClick={() => { setSelectedCampaign(c.id); setTab("overview"); }}
                       title="Clique para ver detalhes">
                       <td className="py-3 px-2 text-white font-medium max-w-[220px] truncate">
@@ -1992,12 +1999,14 @@ export default function Dashboard() {
           role="dialog" aria-modal="true" aria-label="Configuracoes"
           onClick={(e) => { if (e.target === e.currentTarget) cancelSettings(); }}
           onKeyDown={(e) => { if (e.key === "Escape") cancelSettings(); }}>
-          <div className="bg-[#1e293b] border border-slate-700 rounded-2xl w-full max-w-md mx-4 shadow-2xl">
+          <div className="rounded-2xl w-full max-w-md mx-4 shadow-2xl overflow-hidden"
+            style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-default)" }}>
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700">
-              <h3 className="text-lg font-semibold text-white">Configuracoes</h3>
-              <button onClick={cancelSettings} className="text-slate-400 hover:text-white transition-colors">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+            <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: "1px solid var(--border-subtle)" }}>
+              <h3 className="text-base font-semibold text-white">Configuracoes</h3>
+              <button onClick={cancelSettings} aria-label="Fechar configuracoes"
+                className="text-slate-500 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-blue-500">
+                <svg className="w-4.5 h-4.5" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
 
@@ -2673,7 +2682,7 @@ export default function Dashboard() {
                       <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                           <thead>
-                            <tr className="border-b border-slate-700">
+                            <tr className="border-b border-white/5">
                               <th className="text-left py-2 px-3 text-slate-500 font-medium">Data</th>
                               <th className="text-right py-2 px-3 text-slate-500 font-medium">Investido</th>
                               <th className="text-right py-2 px-3 text-slate-500 font-medium">Impressoes</th>
@@ -2841,7 +2850,7 @@ export default function Dashboard() {
                       <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                           <thead>
-                            <tr className="border-b border-slate-700">
+                            <tr className="border-b border-white/5">
                               <th className="text-left py-2 px-3 text-slate-500 font-medium">Conjunto</th>
                               <th className="text-center py-2 px-3 text-slate-500 font-medium">Status</th>
                               <th className="text-right py-2 px-3 text-slate-500 font-medium">Gasto</th>
@@ -2907,7 +2916,7 @@ export default function Dashboard() {
                       <div className="overflow-x-auto">
                         <table className="w-full text-sm">
                           <thead>
-                            <tr className="border-b border-slate-700">
+                            <tr className="border-b border-white/5">
                               <th className="text-left py-2 px-3 text-slate-500 font-medium">Criativo</th>
                               <th className="text-left py-2 px-3 text-slate-500 font-medium">Conjunto</th>
                               <th className="text-center py-2 px-3 text-slate-500 font-medium">Status</th>
@@ -2953,19 +2962,23 @@ export default function Dashboard() {
 }
 
 function KPICard({ label, value, color, sub }: { label: string; value: string; color: string; sub?: string }) {
-  const borderMap: Record<string, string> = {
-    blue: "border-l-blue-500", green: "border-l-green-500", red: "border-l-red-500",
-    yellow: "border-l-yellow-500", purple: "border-l-purple-500", cyan: "border-l-cyan-500",
+  const cfg: Record<string, { border: string; value: string; glow: string; dot: string }> = {
+    blue:   { border: "border-l-blue-500",   value: "text-blue-100",   glow: "rgba(59,130,246,0.08)",   dot: "#3b82f6" },
+    green:  { border: "border-l-green-500",  value: "text-green-400",  glow: "rgba(34,197,94,0.08)",    dot: "#22c55e" },
+    red:    { border: "border-l-red-500",    value: "text-red-400",    glow: "rgba(239,68,68,0.08)",    dot: "#ef4444" },
+    yellow: { border: "border-l-yellow-500", value: "text-yellow-400", glow: "rgba(245,158,11,0.08)",   dot: "#f59e0b" },
+    purple: { border: "border-l-purple-500", value: "text-purple-300", glow: "rgba(168,85,247,0.08)",   dot: "#a855f7" },
+    cyan:   { border: "border-l-cyan-500",   value: "text-cyan-300",   glow: "rgba(6,182,212,0.08)",    dot: "#06b6d4" },
   };
-  const valueColorMap: Record<string, string> = {
-    blue: "text-white", green: "text-green-400", red: "text-red-400",
-    yellow: "text-yellow-400", purple: "text-white", cyan: "text-white",
-  };
+  const c = cfg[color] || cfg.blue;
   return (
-    <div className={`metric-card border-l-4 ${borderMap[color] || borderMap.blue}`}>
-      <p className="text-xs text-slate-400 mb-1">{label}</p>
-      <p className={`text-xl font-bold ${valueColorMap[color] || "text-white"}`}>{value}</p>
-      {sub && <p className="text-xs text-slate-500 mt-0.5">{sub}</p>}
+    <div
+      className={`metric-card border-l-[3px] ${c.border}`}
+      style={{ background: `linear-gradient(135deg, ${c.glow} 0%, var(--bg-card) 60%)` }}
+    >
+      <p className="text-[11px] font-medium text-slate-400 mb-1.5 uppercase tracking-wide">{label}</p>
+      <p className={`text-2xl font-bold tabular-nums leading-none ${c.value}`}>{value}</p>
+      {sub && <p className="text-[11px] text-slate-500 mt-1.5">{sub}</p>}
     </div>
   );
 }

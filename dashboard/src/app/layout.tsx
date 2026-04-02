@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Meta Ads Dashboard",
   description: "Dashboard de análise de campanhas Meta Ads",
+  themeColor: "#070d1a",
 };
 
 export default function RootLayout({
