@@ -39,7 +39,7 @@ interface Insight {
 interface Campaign {
   id: string; name: string; status: string; objective: string;
   daily_budget?: string; lifetime_budget?: string; start_time?: string;
-  stop_time?: string; account_id: string; account_name: string;
+  stop_time?: string; created_time?: string; account_id: string; account_name: string;
 }
 interface AdsetInsight {
   adset_id: string; adset_name: string; campaign_id: string; campaign_name: string;
