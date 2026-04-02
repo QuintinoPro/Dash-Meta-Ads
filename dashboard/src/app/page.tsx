@@ -73,7 +73,7 @@ interface Ad {
 }
 
 const data = rawData as {
-  accounts: { id: string; name: string; total_campaigns: number; campaigns_with_data: number }[];
+  accounts: { id: string; name: string; total_campaigns: number; campaigns_with_data: number; balance?: string; amount_spent?: string }[];
   campaigns: Campaign[];
   insights: Insight[];
   monthly_insights: Insight[];
@@ -453,8 +453,23 @@ export default function Dashboard() {
     if (selectedAccount !== "all") ins = ins.filter((i) => i.account_id === selectedAccount);
     const seen = new Map<string, string>();
     ins.forEach((i) => seen.set(i.campaign_id, i.campaign_name));
-    return [...seen.entries()].sort((a, b) => a[1].localeCompare(b[1]));
-  }, [selectedAccount]);
+    // usa daily_insights para achar a última data real de atividade por campanha
+    const lastDailyMap = new Map<string, string>();
+    data.daily_insights.forEach((i) => {
+      const prev = lastDailyMap.get(i.campaign_id) ?? "";
+      if (i.date_start > prev) lastDailyMap.set(i.campaign_id, i.date_start);
+    });
+    const campaignStatusMap = new Map(data.campaigns.map((c) => [c.id, c.status]));
+    return [...seen.entries()]
+      .map(([id, name]) => ({ id, name, status: campaignStatusMap.get(id) ?? "UNKNOWN", lastActivity: lastDailyMap.get(id) ?? "" }))
+      .sort((a, b) => {
+        const rank = (s: string) => s === "ACTIVE" ? 0 : 1;
+        if (rank(a.status) !== rank(b.status)) return rank(a.status) - rank(b.status);
+        // pausadas/outras: mais recente primeiro
+        if (a.status !== "ACTIVE") return b.lastActivity.localeCompare(a.lastActivity);
+        return a.name.localeCompare(b.name);
+      });
+  }, [selectedAccount, data.campaigns, data.daily_insights]);
 
   const handleAccountChange = (val: string) => {
     setSelectedAccount(val);
@@ -692,7 +707,7 @@ export default function Dashboard() {
           });
         }
       });
-      return [...map.values()].map(({ base, actionMap }) => {
+      const result = [...map.values()].map(({ base, actionMap }) => {
         const imp = safeInt(base.impressions);
         const clk = safeInt(base.clicks);
         const sp = safeFloat(base.spend);
@@ -705,6 +720,9 @@ export default function Dashboard() {
           cpm: imp > 0 ? String((sp / imp) * 1000) : undefined,
         } as AdsetInsight;
       });
+      // fallback para dados estáticos se não há daily data para esta campanha
+      if (result.length === 0) return adsetStatic.filter(i => i.campaign_id === selectedCampaign);
+      return result;
     }
     return adsetStatic.filter(i => i.campaign_id === selectedCampaign);
   }, [selectedCampaign, datePeriod, dateCutoff, dateEnd]);
@@ -804,7 +822,7 @@ export default function Dashboard() {
           });
         }
       });
-      return [...map.values()].map(({ base, actionMap }) => {
+      const result = [...map.values()].map(({ base, actionMap }) => {
         const imp = safeInt(base.impressions);
         const clk = safeInt(base.clicks);
         const sp = safeFloat(base.spend);
@@ -817,6 +835,9 @@ export default function Dashboard() {
           cpm: imp > 0 ? String((sp / imp) * 1000) : undefined,
         } as AdInsight;
       });
+      // fallback para dados estáticos se não há daily data para esta campanha
+      if (result.length === 0) return adStatic.filter(i => i.campaign_id === selectedCampaign);
+      return result;
     }
     return adStatic.filter(i => i.campaign_id === selectedCampaign);
   }, [selectedCampaign, datePeriod, dateCutoff, dateEnd]);
@@ -1024,10 +1045,30 @@ export default function Dashboard() {
               <label className="text-[11px] text-slate-500 font-medium mb-1 block px-1">Conta</label>
               <select value={selectedAccount} onChange={(e) => handleAccountChange(e.target.value)}
                 className="sidebar-select">
-                <option value="all">Todas as contas</option>
-                {data.accounts.map((a) => (
-                  <option key={a.id} value={a.id}>{a.name} ({a.campaigns_with_data})</option>
-                ))}
+                {(() => {
+                  const activeCampaignsByAccount = data.campaigns.reduce((acc, c) => {
+                    if (c.status === "ACTIVE") acc.set(c.account_id, (acc.get(c.account_id) ?? 0) + 1);
+                    return acc;
+                  }, new Map<string, number>());
+                  const sorted = [...data.accounts].sort((a, b) => {
+                    const aActive = activeCampaignsByAccount.has(a.id) ? 0 : 1;
+                    const bActive = activeCampaignsByAccount.has(b.id) ? 0 : 1;
+                    if (aActive !== bActive) return aActive - bActive;
+                    return a.name.localeCompare(b.name);
+                  });
+                  const totalActive = activeCampaignsByAccount.size;
+                  return (
+                    <>
+                      <option value="all">Todas as contas · {totalActive} com ativas</option>
+                      {sorted.map((a) => {
+                        const activeCount = activeCampaignsByAccount.get(a.id) ?? 0;
+                        const prefix = activeCount > 0 ? "● " : "○ ";
+                        const label = `${prefix}${a.name} (${activeCount} ativa${activeCount !== 1 ? "s" : ""})`;
+                        return <option key={a.id} value={a.id}>{label}</option>;
+                      })}
+                    </>
+                  );
+                })()}
               </select>
             </div>
 
@@ -1035,9 +1076,9 @@ export default function Dashboard() {
               <label className="text-[11px] text-slate-500 font-medium mb-1 block px-1">Campanha</label>
               <select value={selectedCampaign} onChange={(e) => { setSelectedCampaign(e.target.value); if (e.target.value === "all") setViewLevel("campaign"); }}
                 className="sidebar-select">
-                <option value="all">Todas ({availableCampaigns.length})</option>
-                {availableCampaigns.map(([id, name]) => (
-                  <option key={id} value={id}>{name.length > 30 ? name.substring(0, 30) + "..." : name}</option>
+                <option value="all">Todas ({availableCampaigns.length}) · {availableCampaigns.filter(c => c.status === "ACTIVE").length} ativas</option>
+                {availableCampaigns.map(({ id, name, status }) => (
+                  <option key={id} value={id}>{status === "ACTIVE" ? "● " : "○ "}{name.length > 28 ? name.substring(0, 28) + "..." : name}</option>
                 ))}
               </select>
             </div>
@@ -2734,6 +2775,167 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Saldo da Conta */}
+                  {(() => {
+                    const accountData = data.accounts.find(a => a.id === campaign?.account_id || a.id === insight?.account_id);
+                    if (!accountData?.balance && !accountData?.amount_spent) return null;
+                    const balance = safeFloat(accountData.balance) / 100;
+                    const amountSpent = safeFloat(accountData.amount_spent) / 100;
+                    return (
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Saldo da Conta</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                          {accountData.balance !== undefined && (
+                            <div className={`rounded-lg p-5 border ${balance < 50 ? "bg-red-900/20 border-red-800/30" : balance < 200 ? "bg-yellow-900/20 border-yellow-800/30" : "bg-green-900/20 border-green-800/30"}`}>
+                              <p className={`text-xs mb-1 ${balance < 50 ? "text-red-400/70" : balance < 200 ? "text-yellow-400/70" : "text-green-400/70"}`}>Saldo Disponivel</p>
+                              <p className={`text-4xl font-bold ${balance < 50 ? "text-red-400" : balance < 200 ? "text-yellow-400" : "text-green-400"}`}>R$ {fmt(balance)}</p>
+                              <p className="text-xs text-slate-500 mt-1">{accountData.name}</p>
+                            </div>
+                          )}
+                          {accountData.amount_spent !== undefined && (
+                            <div className="bg-slate-800/50 rounded-lg p-5 border border-slate-700/50">
+                              <p className="text-xs text-slate-500 mb-1">Total Gasto na Conta</p>
+                              <p className="text-4xl font-bold text-white">R$ {fmt(amountSpent)}</p>
+                              <p className="text-xs text-slate-500 mt-1">historico acumulado</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                  {/* Funil: Conjuntos de Anuncios */}
+                  {adsetRows.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="flex-1 h-px bg-gradient-to-r from-slate-700 to-transparent" />
+                        <div className="flex items-center gap-2 px-4 py-1.5 bg-slate-800 rounded-full border border-slate-700">
+                          <svg className="w-3 h-3 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                          <span className="text-xs text-purple-300 font-semibold tracking-wider uppercase">Conjuntos de Anuncios</span>
+                        </div>
+                        <div className="flex-1 h-px bg-gradient-to-l from-slate-700 to-transparent" />
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-3 mb-4">
+                        <div className="bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+                          <p className="text-xs text-slate-500 mb-1">Total de Conjuntos</p>
+                          <p className="text-xl font-bold text-white">{adsetRows.length}</p>
+                        </div>
+                        <div className="bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+                          <p className="text-xs text-slate-500 mb-1">Ativos</p>
+                          <p className="text-xl font-bold text-green-400">{adsetRows.filter(r => r.status === "ACTIVE").length}</p>
+                        </div>
+                        {(() => {
+                          const best = adsetRows.filter(r => r.costPerResult > 0).sort((a, b) => a.costPerResult - b.costPerResult)[0];
+                          return best ? (
+                            <div className="bg-green-900/20 rounded-lg p-3 border border-green-800/30">
+                              <p className="text-xs text-green-400/70 mb-1">Melhor Custo/Resultado</p>
+                              <p className="text-lg font-bold text-green-400">R$ {fmt(best.costPerResult)}</p>
+                              <p className="text-xs text-slate-500 truncate" title={best.name}>{best.name}</p>
+                            </div>
+                          ) : <div className="bg-slate-800/50 rounded-lg p-3 border border-slate-700/50" />;
+                        })()}
+                      </div>
+
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="border-b border-slate-700">
+                              <th className="text-left py-2 px-3 text-slate-500 font-medium">Conjunto</th>
+                              <th className="text-center py-2 px-3 text-slate-500 font-medium">Status</th>
+                              <th className="text-right py-2 px-3 text-slate-500 font-medium">Gasto</th>
+                              <th className="text-right py-2 px-3 text-slate-500 font-medium">Impr.</th>
+                              <th className="text-right py-2 px-3 text-slate-500 font-medium">{adsetRows[0]?.resultLabel || "Resultados"}</th>
+                              <th className="text-right py-2 px-3 text-slate-500 font-medium">Custo/Res.</th>
+                              <th className="text-right py-2 px-3 text-slate-500 font-medium">CTR</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {adsetRows.map((row, idx) => (
+                              <tr key={idx} className="border-b border-slate-800/50 hover:bg-slate-800/30">
+                                <td className="py-2 px-3 text-slate-300 max-w-[180px] truncate" title={row.name}>{row.name}</td>
+                                <td className="py-2 px-3 text-center">{statusBadge(row.status)}</td>
+                                <td className="py-2 px-3 text-right text-slate-300">R$ {fmt(row.spend)}</td>
+                                <td className="py-2 px-3 text-right text-slate-400">{fmtInt(row.impressions)}</td>
+                                <td className="py-2 px-3 text-right font-medium text-green-400">{fmtInt(row.results)}</td>
+                                <td className={`py-2 px-3 text-right ${row.costPerResult > 0 && row.costPerResult < 10 ? "text-green-400" : row.costPerResult > 0 && row.costPerResult < 20 ? "text-yellow-400" : row.costPerResult > 0 ? "text-red-400" : "text-slate-600"}`}>
+                                  {row.costPerResult > 0 ? `R$ ${fmt(row.costPerResult)}` : "-"}
+                                </td>
+                                <td className={`py-2 px-3 text-right ${row.ctr >= 2 ? "text-green-400" : row.ctr >= 1 ? "text-yellow-400" : "text-red-400"}`}>{pct(row.ctr)}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Funil: Criativos */}
+                  {adRows.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="flex-1 h-px bg-gradient-to-r from-slate-700 to-transparent" />
+                        <div className="flex items-center gap-2 px-4 py-1.5 bg-slate-800 rounded-full border border-slate-700">
+                          <svg className="w-3 h-3 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                          <span className="text-xs text-cyan-300 font-semibold tracking-wider uppercase">Criativos</span>
+                        </div>
+                        <div className="flex-1 h-px bg-gradient-to-l from-slate-700 to-transparent" />
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-3 mb-4">
+                        <div className="bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+                          <p className="text-xs text-slate-500 mb-1">Total de Criativos</p>
+                          <p className="text-xl font-bold text-white">{adRows.length}</p>
+                        </div>
+                        <div className="bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
+                          <p className="text-xs text-slate-500 mb-1">Ativos</p>
+                          <p className="text-xl font-bold text-green-400">{adRows.filter(r => r.status === "ACTIVE").length}</p>
+                        </div>
+                        {(() => {
+                          const best = adRows.filter(r => r.costPerResult > 0).sort((a, b) => a.costPerResult - b.costPerResult)[0];
+                          return best ? (
+                            <div className="bg-cyan-900/20 rounded-lg p-3 border border-cyan-800/30">
+                              <p className="text-xs text-cyan-400/70 mb-1">Melhor Criativo</p>
+                              <p className="text-lg font-bold text-cyan-400">R$ {fmt(best.costPerResult)}</p>
+                              <p className="text-xs text-slate-500 truncate" title={best.name}>{best.name}</p>
+                            </div>
+                          ) : <div className="bg-slate-800/50 rounded-lg p-3 border border-slate-700/50" />;
+                        })()}
+                      </div>
+
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="border-b border-slate-700">
+                              <th className="text-left py-2 px-3 text-slate-500 font-medium">Criativo</th>
+                              <th className="text-left py-2 px-3 text-slate-500 font-medium">Conjunto</th>
+                              <th className="text-center py-2 px-3 text-slate-500 font-medium">Status</th>
+                              <th className="text-right py-2 px-3 text-slate-500 font-medium">Gasto</th>
+                              <th className="text-right py-2 px-3 text-slate-500 font-medium">{adRows[0]?.resultLabel || "Resultados"}</th>
+                              <th className="text-right py-2 px-3 text-slate-500 font-medium">Custo/Res.</th>
+                              <th className="text-right py-2 px-3 text-slate-500 font-medium">CTR</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {adRows.map((row, idx) => (
+                              <tr key={idx} className="border-b border-slate-800/50 hover:bg-slate-800/30">
+                                <td className="py-2 px-3 text-slate-300 max-w-[140px] truncate" title={row.name}>{row.name}</td>
+                                <td className="py-2 px-3 text-slate-500 text-xs max-w-[120px] truncate" title={row.adsetName}>{row.adsetName || "-"}</td>
+                                <td className="py-2 px-3 text-center">{statusBadge(row.status)}</td>
+                                <td className="py-2 px-3 text-right text-slate-300">R$ {fmt(row.spend)}</td>
+                                <td className="py-2 px-3 text-right font-medium text-green-400">{fmtInt(row.results)}</td>
+                                <td className={`py-2 px-3 text-right ${row.costPerResult > 0 && row.costPerResult < 10 ? "text-green-400" : row.costPerResult > 0 && row.costPerResult < 20 ? "text-yellow-400" : row.costPerResult > 0 ? "text-red-400" : "text-slate-600"}`}>
+                                  {row.costPerResult > 0 ? `R$ ${fmt(row.costPerResult)}` : "-"}
+                                </td>
+                                <td className={`py-2 px-3 text-right ${row.ctr >= 2 ? "text-green-400" : row.ctr >= 1 ? "text-yellow-400" : "text-red-400"}`}>{pct(row.ctr)}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Footer */}
                   <div className="text-center pt-4 border-t border-slate-800">

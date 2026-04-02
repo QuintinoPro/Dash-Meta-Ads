@@ -99,8 +99,8 @@ export async function POST(req: NextRequest) {
         send({ type: "status", message: "Buscando contas de anúncio..." });
 
         const accounts = await getPaged(
-          `/${apiVersion}/me/adaccounts?fields=id,name,account_status&limit=100&access_token=${token}`
-        ) as Array<{ id: string; name: string }>;
+          `/${apiVersion}/me/adaccounts?fields=id,name,account_status,balance,amount_spent&limit=100&access_token=${token}`
+        ) as Array<{ id: string; name: string; balance?: string; amount_spent?: string }>;
 
         send({ type: "accounts", total: accounts.length, message: `${accounts.length} contas encontradas` });
 
@@ -239,6 +239,8 @@ export async function POST(req: NextRequest) {
             id: accountId, name: accountName,
             total_campaigns: campaigns.length,
             campaigns_with_data: insights.length,
+            balance: account.balance,
+            amount_spent: account.amount_spent,
           });
           result.campaigns.push(...campaigns);
           result.insights.push(...insights);
