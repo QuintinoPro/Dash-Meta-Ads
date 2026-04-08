@@ -84,6 +84,7 @@ const data = rawData as {
   ads?: Ad[];
   ad_insights?: AdInsight[];
   ad_daily_insights?: AdInsight[];
+  pages?: { id: string; name: string; fan_count?: number; followers_count?: number; link?: string; account_id: string; account_name: string; fan_adds_period?: number }[];
 };
 
 /* ──────────── helpers ──────────── */
@@ -613,6 +614,30 @@ export default function Dashboard() {
     const aggResult = detectAggregateResult(filteredInsights);
     return { impressions, clicks, linkClicks, results: aggResult.total, resultLabel: aggResult.label };
   }, [filteredInsights]);
+
+  /* ──── Engajamento ──── */
+  const engagementData = useMemo(() => {
+    const sum = (type: string) => filteredInsights.reduce((s, i) => s + getActionValue(i.actions, type), 0);
+    // Seguidores ganhos: soma das páginas filtradas pela conta selecionada
+    const pages = data.pages ?? [];
+    const filteredPages = selectedAccount !== "all"
+      ? pages.filter(p => p.account_id === selectedAccount)
+      : pages;
+    const followersGained = filteredPages.reduce((s, p) => s + (p.fan_adds_period ?? 0), 0);
+    const totalFollowers  = filteredPages.reduce((s, p) => s + (p.followers_count ?? p.fan_count ?? 0), 0);
+    return {
+      postEngagement:  sum("post_engagement"),
+      reactions:       sum("post_reaction"),
+      likes:           sum("onsite_conversion.post_net_like"),
+      comments:        sum("comment") || sum("onsite_conversion.post_net_comment"),
+      shares:          sum("post"),
+      saves:           sum("onsite_conversion.post_net_save"),
+      videoViews:      sum("video_view"),
+      pageEngagement:  sum("page_engagement"),
+      followersGained,
+      totalFollowers,
+    };
+  }, [filteredInsights, selectedAccount, data.pages]);
 
   /* ──── Resultados por campanha (Opção 3 - só múltiplas campanhas) ──── */
   const resultsByCampaignChart = useMemo(() => {
@@ -1328,6 +1353,42 @@ export default function Dashboard() {
                   ) : <p className="text-slate-500 text-center py-8">Sem dados de tendencia</p>}
                 </div>
               </div>
+
+              {/* Engajamento */}
+              {engagementData.postEngagement > 0 && (
+                <div className="card mb-6">
+                  <h3 className="text-base font-semibold text-white mb-1 text-balance">Engajamento</h3>
+                  <p className="text-xs text-slate-500 mb-5">Interacoes organicas geradas pelos anuncios</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {[
+                      ...(engagementData.followersGained > 0 ? [{ label: "Seguidores Ganhos", value: engagementData.followersGained, icon: "M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z", color: "#22d3ee" }] : []),
+                      ...(engagementData.totalFollowers > 0 ? [{ label: "Total Seguidores", value: engagementData.totalFollowers, icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z", color: "#818cf8" }] : []),
+                      { label: "Total Engajamento", value: engagementData.postEngagement, icon: "M13 10V3L4 14h7v7l9-11h-7z", color: "#3b82f6" },
+                      { label: "Reacoes",            value: engagementData.reactions,      icon: "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z", color: "#ef4444" },
+                      { label: "Curtidas",           value: engagementData.likes,          icon: "M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 1.93L7 12m7-2h-2m-5 8H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5", color: "#22c55e" },
+                      { label: "Comentarios",        value: engagementData.comments,       icon: "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z", color: "#a855f7" },
+                      { label: "Compartilhamentos",  value: engagementData.shares,         icon: "M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z", color: "#f59e0b" },
+                      { label: "Salvamentos",        value: engagementData.saves,          icon: "M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z", color: "#06b6d4" },
+                      { label: "Views de Video",     value: engagementData.videoViews,     icon: "M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z M21 12a9 9 0 11-18 0 9 9 0 0118 0z", color: "#8b5cf6" },
+                      { label: "Eng. na Pagina",     value: engagementData.pageEngagement, icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6", color: "#10b981" },
+                    ].filter(m => m.value > 0).map(m => (
+                      <div key={m.label} className="flex items-center gap-3 rounded-xl p-3"
+                        style={{ background: "var(--bg-elevated)", border: "1px solid var(--border-subtle)" }}>
+                        <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+                          style={{ background: `${m.color}18` }}>
+                          <svg className="w-4.5 h-4.5" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: m.color }}>
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d={m.icon} />
+                          </svg>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-[10px] font-medium text-slate-500 uppercase tracking-wide truncate">{m.label}</p>
+                          <p className="text-lg font-bold tabular-nums text-white leading-tight">{fmtInt(m.value)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Chart Row 3: Resultados por Campanha (se múltiplas) */}
               <div className={`grid gap-6 mb-6 ${!isSingleCampaign && resultsByCampaignChart ? "grid-cols-1" : "hidden"}`}>

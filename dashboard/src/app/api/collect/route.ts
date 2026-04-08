@@ -116,6 +116,7 @@ export async function POST(req: NextRequest) {
           ads: [] as object[],
           ad_insights: [] as object[],
           ad_daily_insights: [] as object[],
+          pages: [] as object[],
           last_updated: new Date().toISOString(),
         };
 
@@ -234,6 +235,33 @@ export async function POST(req: NextRequest) {
           } catch { /* sem ad daily */ }
 
           await sleep(200);
+
+          // Pages linked to this ad account (requires pages_read_engagement)
+          try {
+            const raw = await getPaged(
+              `/${apiVersion}/${accountId}/promote_pages?fields=id,name,fan_count,followers_count,link&limit=50&access_token=${token}`
+            ) as Array<Record<string, unknown>>;
+            if (raw.length > 0) {
+              // For each page, try to get fan_adds in the period
+              for (const page of raw) {
+                const pageId = page.id as string;
+                try {
+                  const fanData = await apiGet(
+                    `/${apiVersion}/${pageId}/insights?metric=page_fan_adds_unique&period=day&since=${since}&until=${today}&access_token=${token}`
+                  );
+                  const fanAddsData = (fanData.data as Array<Record<string, unknown>>) || [];
+                  const totalFanAdds = fanAddsData.reduce((sum, item) => {
+                    const vals = (item.values as Array<{ value: number }>) || [];
+                    return sum + vals.reduce((s, v) => s + (v.value || 0), 0);
+                  }, 0);
+                  result.pages.push({ ...page, account_id: accountId, account_name: accountName, fan_adds_period: totalFanAdds });
+                } catch {
+                  result.pages.push({ ...page, account_id: accountId, account_name: accountName, fan_adds_period: 0 });
+                }
+                await sleep(100);
+              }
+            }
+          } catch { /* sem permissão pages */ }
 
           result.accounts.push({
             id: accountId, name: accountName,
