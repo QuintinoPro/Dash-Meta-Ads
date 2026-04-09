@@ -84,6 +84,66 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 function log(msg) { process.stdout.write(msg + "\n"); }
 function progress(msg) { process.stdout.write("\r" + msg + "                    "); }
+// L3: Mascarar token em mensagens de erro (evita exposição acidental em logs)
+function maskToken(str) { return TOKEN ? str.replace(new RegExp(TOKEN, "g"), TOKEN.slice(0, 8) + "***") : str; }
+
+/* ──────────── Gerador de contexto ──────────── */
+function generateContext(campaign, insight) {
+  const name = (campaign.name || "").toLowerCase();
+  const objective = campaign.objective || insight?.objective || "";
+
+  // Detectar destino
+  const isWpp = /wpp|whatsapp|msgs?_|mensag/.test(name);
+  const isSite = /site|traf|trafico/.test(name);
+  const isInsta = /insta|instagram/.test(name);
+  const isEngajamento = /engaj|engagem/.test(name) || objective === "OUTCOME_ENGAGEMENT";
+  const isLeads = objective === "OUTCOME_LEADS";
+  const isTraffic = objective === "OUTCOME_TRAFFIC" || objective === "LINK_CLICKS";
+
+  // Detectar período
+  let periodo = "";
+  if (insight?.date_start && insight?.date_stop) {
+    const start = new Date(insight.date_start + "T12:00:00").toLocaleDateString("pt-BR");
+    const stop = new Date(insight.date_stop + "T12:00:00").toLocaleDateString("pt-BR");
+    periodo = ` Período de veiculação: ${start} a ${stop}.`;
+  } else if (campaign.start_time) {
+    const start = new Date(campaign.start_time).toLocaleDateString("pt-BR");
+    periodo = ` Campanha iniciada em ${start}.`;
+  }
+
+  // Detectar orçamento
+  let orcamento = "";
+  if (campaign.daily_budget) {
+    const val = (parseFloat(campaign.daily_budget) / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    orcamento = ` Orçamento diário: ${val}.`;
+  }
+
+  // Montar contexto baseado no tipo de campanha
+  if (isWpp) {
+    return `Campanha de ${isEngajamento ? "engajamento" : "mensagens"} com destino ao WhatsApp Business. Objetivo: gerar conversas diretas com potenciais clientes, facilitando o primeiro contato com o negócio.${periodo}${orcamento}`;
+  }
+  if (isSite && isTraffic) {
+    return `Campanha de tráfego com objetivo de direcionar visitantes qualificados ao site. Foco em atrair o público-alvo e aumentar o volume de acessos às páginas relevantes.${periodo}${orcamento}`;
+  }
+  if (isSite) {
+    return `Campanha direcionada ao site com objetivo de aumentar o tráfego e a visibilidade da marca entre o público-alvo.${periodo}${orcamento}`;
+  }
+  if (isInsta && isEngajamento) {
+    return `Campanha de engajamento no Instagram. Objetivo: aumentar o alcance orgânico, fortalecer a presença da marca e ampliar a audiência do perfil.${periodo}${orcamento}`;
+  }
+  if (isLeads) {
+    return `Campanha de geração de leads. Objetivo: capturar contatos qualificados interessados no produto ou serviço, alimentando o funil de vendas.${periodo}${orcamento}`;
+  }
+  if (isEngajamento) {
+    return `Campanha de engajamento. Objetivo: aumentar as interações com o conteúdo, ampliar o alcance e fortalecer o relacionamento com a audiência.${periodo}${orcamento}`;
+  }
+  if (isTraffic) {
+    return `Campanha de tráfego. Objetivo: gerar cliques qualificados e direcionar o público-alvo para o destino da campanha.${periodo}${orcamento}`;
+  }
+
+  // Genérico
+  return `Campanha publicitária na plataforma Meta (Facebook/Instagram).${periodo}${orcamento}`;
+}
 
 /* ──────────── Main ──────────── */
 async function main() {
@@ -104,7 +164,7 @@ async function main() {
     const fields = "id,name,account_status,currency,timezone_name";
     allAccounts = await getPaged(`/${API_VERSION}/me/adaccounts?fields=${fields}&limit=100&access_token=${TOKEN}`);
   } catch (e) {
-    console.error(`\n❌ Erro ao buscar contas: ${e.message}`);
+    console.error(`\n❌ Erro ao buscar contas: ${maskToken(e.message)}`);
     console.error("Verifique se o token é válido e tem as permissões necessárias.");
     process.exit(1);
   }
@@ -130,7 +190,32 @@ async function main() {
     const accountId = account.id; // já vem como act_XXXX
     const accountName = account.name;
 
-    progress(`[${i + 1}/${allAccounts.length}] Processando: ${accountName}...`);
+    progress(`[${i + 1}/${allAccounts.length}] Verificando: ${accountName}...`);
+
+    // Filtro rápido: só coleta conta com campanhas ativas ou gasto nos últimos 30 dias
+    let hasActivity = false;
+    try {
+      const activeCheck = await get(
+        `/${API_VERSION}/${accountId}/campaigns?fields=id&effective_status=["ACTIVE"]&limit=1&access_token=${TOKEN}`
+      );
+      if (activeCheck.data?.length > 0) hasActivity = true;
+    } catch { hasActivity = true; } // sem permissão: deixa passar
+
+    if (!hasActivity) {
+      try {
+        const spendCheck = await get(
+          `/${API_VERSION}/${accountId}/insights?fields=spend&date_preset=last_30d&access_token=${TOKEN}`
+        );
+        if (spendCheck.data?.some(x => parseFloat(x.spend) > 0)) hasActivity = true;
+      } catch { /* ignora */ }
+    }
+
+    if (!hasActivity) {
+      log(`\r⏭️  [${i + 1}/${allAccounts.length}] ${accountName}: sem atividade nos últimos 30 dias — ignorada`);
+      continue;
+    }
+
+    progress(`[${i + 1}/${allAccounts.length}] Coletando: ${accountName}...`);
 
     let campaigns = [];
     let insights = [];
@@ -145,6 +230,7 @@ async function main() {
         ...c,
         account_id: accountId,
         account_name: accountName,
+        ai_context: c.status === "ACTIVE" ? generateContext(c, null) : undefined,
       }));
     } catch (e) {
       errors.push(`[${accountName}] campanhas: ${e.message}`);
@@ -162,6 +248,12 @@ async function main() {
         account_id: accountId,
         account_name: accountName,
       }));
+      // Refina contexto das campanhas com dados reais do insight
+      campaigns = campaigns.map(c => {
+        const insight = insights.find(i => i.campaign_id === c.id);
+        if (insight) return { ...c, ai_context: generateContext(c, insight) };
+        return c;
+      });
     } catch (e) {
       errors.push(`[${accountName}] insights: ${e.message}`);
     }
@@ -223,16 +315,21 @@ async function main() {
   const dataDir = path.join(__dirname, "data");
   const dashboardDataPath = path.join(__dirname, "dashboard", "src", "data.json");
 
-  if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+  try {
+    if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 
-  // consolidated.json na pasta data/
-  const consolidatedPath = path.join(dataDir, "consolidated.json");
-  fs.writeFileSync(consolidatedPath, JSON.stringify(result, null, 2), "utf8");
-  log(`💾 Salvo: data/consolidated.json`);
+    // consolidated.json na pasta data/
+    const consolidatedPath = path.join(dataDir, "consolidated.json");
+    fs.writeFileSync(consolidatedPath, JSON.stringify(result, null, 2), "utf8");
+    log(`💾 Salvo: data/consolidated.json`);
 
-  // data.json para o dashboard
-  fs.writeFileSync(dashboardDataPath, JSON.stringify(result, null, 2), "utf8");
-  log(`💾 Salvo: dashboard/src/data.json`);
+    // data.json para o dashboard
+    fs.writeFileSync(dashboardDataPath, JSON.stringify(result, null, 2), "utf8");
+    log(`💾 Salvo: dashboard/src/data.json`);
+  } catch (e) {
+    console.error(`\n❌ Erro ao salvar arquivos: ${e.message}`);
+    process.exit(1);
+  }
 
   // Relatório de erros
   if (errors.length > 0) {
@@ -257,6 +354,6 @@ async function main() {
 }
 
 main().catch(e => {
-  console.error("\n❌ Erro fatal:", e.message);
+  console.error("\n❌ Erro fatal:", maskToken(e.message));
   process.exit(1);
 });

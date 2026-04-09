@@ -39,6 +39,7 @@ const AD_INSIGHT_FIELDS = [
 
 const AD_FIELDS = [
   "id", "name", "status", "adset_id", "campaign_id", "created_time",
+  "creative{thumbnail_url,image_url}",
 ].join(",");
 
 function apiGet(pathUrl: string): Promise<Record<string, unknown>> {
@@ -81,12 +82,22 @@ function dateNDaysAgo(n: number): string {
 
 export async function POST(req: NextRequest) {
   const encoder = new TextEncoder();
-  const { token, apiVersion = "v21.0", daysBack = 90 } = await req.json() as {
-    token: string; apiVersion?: string; daysBack?: number;
+
+  // C1: Token via Authorization header (não exposto no body/DevTools)
+  const authHeader = req.headers.get("authorization");
+  const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7).trim() : null;
+
+  const { apiVersion = "v21.0", daysBack = 90 } = await req.json() as {
+    apiVersion?: string; daysBack?: number;
   };
 
   if (!token) {
     return new Response(JSON.stringify({ error: "Token obrigatório" }), { status: 400 });
+  }
+
+  // A5: Validar daysBack
+  if (typeof daysBack !== "number" || !Number.isInteger(daysBack) || daysBack < 1 || daysBack > 365) {
+    return new Response(JSON.stringify({ error: "daysBack deve ser um inteiro entre 1 e 365" }), { status: 400 });
   }
 
   const stream = new ReadableStream({
@@ -130,6 +141,31 @@ export async function POST(req: NextRequest) {
           const accountName = account.name;
 
           send({ type: "progress", current: i + 1, total: accounts.length, account: accountName });
+
+          // Filtro rápido: só coleta conta com campanhas ativas ou gasto nos últimos 30 dias
+          let hasActivity = false;
+          try {
+            const activeCheck = await apiGet(
+              `/${apiVersion}/${accountId}/campaigns?fields=id&effective_status=["ACTIVE"]&limit=1&access_token=${token}`
+            );
+            if ((activeCheck.data as unknown[])?.length > 0) hasActivity = true;
+          } catch { /* sem permissão, deixa passar */ hasActivity = true; }
+
+          if (!hasActivity) {
+            try {
+              const spendCheck = await apiGet(
+                `/${apiVersion}/${accountId}/insights?fields=spend&date_preset=last_30d&access_token=${token}`
+              );
+              const items = spendCheck.data as Array<{ spend: string }> | undefined;
+              if (items?.some(x => parseFloat(x.spend) > 0)) hasActivity = true;
+            } catch { /* ignora */ }
+          }
+
+          if (!hasActivity) {
+            send({ type: "progress", current: i + 1, total: accounts.length, account: `${accountName} (sem atividade — ignorada)` });
+            await sleep(100);
+            continue;
+          }
 
           let campaigns: object[] = [];
           let insights: object[] = [];
@@ -211,7 +247,16 @@ export async function POST(req: NextRequest) {
             const raw = await getPaged(
               `/${apiVersion}/${accountId}/ads?fields=${AD_FIELDS}&limit=200&access_token=${token}`
             );
-            ads = (raw as Array<Record<string, unknown>>).map(a => ({ ...a, account_id: accountId, account_name: accountName }));
+            ads = (raw as Array<Record<string, unknown>>).map(a => {
+              const creative = a.creative as Record<string, unknown> | undefined;
+              return {
+                ...a,
+                thumbnail_url: creative?.thumbnail_url ?? creative?.image_url ?? null,
+                creative: undefined,
+                account_id: accountId,
+                account_name: accountName,
+              };
+            });
           } catch { /* sem permissão ads */ }
 
           await sleep(150);
@@ -288,13 +333,19 @@ export async function POST(req: NextRequest) {
           });
         }
 
-        // Save files
+        // Save files — M5: envolver em try-catch para erro de disco/permissão
         const dataDir = path.join(process.cwd(), "..", "data");
         const dashboardDataPath = path.join(process.cwd(), "src", "data.json");
 
-        if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
-        fs.writeFileSync(path.join(dataDir, "consolidated.json"), JSON.stringify(result, null, 2));
-        fs.writeFileSync(dashboardDataPath, JSON.stringify(result, null, 2));
+        try {
+          if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+          fs.writeFileSync(path.join(dataDir, "consolidated.json"), JSON.stringify(result, null, 2));
+          fs.writeFileSync(dashboardDataPath, JSON.stringify(result, null, 2));
+        } catch (fsErr) {
+          send({ type: "error", message: `Erro ao salvar arquivos: ${fsErr instanceof Error ? fsErr.message : "Erro desconhecido"}` });
+          controller.close();
+          return;
+        }
 
         send({
           type: "done",
@@ -321,6 +372,7 @@ export async function POST(req: NextRequest) {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
       "Connection": "keep-alive",
+      "X-Content-Type-Options": "nosniff",
     },
   });
 }

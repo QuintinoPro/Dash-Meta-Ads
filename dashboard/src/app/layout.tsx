@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Meta Ads Dashboard",
   description: "Dashboard de análise de campanhas Meta Ads",
+};
+
+export const viewport: Viewport = {
   themeColor: "#070d1a",
 };
 

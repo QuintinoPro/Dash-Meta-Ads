@@ -15,6 +15,7 @@ import {
   Legend,
   Filler,
 } from "chart.js";
+import type { TooltipItem } from "chart.js";
 import { Bar, Line } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import rawData from "../data.json";
@@ -25,6 +26,19 @@ ChartJS.register(
 );
 ChartJS.defaults.color = "#94a3b8";
 ChartJS.defaults.borderColor = "rgba(51,65,85,0.5)";
+
+// L1: Cores centralizadas (evita strings hardcoded espalhadas)
+const CHART_COLORS = {
+  blue:        "#3b82f6",
+  blueFill:    "rgba(59,130,246,0.15)",
+  green:       "#22c55e",
+  greenFill:   "rgba(34,197,94,0.15)",
+  red:         "#ef4444",
+  yellow:      "#f59e0b",
+  purple:      "#a855f7",
+  orange:      "#f97316",
+  cyan:        "#06b6d4",
+} as const;
 
 /* ──────────── types ──────────── */
 interface Action { action_type: string; value: string; }
@@ -40,6 +54,7 @@ interface Campaign {
   id: string; name: string; status: string; objective: string;
   daily_budget?: string; lifetime_budget?: string; start_time?: string;
   stop_time?: string; created_time?: string; account_id: string; account_name: string;
+  ai_context?: string;
 }
 interface AdsetInsight {
   adset_id: string; adset_name: string; campaign_id: string; campaign_name: string;
@@ -69,6 +84,7 @@ interface Ad {
   id: string; name: string; status: string;
   adset_id: string; campaign_id: string;
   created_time?: string;
+  thumbnail_url?: string | null;
   account_id: string; account_name: string;
 }
 
@@ -88,7 +104,12 @@ const data = rawData as {
 };
 
 /* ──────────── helpers ──────────── */
-const safeFloat = (v: string | undefined | null): number => { const n = parseFloat(v || "0"); return isNaN(n) ? 0 : n; };
+// M2: parsing estrito — rejeita "123abc" (parseFloat aceitaria parcialmente)
+const safeFloat = (v: string | undefined | null): number => {
+  if (v === null || v === undefined || v === "") return 0;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : 0;
+};
 const safeInt = (v: string | undefined | null): number => { const n = parseInt(v || "0", 10); return isNaN(n) ? 0 : n; };
 const fmt = (n: number) => (isNaN(n) ? "0,00" : n.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
 const fmtInt = (n: number) => (isNaN(n) ? "0" : n.toLocaleString("pt-BR"));
@@ -272,6 +293,10 @@ export default function Dashboard() {
   const [pendingSettings, setPendingSettings] = useState<typeof defaultSettings | null>(null);
   const [settingsSaved, setSettingsSaved] = useState(false);
   const [showReport, setShowReport] = useState(false);
+  const [showReportPicker, setShowReportPicker] = useState(false);
+  const [reportCampaignIds, setReportCampaignIds] = useState<string[]>([]);
+  const [campaignContext, setCampaignContext] = useState<string>("");
+  const [clientMode, setClientMode] = useState(false);
   const [viewLevel, setViewLevel] = useState<"campaign" | "adsets" | "ads">("campaign");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [customStart, setCustomStart] = useState("");
@@ -298,14 +323,16 @@ export default function Dashboard() {
   const CRYPTO_KEY_NAME = "meta-ads-ck";
 
   const getCryptoKey = async (): Promise<CryptoKey> => {
-    const stored = localStorage.getItem(CRYPTO_KEY_NAME);
+    // M1: localStorage pode lançar em modo privado ou quota excedida
+    let stored: string | null = null;
+    try { stored = localStorage.getItem(CRYPTO_KEY_NAME); } catch { /* modo privado */ }
     if (stored) {
       const raw = Uint8Array.from(atob(stored), (c) => c.charCodeAt(0));
       return crypto.subtle.importKey("raw", raw, "AES-GCM", true, ["encrypt", "decrypt"]);
     }
     const key = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
     const exported = await crypto.subtle.exportKey("raw", key);
-    localStorage.setItem(CRYPTO_KEY_NAME, btoa(String.fromCharCode(...new Uint8Array(exported))));
+    try { localStorage.setItem(CRYPTO_KEY_NAME, btoa(String.fromCharCode(...new Uint8Array(exported)))); } catch { /* modo privado */ }
     return key;
   };
 
@@ -362,7 +389,7 @@ export default function Dashboard() {
       appId: settings.appId,
       appSecret: await encryptValue(settings.appSecret),
     };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore)); } catch { /* modo privado ou quota */ }
     setSettingsSaved(true);
     setPendingSettings(null);
     setTimeout(() => setSettingsSaved(false), 2000);
@@ -384,14 +411,30 @@ export default function Dashboard() {
     setCollectResult(null);
     setCollectError(null);
 
+    // A4: AbortController com timeout de 10 minutos
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10 * 60 * 1000);
+
     try {
+      // C1: Token no header Authorization (não exposto no body/DevTools)
       const res = await fetch("/api/collect", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: settings.apiToken, apiVersion: settings.apiVersion, daysBack }),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${settings.apiToken}`,
+        },
+        body: JSON.stringify({ apiVersion: settings.apiVersion, daysBack }),
+        signal: controller.signal,
       });
 
-      const reader = res.body!.getReader();
+      // C2/A2: Verificar status HTTP antes de ler o body
+      if (!res.ok) {
+        const errText = await res.text().catch(() => `HTTP ${res.status}`);
+        throw new Error(errText || `HTTP ${res.status}`);
+      }
+      if (!res.body) throw new Error("Resposta sem body");
+
+      const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
 
@@ -403,22 +446,38 @@ export default function Dashboard() {
         buffer = lines.pop() || "";
         for (const line of lines) {
           if (!line.startsWith("data: ")) continue;
-          const evt = JSON.parse(line.slice(6)) as Record<string, unknown>;
+          // C3: JSON.parse protegido contra eventos malformados
+          let evt: Record<string, unknown>;
+          try { evt = JSON.parse(line.slice(6)) as Record<string, unknown>; } catch { continue; }
+          // A3: Validar tipos antes de usar — evita undefined silencioso
           if (evt.type === "progress") {
-            setCollectProgress({ current: evt.current as number, total: evt.total as number, account: evt.account as string });
+            if (typeof evt.current === "number" && typeof evt.total === "number") {
+              setCollectProgress({ current: evt.current, total: evt.total, account: String(evt.account ?? "") });
+            }
           } else if (evt.type === "done") {
             setCollectStatus("done");
-            setCollectResult({ accounts: evt.accounts as number, campaigns: evt.campaigns as number, insights: evt.insights as number, last_updated: evt.last_updated as string });
+            setCollectResult({
+              accounts: typeof evt.accounts === "number" ? evt.accounts : 0,
+              campaigns: typeof evt.campaigns === "number" ? evt.campaigns : 0,
+              insights: typeof evt.insights === "number" ? evt.insights : 0,
+              last_updated: typeof evt.last_updated === "string" ? evt.last_updated : "",
+            });
             setCollectProgress(null);
           } else if (evt.type === "error") {
             setCollectStatus("error");
-            setCollectError(evt.message as string);
+            setCollectError(typeof evt.message === "string" ? evt.message : "Erro desconhecido");
           }
         }
       }
     } catch (e) {
+      if (e instanceof Error && e.name === "AbortError") {
+        setCollectError("Tempo limite de 10 minutos atingido");
+      } else {
+        setCollectError(e instanceof Error ? e.message : "Erro desconhecido");
+      }
       setCollectStatus("error");
-      setCollectError(e instanceof Error ? e.message : "Erro desconhecido");
+    } finally {
+      clearTimeout(timeout);
     }
   };
 
@@ -438,7 +497,8 @@ export default function Dashboard() {
     if (datePeriod === "30") return daysAgo(30);
     if (datePeriod === "90") return daysAgo(90);
     if (datePeriod === "this_month") { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-01`; }
-    if (datePeriod === "last_month") { const d = new Date(); d.setMonth(d.getMonth()-1); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-01`; }
+    // M6: setDate(1) antes de mudar o mês evita overflow (ex: 31 jan → 31 dez → overflow p/ jan)
+    if (datePeriod === "last_month") { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth()-1); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-01`; }
     if (datePeriod === "custom") return customStart;
     return "";
   }, [datePeriod, customStart]);
@@ -1179,7 +1239,10 @@ export default function Dashboard() {
           </div>
           <div className="flex items-center gap-3">
             {selectedCampaign !== "all" && viewLevel === "campaign" && (
-              <button onClick={() => setShowReport(true)} aria-label="Gerar relatório da campanha"
+              <button onClick={() => {
+                setReportCampaignIds([selectedCampaign]);
+                setShowReportPicker(true);
+              }} aria-label="Gerar relatório da campanha"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white transition-colors"
                 style={{ background: "linear-gradient(135deg, #2563eb, #1d4ed8)", boxShadow: "0 2px 8px rgba(37,99,235,0.35)" }}
                 onMouseEnter={e => (e.currentTarget.style.opacity = "0.9")}
@@ -1339,8 +1402,7 @@ export default function Dashboard() {
                       plugins: {
                         tooltip: {
                           callbacks: {
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            label: (ctx: any) => {
+                            label: (ctx: TooltipItem<"line">) => {
                               const label = ctx.dataset?.label || "";
                               const val = ctx.parsed?.y;
                               if (val == null) return "";
@@ -1408,8 +1470,7 @@ export default function Dashboard() {
                       plugins: {
                         tooltip: {
                           callbacks: {
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            label: (ctx: any) => {
+                            label: (ctx: TooltipItem<"bar">) => {
                               const label = ctx.dataset?.label || "";
                               const val = ctx.parsed?.x;
                               if (val == null) return "";
@@ -1712,7 +1773,7 @@ export default function Dashboard() {
                   return (
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                       {/* Ranking — col 1 */}
-                      <div className="card">
+                      <div className="card" style={{ overflow: "visible" }}>
                         <div className="mb-4">
                           <h3 className="text-base font-semibold text-white mb-1">Ranking de Criativos</h3>
                           <p className="text-xs text-slate-500">Score: resultados (35%) + CPR (30%) + CTR (25%) + freq (10%)</p>
@@ -1721,27 +1782,39 @@ export default function Dashboard() {
                           <p className="text-slate-500 text-center py-8 text-sm">Sem dados suficientes</p>
                         ) : (
                           <div className="flex flex-col gap-2.5">
-                            {ranked.map((r, i) => (
-                              <div key={r.id} className={`flex items-center gap-3 p-3 rounded-lg border ${scoreBg(r.score)}`}>
-                                <span className="text-lg w-6 text-center flex-shrink-0">{medals[i]}</span>
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center justify-between gap-2 mb-1">
-                                    <p className="text-slate-200 font-medium text-sm truncate">{r.name}</p>
-                                    <span className={`text-sm font-bold flex-shrink-0 ${scoreColor(r.score)}`}>{r.score}</span>
+                            {ranked.map((r, i) => {
+                              const thumbnailUrl = (data as unknown as { ads?: Ad[] }).ads?.find(a => a.id === r.id)?.thumbnail_url;
+                              return (
+                                <div key={r.id} className={`group relative flex items-center gap-3 p-3 rounded-lg border ${scoreBg(r.score)}`}>
+                                  <span className="text-lg w-6 text-center flex-shrink-0">{medals[i]}</span>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-center justify-between gap-2 mb-1">
+                                      <p className="text-slate-200 font-medium text-sm truncate">{r.name}</p>
+                                      <span className={`text-sm font-bold flex-shrink-0 ${scoreColor(r.score)}`}>{r.score}</span>
+                                    </div>
+                                    <div className="h-1 bg-slate-700 rounded-full overflow-hidden mb-1.5">
+                                      <div className={`h-full rounded-full transition-all ${r.score >= 75 ? "bg-green-500" : r.score >= 50 ? "bg-yellow-500" : "bg-slate-500"}`}
+                                        style={{ width: `${r.score}%` }} />
+                                    </div>
+                                    <div className="flex flex-wrap gap-1">
+                                      <span className="text-[10px] text-slate-500">R$ {fmt(r.spend)} gasto</span>
+                                      {r.strengths.map((s, si) => (
+                                        <span key={si} className="text-[10px] px-1.5 py-0.5 rounded bg-slate-700/60 text-slate-300">{s}</span>
+                                      ))}
+                                    </div>
                                   </div>
-                                  <div className="h-1 bg-slate-700 rounded-full overflow-hidden mb-1.5">
-                                    <div className={`h-full rounded-full transition-all ${r.score >= 75 ? "bg-green-500" : r.score >= 50 ? "bg-yellow-500" : "bg-slate-500"}`}
-                                      style={{ width: `${r.score}%` }} />
-                                  </div>
-                                  <div className="flex flex-wrap gap-1">
-                                    <span className="text-[10px] text-slate-500">R$ {fmt(r.spend)} gasto</span>
-                                    {r.strengths.map((s, si) => (
-                                      <span key={si} className="text-[10px] px-1.5 py-0.5 rounded bg-slate-700/60 text-slate-300">{s}</span>
-                                    ))}
-                                  </div>
+                                  {/* Thumbnail tooltip */}
+                                  {thumbnailUrl && (
+                                    <div className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                                      <div className="rounded-xl overflow-hidden shadow-2xl border border-slate-600" style={{ width: "200px", background: "#0f1729" }}>
+                                        <img src={thumbnailUrl} alt={r.name} className="w-full object-cover" style={{ maxHeight: "300px" }} onError={e => { (e.currentTarget.parentElement!.parentElement as HTMLElement).style.display = "none"; }} />
+                                        <p className="text-[11px] text-slate-400 px-3 py-2 truncate border-t border-slate-700">{r.name}</p>
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
-                              </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         )}
                       </div>
@@ -2252,47 +2325,120 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* ══════════ REPORT MODAL ══════════ */}
-      {showReport && selectedCampaign !== "all" && (() => {
-        const campaign = data.campaigns.find(c => c.id === selectedCampaign);
-        const insight = filteredInsights[0];
-        if (!insight) return null;
+      {/* ══════════ REPORT PICKER ══════════ */}
+      {showReportPicker && selectedCampaign !== "all" && (() => {
+        const currentCamp = data.campaigns.find(c => c.id === selectedCampaign);
+        const accountId = currentCamp?.account_id;
+        const accountCampaigns = data.campaigns.filter(c => c.account_id === accountId);
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+            onClick={e => { if (e.target === e.currentTarget) setShowReportPicker(false); }}>
+            <div className="w-full max-w-md mx-4 rounded-xl border border-slate-700 shadow-2xl" style={{ background: "var(--bg-card)" }}>
+              <div className="px-6 py-5 border-b border-slate-700/50">
+                <h2 className="text-base font-semibold text-white">Campanhas no Relatório</h2>
+                <p className="text-xs text-slate-500 mt-1">Selecione as campanhas que devem aparecer juntas</p>
+              </div>
+              <div className="px-6 py-4 space-y-2 max-h-80 overflow-y-auto">
+                {accountCampaigns.map(c => (
+                  <label key={c.id} className="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors hover:bg-slate-800/50">
+                    <input type="checkbox" checked={reportCampaignIds.includes(c.id)}
+                      onChange={e => setReportCampaignIds(prev =>
+                        e.target.checked ? [...prev, c.id] : prev.filter(id => id !== c.id)
+                      )}
+                      className="w-4 h-4 rounded accent-blue-500" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-white truncate">{c.name}</p>
+                      <p className="text-xs text-slate-500">{c.status === "ACTIVE" ? "● Ativa" : "○ Pausada"}</p>
+                    </div>
+                  </label>
+                ))}
+              </div>
+              <div className="px-6 py-4 border-t border-slate-700/50 flex justify-end gap-2">
+                <button onClick={() => setShowReportPicker(false)}
+                  className="px-4 py-2 rounded-lg text-sm text-slate-400 hover:text-white transition-colors">
+                  Cancelar
+                </button>
+                <button
+                  disabled={reportCampaignIds.length === 0}
+                  onClick={() => {
+                    const firstId = reportCampaignIds[0];
+                    const camp = data.campaigns.find(c => c.id === firstId);
+                    const saved = localStorage.getItem(`report_context_${reportCampaignIds.join("_")}`);
+                    setCampaignContext(saved ?? camp?.ai_context ?? "");
+                    setShowReportPicker(false);
+                    setShowReport(true);
+                  }}
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-white disabled:opacity-40 transition-colors"
+                  style={{ background: "linear-gradient(135deg,#2563eb,#1d4ed8)" }}>
+                  Gerar Relatório ({reportCampaignIds.length})
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
-        const campName = insight.campaign_name;
-        const objective = insight.objective || campaign?.objective || "";
-        const objLabel = objectiveLabels[objective] || objective;
-        const spend = safeFloat(insight.spend);
-        const impressions = safeInt(insight.impressions);
-        const clicks = safeInt(insight.clicks);
-        const reach = safeInt(insight.reach);
-        const frequency = safeFloat(insight.frequency);
-        const ctr = safeFloat(insight.ctr);
+      {/* ══════════ REPORT MODAL ══════════ */}
+      {showReport && reportCampaignIds.length > 0 && (() => {
+        const isMulti = reportCampaignIds.length > 1;
+        const reportCampaigns = reportCampaignIds.map(id => data.campaigns.find(c => c.id === id)).filter(Boolean) as Campaign[];
+        const reportInsights = reportCampaignIds.map(id => data.insights.find(i => i.campaign_id === id)).filter(Boolean) as Insight[];
+        if (reportInsights.length === 0) return null;
+
+        // ── Aggregated metrics ──
+        const spend = reportInsights.reduce((s, i) => s + safeFloat(i.spend), 0);
+        const impressions = reportInsights.reduce((s, i) => s + safeInt(i.impressions), 0);
+        const clicks = reportInsights.reduce((s, i) => s + safeInt(i.clicks), 0);
+        const reach = reportInsights.reduce((s, i) => s + safeInt(i.reach), 0);
+        const linkClicks = reportInsights.reduce((s, i) => s + getActionValue(i.actions, "link_click"), 0);
+        const videoViews = reportInsights.reduce((s, i) => s + getActionValue(i.actions, "video_view"), 0);
+        const postEngagement = reportInsights.reduce((s, i) => s + getActionValue(i.actions, "post_engagement"), 0);
+        const postReaction = reportInsights.reduce((s, i) => s + getActionValue(i.actions, "post_reaction"), 0);
+        const saves = reportInsights.reduce((s, i) => s + getActionValue(i.actions, "onsite_conversion.post_save"), 0);
+        const shares = reportInsights.reduce((s, i) => s + getActionValue(i.actions, "post"), 0);
+        const ctr = impressions > 0 ? (clicks / impressions) * 100 : 0;
         const cpc = clicks > 0 ? spend / clicks : 0;
         const cpm = impressions > 0 ? (spend / impressions) * 1000 : 0;
-        const linkClicks = getActionValue(insight.actions, "link_click");
-        const resultInfo = detectResult(insight.actions, objective);
+        const frequency = reach > 0 ? impressions / reach : 0;
+        const aggResult = detectAggregateResult(reportInsights);
+        const resultInfo = { value: aggResult.total, label: aggResult.label };
         const costPerResult = resultInfo.value > 0 ? spend / resultInfo.value : 0;
-        const videoViews = getActionValue(insight.actions, "video_view");
-        const postEngagement = getActionValue(insight.actions, "post_engagement");
-        const postReaction = getActionValue(insight.actions, "post_reaction");
-        const saves = getActionValue(insight.actions, "onsite_conversion.post_save");
-        const shares = getActionValue(insight.actions, "post");
-        const dailyBudget = campaign?.daily_budget ? safeFloat(campaign.daily_budget) / 100 : 0;
+        const dailyBudget = reportCampaigns.reduce((s, c) => s + (c?.daily_budget ? safeFloat(c.daily_budget) / 100 : 0), 0);
 
-        // Daily data for this campaign
-        const dailyItems = data.daily_insights
-          .filter(d => d.campaign_id === selectedCampaign)
-          .sort((a, b) => a.date_start.localeCompare(b.date_start));
+        // ── Header info ──
+        const campName = isMulti
+          ? `${reportCampaigns[0]?.account_name || "Relatório"} — ${reportCampaignIds.length} campanhas`
+          : reportInsights[0]?.campaign_name || "";
+        const objective = isMulti ? "" : (reportInsights[0]?.objective || reportCampaigns[0]?.objective || "");
+        const objLabel = isMulti ? "Multiplas campanhas" : (objectiveLabels[objective] || objective);
 
-        // Calculate dates from actual daily data
+        // ── Daily data aggregated across all campaigns ──
+        const dailyMap = new Map<string, { spend: number; impressions: number; reach: number; clicks: number; results: number; linkClicks: number }>();
+        reportCampaignIds.forEach(id => {
+          const campObjective = data.campaigns.find(c => c.id === id)?.objective || "";
+          data.daily_insights.filter(d => d.campaign_id === id).forEach(d => {
+            const prev = dailyMap.get(d.date_start) || { spend: 0, impressions: 0, reach: 0, clicks: 0, results: 0, linkClicks: 0 };
+            dailyMap.set(d.date_start, {
+              spend: prev.spend + safeFloat(d.spend),
+              impressions: prev.impressions + safeInt(d.impressions),
+              reach: prev.reach + safeInt(d.reach),
+              clicks: prev.clicks + safeInt(d.clicks),
+              results: prev.results + detectResult(d.actions, campObjective).value,
+              linkClicks: prev.linkClicks + getActionValue(d.actions, "link_click"),
+            });
+          });
+        });
+        const dailyItems = Array.from(dailyMap.entries())
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([date, v]) => ({ date_start: date, ...v }));
+
+        // ── Dates & duration ──
         const startDate = dailyItems.length > 0
           ? new Date(dailyItems[0].date_start + "T12:00:00").toLocaleDateString("pt-BR")
-          : campaign?.start_time ? new Date(campaign.start_time).toLocaleDateString("pt-BR") : insight.date_start;
+          : reportCampaigns[0]?.start_time ? new Date(reportCampaigns[0].start_time).toLocaleDateString("pt-BR") : "";
         const endDate = dailyItems.length > 0
           ? new Date(dailyItems[dailyItems.length - 1].date_start + "T12:00:00").toLocaleDateString("pt-BR")
           : new Date().toLocaleDateString("pt-BR");
-
-        // Calculate campaign duration in days
         const durationDays = dailyItems.length || 1;
 
         // Determine performance analysis
@@ -2319,11 +2465,8 @@ export default function Dashboard() {
         let bestDay = dailyItems[0];
         let worstDay = dailyItems[0];
         dailyItems.forEach(d => {
-          const dResults = detectResult(d.actions, objective).value;
-          const bestResults = bestDay ? detectResult(bestDay.actions, objective).value : 0;
-          const worstResults = worstDay ? detectResult(worstDay.actions, objective).value : 0;
-          if (dResults > bestResults) bestDay = d;
-          if (dResults < worstResults || (dResults === worstResults && safeFloat(d.spend) > safeFloat(worstDay?.spend || "0"))) worstDay = d;
+          if (!bestDay || d.results > bestDay.results) bestDay = d;
+          if (!worstDay || d.results < worstDay.results || (d.results === worstDay.results && d.spend > worstDay.spend)) worstDay = d;
         });
 
         const exportPDF = () => {
@@ -2333,19 +2476,16 @@ export default function Dashboard() {
           const chartImages: string[] = [];
           canvases.forEach(c => chartImages.push((c as HTMLCanvasElement).toDataURL("image/png")));
 
-          const dailyRows = dailyItems.map((d, idx) => {
-            const dSpend = safeFloat(d.spend);
-            const dResults = detectResult(d.actions, objective).value;
-            const dLinkClicks = getActionValue(d.actions, "link_click");
-            const dCpr = dResults > 0 ? dSpend / dResults : 0;
+          const dailyRows = dailyItems.map((d) => {
+            const dCpr = d.results > 0 ? d.spend / d.results : 0;
             const dateStr = new Date(d.date_start + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
             return `<tr style="border-bottom:1px solid #e5e7eb">
               <td style="padding:8px 12px;color:#374151">${dateStr}</td>
-              <td style="padding:8px 12px;text-align:right;color:#374151">R$ ${fmt(dSpend)}</td>
-              <td style="padding:8px 12px;text-align:right;color:#6b7280">${fmtInt(safeInt(d.impressions))}</td>
-              <td style="padding:8px 12px;text-align:right;color:#6b7280">${fmtInt(safeInt(d.reach))}</td>
-              <td style="padding:8px 12px;text-align:right;color:#6b7280">${fmtInt(dLinkClicks)}</td>
-              <td style="padding:8px 12px;text-align:right;font-weight:600;color:#059669">${fmtInt(dResults)}</td>
+              <td style="padding:8px 12px;text-align:right;color:#374151">R$ ${fmt(d.spend)}</td>
+              <td style="padding:8px 12px;text-align:right;color:#6b7280">${fmtInt(d.impressions)}</td>
+              <td style="padding:8px 12px;text-align:right;color:#6b7280">${fmtInt(d.reach)}</td>
+              <td style="padding:8px 12px;text-align:right;color:#6b7280">${fmtInt(d.linkClicks)}</td>
+              <td style="padding:8px 12px;text-align:right;font-weight:600;color:#059669">${fmtInt(d.results)}</td>
               <td style="padding:8px 12px;text-align:right;color:${dCpr > 0 && dCpr < 10 ? '#059669' : dCpr > 0 && dCpr < 20 ? '#d97706' : dCpr > 0 ? '#dc2626' : '#9ca3af'}">${dCpr > 0 ? `R$ ${fmt(dCpr)}` : '-'}</td>
             </tr>`;
           }).join("");
@@ -2383,14 +2523,14 @@ export default function Dashboard() {
             </div>`;
 
           const engagementCards: string[] = [];
-          if (postEngagement > 0) engagementCards.push(metricCard("Engajamento Total", fmtInt(postEngagement)));
-          if (videoViews > 0) engagementCards.push(metricCard("Views de Video", `${fmtInt(videoViews)}`) + ``);
+          if (postEngagement > 0 && !clientMode) engagementCards.push(metricCard("Engajamento Total", fmtInt(postEngagement)));
+          if (videoViews > 0) engagementCards.push(metricCard("Views de Video", fmtInt(videoViews)));
           engagementCards.push(metricCard("Cliques no Link", fmtInt(linkClicks)));
-          engagementCards.push(metricCard("CTR", pct(ctr), ctr >= 2 ? '#059669' : ctr >= 1 ? '#d97706' : '#dc2626'));
           if (postReaction > 0) engagementCards.push(metricCard("Reacoes", fmtInt(postReaction)));
           if (saves > 0) engagementCards.push(metricCard("Salvamentos", fmtInt(saves)));
           if (shares > 0) engagementCards.push(metricCard("Compartilhamentos", fmtInt(shares)));
-          engagementCards.push(metricCard("Cliques Totais", fmtInt(clicks)));
+          if (!clientMode) engagementCards.push(metricCard("CTR", pct(ctr), ctr >= 2 ? '#059669' : ctr >= 1 ? '#d97706' : '#dc2626'));
+          if (!clientMode) engagementCards.push(metricCard("Cliques Totais", fmtInt(clicks)));
 
           const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Relatorio - ${campName}</title>
             <style>
@@ -2413,6 +2553,13 @@ export default function Dashboard() {
                 <h1 style="font-size:22px;font-weight:700;margin-bottom:6px">${campName}</h1>
                 <p style="font-size:14px;opacity:0.85">${startDate} a ${endDate} &middot; ${durationDays} dias &middot; ${objLabel}</p>
               </div>
+
+              ${campaignContext ? `
+              <!-- Contexto -->
+              <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:20px;margin-bottom:32px">
+                <p style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">Contexto da Campanha</p>
+                <p style="font-size:14px;color:#374151;line-height:1.6">${campaignContext.replace(/\n/g, "<br>")}</p>
+              </div>` : ""}
 
               <!-- Investimento -->
               <div style="margin-bottom:32px">
@@ -2442,11 +2589,11 @@ export default function Dashboard() {
               <!-- Alcance -->
               <div style="margin-bottom:32px">
                 <h2 style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:16px">Alcance e Visibilidade</h2>
-                <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px">
+                <div style="display:grid;grid-template-columns:${clientMode ? "1fr 1fr" : "1fr 1fr 1fr 1fr"};gap:12px">
                   ${metricCard("Impressoes", fmtInt(impressions))}
                   ${metricCard("Alcance (pessoas)", fmtInt(reach))}
-                  ${metricCard("CPM", `R$ ${fmt(cpm)}`)}
-                  ${metricCard("Frequencia", `${frequency.toFixed(2)}x`, frequency > 3 ? '#d97706' : '#1f2937')}
+                  ${!clientMode ? metricCard("CPM", `R$ ${fmt(cpm)}`) : ""}
+                  ${!clientMode ? metricCard("Frequencia", `${frequency.toFixed(2)}x`, frequency > 3 ? '#d97706' : '#1f2937') : ""}
                 </div>
               </div>
 
@@ -2506,6 +2653,32 @@ export default function Dashboard() {
                 </div>
               </div>
 
+              ${isMulti ? `
+              <!-- Detalhamento por campanha -->
+              <div style="margin-bottom:32px">
+                <h2 style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:16px">Detalhamento por Campanha</h2>
+                ${reportInsights.map(ri => {
+                  const rc = reportCampaigns.find(c => c.id === ri.campaign_id);
+                  const riSpend = safeFloat(ri.spend);
+                  const riResult = detectResult(ri.actions, ri.objective || rc?.objective || "");
+                  const riCpr = riResult.value > 0 ? riSpend / riResult.value : 0;
+                  return `<div style="border:1px solid #e5e7eb;border-radius:8px;padding:16px;margin-bottom:12px">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+                      <div>
+                        <p style="font-size:14px;font-weight:600;color:#1f2937">${ri.campaign_name}</p>
+                        <p style="font-size:11px;color:#9ca3af;margin-top:2px">${objectiveLabels[ri.objective || ""] || ri.objective || ""}</p>
+                      </div>
+                      <p style="font-size:14px;font-weight:700;color:#1f2937">R$ ${fmt(riSpend)}</p>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+                      ${metricCard("Alcance", fmtInt(safeInt(ri.reach)))}
+                      ${metricCard(riResult.label, fmtInt(riResult.value), "#059669")}
+                      ${metricCard("Custo/Resultado", riCpr > 0 ? `R$ ${fmt(riCpr)}` : "—")}
+                    </div>
+                  </div>`;
+                }).join("")}
+              </div>` : ""}
+
               <!-- Footer -->
               <p style="text-align:center;font-size:11px;color:#9ca3af;padding-top:16px;border-top:1px solid #e5e7eb">Relatorio gerado em ${new Date().toLocaleDateString("pt-BR")} &middot; Dados da API Meta Ads (Graph API v21.0)</p>
             </div>
@@ -2530,6 +2703,12 @@ export default function Dashboard() {
                       <p className="text-blue-200 text-sm mt-1">{startDate} a {endDate} &middot; {durationDays} dias &middot; {objLabel}</p>
                     </div>
                     <div className="flex gap-2">
+                      <button onClick={() => setClientMode(m => !m)}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${clientMode ? "bg-white text-blue-800" : "bg-white/10 hover:bg-white/20 text-white"}`}
+                        title={clientMode ? "Modo Completo" : "Modo Cliente"}>
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                        {clientMode ? "Modo Cliente" : "Modo Completo"}
+                      </button>
                       <button onClick={exportPDF}
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-medium transition-colors" title="Exportar PDF">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
@@ -2544,6 +2723,25 @@ export default function Dashboard() {
                 </div>
 
                 <div className="px-8 py-6 space-y-8">
+
+                  {/* Contexto da Campanha */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Contexto da Campanha</h3>
+                      <span className="text-xs text-slate-500">Editável</span>
+                    </div>
+                    <textarea
+                      value={campaignContext}
+                      onChange={e => {
+                        setCampaignContext(e.target.value);
+                        localStorage.setItem(`report_context_${selectedCampaign}`, e.target.value);
+                      }}
+                      rows={3}
+                      placeholder="Descreva o objetivo e contexto desta campanha..."
+                      className="w-full rounded-lg px-4 py-3 text-sm text-slate-200 placeholder-slate-500 resize-none focus:outline-none focus:ring-1 focus:ring-blue-500/50"
+                      style={{ background: "rgba(30,41,59,0.6)", border: "1px solid rgba(100,116,139,0.3)" }}
+                    />
+                  </div>
 
                   {/* Resumo Investimento */}
                   <div>
@@ -2582,7 +2780,7 @@ export default function Dashboard() {
                   {/* Alcance e Visibilidade */}
                   <div>
                     <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Alcance e Visibilidade</h3>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className={`grid gap-4 ${clientMode ? "grid-cols-2" : "grid-cols-2 md:grid-cols-4"}`}>
                       <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
                         <p className="text-xs text-slate-500 mb-1">Impressoes</p>
                         <p className="text-2xl font-bold text-white">{fmtInt(impressions)}</p>
@@ -2591,14 +2789,18 @@ export default function Dashboard() {
                         <p className="text-xs text-slate-500 mb-1">Alcance (pessoas)</p>
                         <p className="text-2xl font-bold text-white">{fmtInt(reach)}</p>
                       </div>
-                      <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
-                        <p className="text-xs text-slate-500 mb-1">CPM</p>
-                        <p className="text-2xl font-bold text-white">R$ {fmt(cpm)}</p>
-                      </div>
-                      <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
-                        <p className="text-xs text-slate-500 mb-1">Frequencia</p>
-                        <p className={`text-2xl font-bold ${frequency > 3 ? "text-yellow-400" : "text-white"}`}>{frequency.toFixed(2)}x</p>
-                      </div>
+                      {!clientMode && (
+                        <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                          <p className="text-xs text-slate-500 mb-1">CPM</p>
+                          <p className="text-2xl font-bold text-white">R$ {fmt(cpm)}</p>
+                        </div>
+                      )}
+                      {!clientMode && (
+                        <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                          <p className="text-xs text-slate-500 mb-1">Frequencia</p>
+                          <p className={`text-2xl font-bold ${frequency > 3 ? "text-yellow-400" : "text-white"}`}>{frequency.toFixed(2)}x</p>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -2614,7 +2816,7 @@ export default function Dashboard() {
                             datasets: [
                               {
                                 label: "Gasto (R$)",
-                                data: dailyItems.map(d => safeFloat(d.spend)),
+                                data: dailyItems.map(d => d.spend),
                                 borderColor: "#3b82f6",
                                 backgroundColor: "rgba(59,130,246,0.1)",
                                 fill: true,
@@ -2623,7 +2825,7 @@ export default function Dashboard() {
                               },
                               {
                                 label: resultInfo.label,
-                                data: dailyItems.map(d => detectResult(d.actions, objective).value),
+                                data: dailyItems.map(d => d.results),
                                 borderColor: "#22c55e",
                                 backgroundColor: "rgba(34,197,94,0.1)",
                                 fill: false,
@@ -2653,18 +2855,14 @@ export default function Dashboard() {
                             labels: dailyItems.map(d => new Date(d.date_start + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })),
                             datasets: [{
                               label: "Custo/Resultado (R$)",
-                              data: dailyItems.map(d => {
-                                const r = detectResult(d.actions, objective).value;
-                                return r > 0 ? safeFloat(d.spend) / r : null;
-                              }),
+                              data: dailyItems.map(d => d.results > 0 ? d.spend / d.results : null),
                               borderColor: "#f97316",
                               backgroundColor: "rgba(249,115,22,0.1)",
                               fill: true,
                               tension: 0.3,
                               spanGaps: true,
                               pointBackgroundColor: dailyItems.map(d => {
-                                const r = detectResult(d.actions, objective).value;
-                                const cpr = r > 0 ? safeFloat(d.spend) / r : null;
+                                const cpr = d.results > 0 ? d.spend / d.results : null;
                                 return cpr === null ? "transparent" : cpr < 5 ? "#22c55e" : cpr < 15 ? "#eab308" : "#ef4444";
                               }),
                               pointRadius: 5,
@@ -2687,7 +2885,7 @@ export default function Dashboard() {
                   <div>
                     <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Engajamento</h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      {postEngagement > 0 && (
+                      {postEngagement > 0 && !clientMode && (
                         <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
                           <p className="text-xs text-slate-500 mb-1">Engajamento Total</p>
                           <p className="text-2xl font-bold text-white">{fmtInt(postEngagement)}</p>
@@ -2698,17 +2896,13 @@ export default function Dashboard() {
                         <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
                           <p className="text-xs text-slate-500 mb-1">Views de Video</p>
                           <p className="text-2xl font-bold text-white">{fmtInt(videoViews)}</p>
-                          <p className="text-xs text-slate-600 mt-1">R$ {fmt(videoViews > 0 ? spend / videoViews : 0)} / view</p>
+                          {!clientMode && <p className="text-xs text-slate-600 mt-1">R$ {fmt(videoViews > 0 ? spend / videoViews : 0)} / view</p>}
                         </div>
                       )}
                       <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
                         <p className="text-xs text-slate-500 mb-1">Cliques no Link</p>
                         <p className="text-2xl font-bold text-white">{fmtInt(linkClicks)}</p>
-                        <p className="text-xs text-slate-600 mt-1">R$ {fmt(linkClicks > 0 ? spend / linkClicks : 0)} / clique</p>
-                      </div>
-                      <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
-                        <p className="text-xs text-slate-500 mb-1">CTR</p>
-                        <p className={`text-2xl font-bold ${ctr >= 2 ? "text-green-400" : ctr >= 1 ? "text-yellow-400" : "text-red-400"}`}>{pct(ctr)}</p>
+                        {!clientMode && <p className="text-xs text-slate-600 mt-1">R$ {fmt(linkClicks > 0 ? spend / linkClicks : 0)} / clique</p>}
                       </div>
                       {postReaction > 0 && (
                         <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
@@ -2728,11 +2922,13 @@ export default function Dashboard() {
                           <p className="text-2xl font-bold text-white">{fmtInt(shares)}</p>
                         </div>
                       )}
-                      <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
-                        <p className="text-xs text-slate-500 mb-1">Cliques Totais</p>
-                        <p className="text-2xl font-bold text-white">{fmtInt(clicks)}</p>
-                        <p className="text-xs text-slate-600 mt-1">CPC: R$ {fmt(cpc)}</p>
-                      </div>
+                      {!clientMode && (
+                        <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700/50">
+                          <p className="text-xs text-slate-500 mb-1">Cliques Totais</p>
+                          <p className="text-2xl font-bold text-white">{fmtInt(clicks)}</p>
+                          <p className="text-xs text-slate-600 mt-1">CPC: R$ {fmt(cpc)}</p>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -2755,18 +2951,15 @@ export default function Dashboard() {
                           </thead>
                           <tbody>
                             {dailyItems.map((d, idx) => {
-                              const dSpend = safeFloat(d.spend);
-                              const dResults = detectResult(d.actions, objective).value;
-                              const dLinkClicks = getActionValue(d.actions, "link_click");
-                              const dCpr = dResults > 0 ? dSpend / dResults : 0;
+                              const dCpr = d.results > 0 ? d.spend / d.results : 0;
                               return (
                                 <tr key={idx} className="border-b border-slate-800/50 hover:bg-slate-800/30">
                                   <td className="py-2 px-3 text-slate-300">{new Date(d.date_start + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })}</td>
-                                  <td className="py-2 px-3 text-right text-slate-300">R$ {fmt(dSpend)}</td>
-                                  <td className="py-2 px-3 text-right text-slate-400">{fmtInt(safeInt(d.impressions))}</td>
-                                  <td className="py-2 px-3 text-right text-slate-400">{fmtInt(safeInt(d.reach))}</td>
-                                  <td className="py-2 px-3 text-right text-slate-400">{fmtInt(dLinkClicks)}</td>
-                                  <td className="py-2 px-3 text-right font-medium text-green-400">{fmtInt(dResults)}</td>
+                                  <td className="py-2 px-3 text-right text-slate-300">R$ {fmt(d.spend)}</td>
+                                  <td className="py-2 px-3 text-right text-slate-400">{fmtInt(d.impressions)}</td>
+                                  <td className="py-2 px-3 text-right text-slate-400">{fmtInt(d.reach)}</td>
+                                  <td className="py-2 px-3 text-right text-slate-400">{fmtInt(d.linkClicks)}</td>
+                                  <td className="py-2 px-3 text-right font-medium text-green-400">{fmtInt(d.results)}</td>
                                   <td className={`py-2 px-3 text-right ${dCpr > 0 && dCpr < 10 ? "text-green-400" : dCpr > 0 && dCpr < 20 ? "text-yellow-400" : dCpr > 0 ? "text-red-400" : "text-slate-600"}`}>
                                     {dCpr > 0 ? `R$ ${fmt(dCpr)}` : "-"}
                                   </td>
@@ -2846,9 +3039,50 @@ export default function Dashboard() {
                     </div>
                   </div>
 
+                  {/* Breakdown por campanha — só aparece em modo multi */}
+                  {isMulti && (
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Detalhamento por Campanha</h3>
+                      <div className="space-y-3">
+                        {reportInsights.map((ri, idx) => {
+                          const rc = reportCampaigns.find(c => c.id === ri.campaign_id);
+                          const riSpend = safeFloat(ri.spend);
+                          const riResult = detectResult(ri.actions, ri.objective || rc?.objective || "");
+                          const riCpr = riResult.value > 0 ? riSpend / riResult.value : 0;
+                          const riReach = safeInt(ri.reach);
+                          return (
+                            <div key={idx} className="rounded-lg p-4 border border-slate-700/50" style={{ background: "rgba(30,41,59,0.5)" }}>
+                              <div className="flex items-start justify-between mb-3">
+                                <div>
+                                  <p className="text-sm font-medium text-white">{ri.campaign_name}</p>
+                                  <p className="text-xs text-slate-500 mt-0.5">{objectiveLabels[ri.objective || ""] || ri.objective} · {rc?.status === "ACTIVE" ? "● Ativa" : "○ Pausada"}</p>
+                                </div>
+                                <p className="text-sm font-bold text-white">R$ {fmt(riSpend)}</p>
+                              </div>
+                              <div className="grid grid-cols-3 gap-3">
+                                <div>
+                                  <p className="text-xs text-slate-500">Alcance</p>
+                                  <p className="text-base font-semibold text-white">{fmtInt(riReach)}</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-slate-500">{riResult.label}</p>
+                                  <p className="text-base font-semibold text-green-400">{fmtInt(riResult.value)}</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-slate-500">Custo/Resultado</p>
+                                  <p className="text-base font-semibold text-white">{riCpr > 0 ? `R$ ${fmt(riCpr)}` : "—"}</p>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Saldo da Conta */}
                   {(() => {
-                    const accountData = data.accounts.find(a => a.id === campaign?.account_id || a.id === insight?.account_id);
+                    const accountData = data.accounts.find(a => a.id === reportCampaigns[0]?.account_id);
                     if (!accountData?.balance && !accountData?.amount_spent) return null;
                     const balance = safeFloat(accountData.balance) / 100;
                     const amountSpent = safeFloat(accountData.amount_spent) / 100;
@@ -2856,7 +3090,7 @@ export default function Dashboard() {
                       <div>
                         <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Saldo da Conta</h3>
                         <div className="grid grid-cols-2 gap-4">
-                          {accountData.balance !== undefined && (
+                          {accountData.balance !== undefined && balance > 0 && (
                             <div className={`rounded-lg p-5 border ${balance < 50 ? "bg-red-900/20 border-red-800/30" : balance < 200 ? "bg-yellow-900/20 border-yellow-800/30" : "bg-green-900/20 border-green-800/30"}`}>
                               <p className={`text-xs mb-1 ${balance < 50 ? "text-red-400/70" : balance < 200 ? "text-yellow-400/70" : "text-green-400/70"}`}>Saldo Disponivel</p>
                               <p className={`text-4xl font-bold ${balance < 50 ? "text-red-400" : balance < 200 ? "text-yellow-400" : "text-green-400"}`}>R$ {fmt(balance)}</p>
@@ -2876,7 +3110,7 @@ export default function Dashboard() {
                   })()}
 
                   {/* Funil: Conjuntos de Anuncios */}
-                  {adsetRows.length > 0 && (
+                  {adsetRows.length > 0 && !isMulti && (
                     <div>
                       <div className="flex items-center gap-3 mb-6">
                         <div className="flex-1 h-px bg-gradient-to-r from-slate-700 to-transparent" />
@@ -2942,7 +3176,7 @@ export default function Dashboard() {
                   )}
 
                   {/* Funil: Criativos */}
-                  {adRows.length > 0 && (
+                  {adRows.length > 0 && !isMulti && (
                     <div>
                       <div className="flex items-center gap-3 mb-6">
                         <div className="flex-1 h-px bg-gradient-to-r from-slate-700 to-transparent" />
