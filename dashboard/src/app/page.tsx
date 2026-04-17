@@ -2653,6 +2653,33 @@ export default function Dashboard() {
                 </div>
               </div>
 
+              ${(() => {
+                const accountData = data.accounts.find(a => a.id === reportCampaigns[0]?.account_id);
+                if (!accountData?.balance && !accountData?.amount_spent) return "";
+                const bal = safeFloat(accountData.balance) / 100;
+                const spent = safeFloat(accountData.amount_spent) / 100;
+                const balColor = bal < 50 ? "#dc2626" : bal < 200 ? "#d97706" : "#059669";
+                const balBg = bal < 50 ? "#fef2f2" : bal < 200 ? "#fffbeb" : "#f0fdf4";
+                const balBorder = bal < 50 ? "#fecaca" : bal < 200 ? "#fde68a" : "#bbf7d0";
+                return `
+              <!-- Saldo da Conta -->
+              <div style="margin-bottom:32px">
+                <h2 style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:16px">Saldo da Conta</h2>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                  ${accountData.balance !== undefined ? `<div style="background:${balBg};border:1px solid ${balBorder};border-radius:8px;padding:20px">
+                    <p style="font-size:11px;color:${balColor};margin-bottom:4px">Saldo Disponivel</p>
+                    <p style="font-size:36px;font-weight:700;color:${balColor}">R$ ${fmt(bal)}</p>
+                    <p style="font-size:11px;color:#9ca3af;margin-top:4px">${accountData.name}</p>
+                  </div>` : ""}
+                  ${accountData.amount_spent !== undefined ? `<div style="border:1px solid #e5e7eb;border-radius:8px;padding:20px">
+                    <p style="font-size:11px;color:#6b7280;margin-bottom:4px">Total Gasto na Conta</p>
+                    <p style="font-size:36px;font-weight:700;color:#1f2937">R$ ${fmt(spent)}</p>
+                    <p style="font-size:11px;color:#9ca3af;margin-top:4px">historico acumulado</p>
+                  </div>` : ""}
+                </div>
+              </div>`;
+              })()}
+
               ${isMulti ? `
               <!-- Detalhamento por campanha -->
               <div style="margin-bottom:32px">
