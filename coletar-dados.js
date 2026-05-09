@@ -19,7 +19,7 @@ const path = require("path");
 
 /* ──────────── Config ──────────── */
 const TOKEN = process.argv[2];
-const API_VERSION = "v21.0";
+const API_VERSION = "v22.0";
 const BASE = "graph.facebook.com";
 const DAYS_BACK = 90; // Quantos dias de dados diários buscar
 

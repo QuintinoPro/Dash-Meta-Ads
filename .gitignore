@@ -13,3 +13,9 @@ data/consolidated.json
 data/campaigns_*.json
 data/insights_*.json
 data/daily_real_*.json
+
+# Vídeos (arquivos grandes de criativos)
+*.MOV
+*.mov
+*.mp4
+*.MP4

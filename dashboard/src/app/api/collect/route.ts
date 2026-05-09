@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
   const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7).trim() : null;
 
-  const { apiVersion = "v21.0", daysBack = 90 } = await req.json() as {
+  const { apiVersion = "v22.0", daysBack = 90 } = await req.json() as {
     apiVersion?: string; daysBack?: number;
   };
 
