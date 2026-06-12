@@ -1,0 +1,55 @@
+Total Blockchain.RIO insights records: 56
+
+AVAILABLE METRICS IN INSIGHTS:
+  - campaign_id: 23855288855600453
+  - campaign_name: CP 1 - TRÁFEGO
+  - impressions: 1304567
+  - clicks: 3650
+  - spend: 2004.91
+  - cpc: 0.54929
+  - cpm: 1.536839
+  - ctr: 0.279786
+  - reach: 730960
+  - frequency: 1.784731
+  - objective: LINK_CLICKS
+  - date_start: 2023-05-07
+  - date_stop: 2026-06-07
+  - account_id: act_560172729197450
+  - account_name: CA - BLOCKCHAIN RIO
+
+
+DETAIL VIEW - First 5 insights records:
+
+
+1. Campaign: CP 1 - TRÁFEGO
+   Ad Set: N/A
+   spend: 2004.91
+   impressions: 1304567
+   clicks: 3650
+   ctr: 0.279786
+   cpm: 1.536839
+   cpc: 0.54929
+
+2. Campaign: [17/7/2023] Promovendo "blockchainfestival.io"
+   Ad Set: N/A
+   spend: 286.07
+   impressions: 62692
+   clicks: 308
+   ctr: 0.491291
+   cpm: 4.563102
+   cpc: 0.928799
+
+3. Campaign: [28/7/2023] Promovendo "https://blockchainfestival.io"
+   Ad Set: N/A
+   spend: 599.99
+   impressions: 91424
+   clicks: 1061
+   ctr: 1.160527
+   cpm: 6.562719
+   cpc: 0.565495
+Traceback (most recent call last):
+  File "<stdin>", line 20, in <module>
+  File "C:\Users\lucas\AppData\Local\Programs\Python\Python311\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 40-41: character maps to <undefined>

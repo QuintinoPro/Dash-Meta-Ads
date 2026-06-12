@@ -1,0 +1,42 @@
+
+================================================================================
+         BLOCKCHAIN.RIO - META ADS ACCOUNT COMPLETE ANALYSIS
+================================================================================
+
+ACCOUNT INFORMATION:
+  ID: act_560172729197450
+  Name: CA - BLOCKCHAIN RIO
+  Total Campaigns: 59
+  Active Campaigns: 4
+  Paused Campaigns: 55
+
+CURRENTLY ACTIVE CAMPAIGNS:
+
+1. [ENG]Blockchain Rio 2026 Topo de Funil (Site)
+   Budget: R$25000/day | OUTCOME_ENGAGEMENT
+
+2. Blockchain Rio 2026 Meio Funil (Pg Vendas)
+   Budget: R$35000/day | OUTCOME_SALES
+
+3. Blockchain Rio 2026 Topo de Funil (Site)
+   Budget: R$35000/day | OUTCOME_SALES
+
+4. Blockchain.Rio 2026 Engajamento - 02/04
+   Budget: R$30000/day | OUTCOME_TRAFFIC
+
+
+TOP 10 CAMPAIGNS BY SPEND:
+ 1. [VENDAS]Blockchain - R$32,109.10 | 2,283,548 impr | 8,974 clicks | CPM: R$14.06 | CPC: R$3.58
+ 2. B? I Tr?fego I BLOCKCHAIN On the Road I - R$13,090.77 | 4,753,436 impr | 36,866 clicks | CPM: R$2.75 | CPC: R$0.36
+ 3. [Site][Venda] Chamada - R$8,904.11 | 583,523 impr | 3,714 clicks | CPM: R$15.26 | CPC: R$2.40
+ 4. [MEIO] Engajamento 365D + LKL - R$8,505.78 | 1,376,573 impr | 16,090 clicks | CPM: R$6.18 | CPC: R$0.53
+ 5. ? I Vendas I BLOCKCHAIN RIO I 2904 - R$8,066.62 | 455,671 impr | 6,779 clicks | CPM: R$17.70 | CPC: R$1.19
+ 6. [HYPER] [ABO] Convers?o - Initiate Checkout - Link direto Sympla - 28.08.23 - R$7,113.98 | 1,029,746 impr | 3,166 clicks | CPM: R$6.91 | CPC: R$2.25
+ 7. Blockchain.Rio 2026 Engajamento - 02/04 - R$6,583.75 | 1,010,584 impr | 30,208 clicks | CPM: R$6.51 | CPC: R$0.22
+ 8. ? I Engajamento I BLOCKCHAIN RIO - R$5,881.38 | 1,230,599 impr | 5,482 clicks | CPM: R$4.78 | CPC: R$1.07
+ 9. ? I Vendas Exclusiva I BLOCKCHAIN RIO I PROMOCIONAL - R$5,570.40 | 293,105 impr | 2,869 clicks | CPM: R$19.00 | CPC: R$1.94
+10. Campanha Te Leva - R$4,819.45 | 291,400 impr | 5,534 clicks | CPM: R$16.54 | CPC: R$0.87
+
+TOTAL HISTORICAL SPEND: R$150,486.69
+TOTAL IMPRESSIONS: 25,868,237
+TOTAL CLICKS: 176,481

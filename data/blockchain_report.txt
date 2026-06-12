@@ -1,0 +1,67 @@
+BLOCKCHAIN.RIO DATA ANALYSIS
+======================================================================
+
+ACCOUNT:
+  ID: act_560172729197450
+  Name: CA - BLOCKCHAIN RIO
+  Total Campaigns: 59
+  Campaigns with Data: 56
+
+DATA VOLUME:
+  Aggregated Insights: 56
+  Daily Insights: 120
+
+TOTAL METRICS:
+  Total Spend: R$ 150486.69
+  Total Impressions: 25,868,237
+  Total Clicks: 176,481
+  Total Reach: 9,876,086
+
+AVAILABLE DATA FIELDS:
+  - account_id
+  - account_name
+  - actions
+  - campaign_id
+  - campaign_name
+  - clicks
+  - cost_per_action_type
+  - cpc
+  - cpm
+  - ctr
+  - date_start
+  - date_stop
+  - frequency
+  - impressions
+  - objective
+  - reach
+  - spend
+
+ACTION TYPES AVAILABLE: 64 types
+Sample action types:
+  1. add_payment_info
+  2. add_to_cart
+  3. app_site_visit
+  4. comment
+  5. initiate_checkout
+  6. landing_page_view
+  7. lead
+  8. like
+  9. link_click
+  10. offsite_complete_registration_add_meta_leads
+  11. offsite_content_view_add_20_s_calls
+  12. offsite_content_view_add_meta_leads
+  13. offsite_conversion.custom.356443684087015
+  14. offsite_conversion.fb_pixel_add_payment_info
+  15. offsite_conversion.fb_pixel_add_to_cart
+
+TOP 5 CAMPAIGNS BY SPEND:
+  1. Campaign (Spend: R$ 32109.10)
+     Impr: 2,283,548, Clicks: 8,974, CTR: 0.39%
+  2. Campaign (Spend: R$ 13090.77)
+     Impr: 4,753,436, Clicks: 36,866, CTR: 0.78%
+  3. Campaign (Spend: R$ 8904.11)
+     Impr: 583,523, Clicks: 3,714, CTR: 0.64%
+  4. Campaign (Spend: R$ 8505.78)
+     Impr: 1,376,573, Clicks: 16,090, CTR: 1.17%
+  5. Campaign (Spend: R$ 8066.62)
+     Impr: 455,671, Clicks: 6,779, CTR: 1.49%

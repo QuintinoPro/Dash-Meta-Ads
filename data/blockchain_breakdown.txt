@@ -1,0 +1,6 @@
+Available sections in consolidated.json:
+  - accounts
+  - campaigns
+  - insights
+  - monthly_insights
+  - daily_insights

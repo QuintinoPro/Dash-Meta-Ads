@@ -1,0 +1,74 @@
+BLOCKCHAIN.RIO - AUDIENCE SEGMENTATION PATTERNS
+
+========================================================================================================================
+
+SEGMENTATION FOUND BY PATTERN TYPE:
+
+
+UNIVERSITIES (9 campaigns):
+  - USP 2026 [PAUSED]
+  - Blockchain On The Road 2026 UFES [PAUSED]
+  - Blockchain On The Road 2026 TECNOSINOS [PAUSED]
+  - Blockchain On The Road 2026 UFSC [PAUSED]
+  - Blockchain on the Road - PUC/RIO [PAUSED]
+  ... and 4 more
+
+EVENT_TYPE (18 campaigns):
+  - Blockchain On The Road 2026 UFES [PAUSED]
+  - Blockchain On The Road 2026 TECNOSINOS [PAUSED]
+  - Blockchain On The Road 2026 UFSC [PAUSED]
+  - Campanha Te Leva [PAUSED]
+  - Blockchain on the Road - PUC/RIO [PAUSED]
+  ... and 13 more
+
+INDUSTRY (34 campaigns):
+  - [ENG]Blockchain Rio 2026 Topo de Funil (Site) [ACTIVE]
+  - Blockchain Rio 2026 Meio Funil (Pg Vendas) [ACTIVE]
+  - Blockchain Rio 2026 Topo de Funil (Site) [ACTIVE]
+  - Blockchain.Rio 2026 Engajamento - 02/04 [ACTIVE]
+  - Blockchain On The Road 2026 UFES [PAUSED]
+  ... and 29 more
+
+FUNNEL_STAGE (4 campaigns):
+  - [ENG]Blockchain Rio 2026 Topo de Funil (Site) [ACTIVE]
+  - Blockchain Rio 2026 Meio Funil (Pg Vendas) [ACTIVE]
+  - Blockchain Rio 2026 Topo de Funil (Site) [ACTIVE]
+  - [MEIO] Engajamento 365D + LKL [PAUSED]
+
+AUDIENCE_TYPE (12 campaigns):
+  - Blockchain.Rio 2026 Engajamento - 02/04 [ACTIVE]
+  - [MEIO] Engajamento 365D + LKL [PAUSED]
+  - [LKL][TR] BLOCKCHAIN RIO [PAUSED]
+  - B? I Engajamento I BLOCKCHAIN On the Road I [PAUSED]
+  - ?Blockchain RIO na USP + FGV 13/05/2025  | Engajamento [PAUSED]
+  ... and 7 more
+
+OBJECTIVE_MARKING (21 campaigns):
+  - Blockchain Rio 2026 Meio Funil (Pg Vendas) [ACTIVE]
+  - [rmkt] Vendas [PAUSED]
+  - [VENDAS]Blockchain [PAUSED]
+  - ? I Alcance Exclusivo I BLOCKCHAIN RIO I PROMOCIONAL [PAUSED]
+  - ? I Vendas Exclusiva I BLOCKCHAIN RIO I PROMOCIONAL [PAUSED]
+  ... and 16 more
+
+
+========================================================================================================================
+
+NAMING CONVENTION ANALYSIS:
+
+Top campaign prefixes/naming conventions found:
+  - 'B' : 11 campaigns
+  - 'P' : 7 campaigns
+  - '[HYPER]' : 4 campaigns
+  - 'C' : 2 campaigns
+  - 'V' : 2 campaigns
+  - '[ENG' : 1 campaigns
+  - 'USP' : 1 campaigns
+  - '[ENG]' : 1 campaigns
+  - '[MEIO]' : 1 campaigns
+  - '[VENDAS' : 1 campaigns
+  - '[LKL' : 1 campaigns
+  - 'D' : 1 campaigns
+  - '[ALCANCE]' : 1 campaigns
+  - '[RMKT]' : 1 campaigns
+  - 'UERJ' : 1 campaigns

@@ -1,0 +1,43 @@
+Total Blockchain.RIO daily insights records: 120
+
+AVAILABLE METRICS IN DAILY INSIGHTS:
+  - account_id: act_560172729197450
+  - account_name: CA - BLOCKCHAIN RIO
+  - campaign_id: 120243166251200454
+  - campaign_name: Blockchain On The Road 2026 UFSC
+  - clicks: 382
+  - cpc: 0.508665
+  - cpm: 4.488358
+  - ctr: 0.88238
+  - date_start: 2026-03-17
+  - date_stop: 2026-03-17
+  - frequency: 1.327446
+  - impressions: 43292
+  - objective: LINK_CLICKS
+  - reach: 32613
+  - spend: 194.31
+
+
+Total Blockchain.RIO monthly insights records: 101
+
+MONTHLY TRENDS (Top 10 by spend):
+ 1. N/A - [VENDAS]Blockchain
+    Spend: R$19771.90 | Impressions: 1,399,412 | Clicks: 5,800
+ 2. N/A - [VENDAS]Blockchain
+    Spend: R$12337.20 | Impressions: 884,136 | Clicks: 3,174
+ 3. N/A - B? I Tr?fego I BLOCKCHAIN On the Road I
+    Spend: R$9525.73 | Impressions: 3,692,059 | Clicks: 28,809
+ 4. N/A - [Site][Venda] Chamada
+    Spend: R$7058.02 | Impressions: 474,116 | Clicks: 2,784
+ 5. N/A - [HYPER] [ABO] Convers?o - Initiate Checkout - Link direto Sy
+    Spend: R$5681.89 | Impressions: 828,841 | Clicks: 2,472
+ 6. N/A - [MEIO] Engajamento 365D + LKL
+    Spend: R$4720.62 | Impressions: 779,852 | Clicks: 8,864
+ 7. N/A - ? I Vendas I BLOCKCHAIN RIO I 2904
+    Spend: R$4719.02 | Impressions: 255,112 | Clicks: 4,592
+ 8. N/A - ? I Engajamento I BLOCKCHAIN RIO
+    Spend: R$4249.88 | Impressions: 858,489 | Clicks: 3,951
+ 9. N/A - [LKL][TR] BLOCKCHAIN RIO
+    Spend: R$3804.20 | Impressions: 657,700 | Clicks: 4,886
+10. N/A - [MEIO] Engajamento 365D + LKL
+    Spend: R$3785.16 | Impressions: 596,721 | Clicks: 7,226

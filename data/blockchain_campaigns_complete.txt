@@ -1,0 +1,298 @@
+BLOCKCHAIN.RIO - ALL CAMPAIGNS (Total: 59)
+
+======================================================================================================================================================
+
+ 1. [ENG]Blockchain Rio 2026 Topo de Funil (Site)
+    Status: ACTIVE | Objetivo: OUTCOME_ENGAGEMENT
+    Orcamento Diario: R$25000
+    Criada: 2026-05-31
+
+ 2. Blockchain Rio 2026 Meio Funil (Pg Vendas)
+    Status: ACTIVE | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$35000
+    Criada: 2026-05-20
+
+ 3. Blockchain Rio 2026 Topo de Funil (Site)
+    Status: ACTIVE | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$35000
+    Criada: 2026-05-20
+
+ 4. USP 2026
+    Status: PAUSED | Objetivo: OUTCOME_TRAFFIC
+    Orcamento Diario: R$N/A
+    Criada: 2026-05-17
+
+ 5. Blockchain.Rio 2026 Engajamento - 02/04
+    Status: ACTIVE | Objetivo: OUTCOME_TRAFFIC
+    Orcamento Diario: R$30000
+    Criada: 2026-04-02
+
+ 6. Blockchain On The Road 2026 UFES
+    Status: PAUSED | Objetivo: OUTCOME_TRAFFIC
+    Orcamento Diario: R$N/A
+    Criada: 2026-03-17
+
+ 7. Blockchain On The Road 2026 TECNOSINOS
+    Status: PAUSED | Objetivo: OUTCOME_TRAFFIC
+    Orcamento Diario: R$N/A
+    Criada: 2026-03-17
+
+ 8. Blockchain On The Road 2026 UFSC
+    Status: PAUSED | Objetivo: OUTCOME_TRAFFIC
+    Orcamento Diario: R$N/A
+    Criada: 2026-03-16
+
+ 9. [rmkt] Vendas
+    Status: PAUSED | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$N/A
+    Criada: 2025-07-31
+
+10. [ENG] BNDES
+    Status: PAUSED | Objetivo: OUTCOME_ENGAGEMENT
+    Orcamento Diario: R$N/A
+    Criada: 2025-07-31
+
+11. Campanha Te Leva
+    Status: PAUSED | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$N/A
+    Criada: 2025-07-23
+
+12. Blockchain on the Road - PUC/RIO
+    Status: PAUSED | Objetivo: OUTCOME_TRAFFIC
+    Orcamento Diario: R$N/A
+    Criada: 2025-07-23
+
+13. [MEIO] Engajamento 365D + LKL
+    Status: PAUSED | Objetivo: OUTCOME_TRAFFIC
+    Orcamento Diario: R$N/A
+    Criada: 2025-07-17
+
+14. [VENDAS]Blockchain
+    Status: PAUSED | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$N/A
+    Criada: 2025-07-16
+
+15. [LKL][TR] BLOCKCHAIN RIO
+    Status: PAUSED | Objetivo: OUTCOME_TRAFFIC
+    Orcamento Diario: R$N/A
+    Criada: 2025-07-14
+
+16. ? I Alcance Exclusivo I BLOCKCHAIN RIO I PROMOCIONAL
+    Status: PAUSED | Objetivo: OUTCOME_AWARENESS
+    Orcamento Diario: R$N/A
+    Criada: 2025-06-28
+
+17. ? I Vendas Exclusiva I BLOCKCHAIN RIO I PROMOCIONAL
+    Status: PAUSED | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$N/A
+    Criada: 2025-06-23
+
+18. ? I Reconhecimento I Impress?es I BlockChainRIO
+    Status: PAUSED | Objetivo: OUTCOME_AWARENESS
+    Orcamento Diario: R$N/A
+    Criada: 2025-06-19
+
+19. ? I Vendas I BLOCKCHAIN RIO I 2705 x4
+    Status: PAUSED | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$N/A
+    Criada: 2025-05-27
+
+20. B? I Engajamento I BLOCKCHAIN On the Road I
+    Status: PAUSED | Objetivo: OUTCOME_ENGAGEMENT
+    Orcamento Diario: R$N/A
+    Criada: 2025-05-19
+
+21. ?Blockchain RIO na USP + FGV 13/05/2025  | Engajamento
+    Status: PAUSED | Objetivo: OUTCOME_ENGAGEMENT
+    Orcamento Diario: R$N/A
+    Criada: 2025-05-11
+
+22. ?Blockchain RIO na USP +  FGV | Tr?fego
+    Status: PAUSED | Objetivo: OUTCOME_TRAFFIC
+    Orcamento Diario: R$N/A
+    Criada: 2025-05-11
+
+23. ?Blockchain RIO na USP + FGV 13/05/2025  | Alcance
+    Status: PAUSED | Objetivo: OUTCOME_AWARENESS
+    Orcamento Diario: R$N/A
+    Criada: 2025-05-11
+
+24. B ? I Vendas Maximizar Cliques I BLOCKCHAIN On the Road I
+    Status: PAUSED | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$N/A
+    Criada: 2025-05-04
+
+25. B? I Tr?fego I BLOCKCHAIN On the Road I
+    Status: PAUSED | Objetivo: OUTCOME_TRAFFIC
+    Orcamento Diario: R$N/A
+    Criada: 2025-05-02
+
+26. ? I Vendas I BLOCKCHAIN RIO I 2904 I X10
+    Status: PAUSED | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$7132
+    Criada: 2025-05-02
+
+27. ? I Vendas I BLOCKCHAIN RIO I 2904
+    Status: PAUSED | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$N/A
+    Criada: 2025-04-29
+
+28. ? I Engajamento I BLOCKCHAIN RIO
+    Status: PAUSED | Objetivo: OUTCOME_ENGAGEMENT
+    Orcamento Diario: R$N/A
+    Criada: 2025-04-29
+
+29. ? I Reconhecimento I BLOCKCHAIN RIO
+    Status: PAUSED | Objetivo: OUTCOME_AWARENESS
+    Orcamento Diario: R$N/A
+    Criada: 2025-04-07
+
+30. ? I Vendas I BLOCKCHAIN RIO I Old
+    Status: PAUSED | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$N/A
+    Criada: 2025-04-01
+
+31. Blockchain on the Road - UFPE
+    Status: PAUSED | Objetivo: OUTCOME_TRAFFIC
+    Orcamento Diario: R$N/A
+    Criada: 2025-04-01
+
+32. Digital Assets - Recife
+    Status: PAUSED | Objetivo: OUTCOME_TRAFFIC
+    Orcamento Diario: R$N/A
+    Criada: 2025-03-31
+
+33. [ALCANCE] Teaser Blockchain Rio 2024
+    Status: PAUSED | Objetivo: OUTCOME_AWARENESS
+    Orcamento Diario: R$N/A
+    Criada: 2024-07-31
+
+34. [RMKT] Vendas
+    Status: PAUSED | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$N/A
+    Criada: 2024-07-17
+
+35. UERJ
+    Status: PAUSED | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$N/A
+    Criada: 2024-07-14
+
+36. [ALCANCE][ENGAJAMENTO] Publica??es
+    Status: PAUSED | Objetivo: OUTCOME_ENGAGEMENT
+    Orcamento Diario: R$N/A
+    Criada: 2024-06-17
+
+37. [Site][Venda] Chamada
+    Status: PAUSED | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$10000
+    Criada: 2024-06-10
+
+38. vendas ETH RIo
+    Status: PAUSED | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$N/A
+    Criada: 2024-05-13
+
+39. Vendas seguidores
+    Status: PAUSED | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$N/A
+    Criada: 2024-05-06
+
+40. Vendas Geral
+    Status: PAUSED | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$N/A
+    Criada: 2024-05-06
+
+41. Cadastros de patrocinadores
+    Status: PAUSED | Objetivo: OUTCOME_LEADS
+    Orcamento Diario: R$N/A
+    Criada: 2024-04-30
+
+42. Tr?fego Patrocinadores
+    Status: PAUSED | Objetivo: OUTCOME_TRAFFIC
+    Orcamento Diario: R$N/A
+    Criada: 2024-04-29
+
+43. [HYPER] [ABO] Convers?o - Purchase - Link direto Sympla - 31.08.23
+    Status: PAUSED | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$N/A
+    Criada: 2023-08-31
+
+44. V2 [HYPER] [ABO] Convers?o - Initiate Checkout - Link direto Sympla - 28.08.23
+    Status: PAUSED | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$N/A
+    Criada: 2023-08-31
+
+45. Publica??o do Instagram: Construindo o Futuro com...
+    Status: PAUSED | Objetivo: LINK_CLICKS
+    Orcamento Diario: R$2500
+    Criada: 2023-08-30
+
+46. Publica??o do Instagram: ??? N?o deixe de...
+    Status: PAUSED | Objetivo: LINK_CLICKS
+    Orcamento Diario: R$2500
+    Criada: 2023-08-30
+
+47. Publica??o do Instagram: ? com grande satisfa??o...
+    Status: PAUSED | Objetivo: LINK_CLICKS
+    Orcamento Diario: R$2500
+    Criada: 2023-08-30
+
+48. Publica??o do Instagram: ?? Prepare-se para uma...
+    Status: PAUSED | Objetivo: LINK_CLICKS
+    Orcamento Diario: R$2500
+    Criada: 2023-08-30
+
+49. Publica??o do Instagram: Esteja no lugar certo,...
+    Status: PAUSED | Objetivo: LINK_CLICKS
+    Orcamento Diario: R$5000
+    Criada: 2023-08-30
+
+50. [HYPER] [ABO] Convers?o - Initiate Checkout - Link direto Sympla - 28.08.23
+    Status: PAUSED | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$N/A
+    Criada: 2023-08-28
+
+51. [HYPER] [ABO] [PURCHASE] Convers?o - Vendas - Link direto Sympla - 28.08.23
+    Status: PAUSED | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$N/A
+    Criada: 2023-08-28
+
+52. [HYPER] [ABO] Convers?o - Vendas - Link direto Sympla - 23.08.23
+    Status: PAUSED | Objetivo: OUTCOME_SALES
+    Orcamento Diario: R$N/A
+    Criada: 2023-08-24
+
+53. Publica??o do Instagram: ? A Globo vai estar no...
+    Status: PAUSED | Objetivo: LINK_CLICKS
+    Orcamento Diario: R$1000
+    Criada: 2023-08-15
+
+54. Publica??o do Instagram: ?? Marcado na sua...
+    Status: PAUSED | Objetivo: LINK_CLICKS
+    Orcamento Diario: R$1000
+    Criada: 2023-08-15
+
+55. [28/7/2023] Promovendo "https://blockchainfestival.io"
+    Status: PAUSED | Objetivo: LINK_CLICKS
+    Orcamento Diario: R$6000
+    Criada: 2023-07-28
+
+56. [17/7/2023] Promovendo "blockchainfestival.io"
+    Status: PAUSED | Objetivo: LINK_CLICKS
+    Orcamento Diario: R$6000
+    Criada: 2023-07-17
+
+57. [14/7/2023] Promovendo "https://blockchainfestival.io"
+    Status: PAUSED | Objetivo: LINK_CLICKS
+    Orcamento Diario: R$6000
+    Criada: 2023-07-14
+
+58. [10/7/2023] Promovendo "blockchainfestival.io"
+    Status: PAUSED | Objetivo: LINK_CLICKS
+    Orcamento Diario: R$6000
+    Criada: 2023-07-10
+
+59. CP 1 - TR?FEGO
+    Status: PAUSED | Objetivo: OUTCOME_TRAFFIC
+    Orcamento Diario: R$N/A
+    Criada: 2023-05-18

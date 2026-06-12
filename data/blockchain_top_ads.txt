@@ -1,0 +1,43 @@
+TOP 10 CAMPAIGNS/AD SETS BY TOTAL SPEND:
+
+========================================================================================================================
+ 1. [VENDAS]Blockchain
+    Spend: R$32109.10 | Impressions: 2,283,548 | Clicks: 8,974
+    CPM: R$14.06 | CPC: R$3.58 | CTR: 0.39%
+
+ 2. B? I Tr?fego I BLOCKCHAIN On the Road I
+    Spend: R$13090.77 | Impressions: 4,753,436 | Clicks: 36,866
+    CPM: R$2.75 | CPC: R$0.36 | CTR: 0.78%
+
+ 3. [Site][Venda] Chamada
+    Spend: R$8904.11 | Impressions: 583,523 | Clicks: 3,714
+    CPM: R$15.26 | CPC: R$2.40 | CTR: 0.64%
+
+ 4. [MEIO] Engajamento 365D + LKL
+    Spend: R$8505.78 | Impressions: 1,376,573 | Clicks: 16,090
+    CPM: R$6.18 | CPC: R$0.53 | CTR: 1.17%
+
+ 5. ? I Vendas I BLOCKCHAIN RIO I 2904
+    Spend: R$8066.62 | Impressions: 455,671 | Clicks: 6,779
+    CPM: R$17.70 | CPC: R$1.19 | CTR: 1.49%
+
+ 6. [HYPER] [ABO] Convers?o - Initiate Checkout - Link direto Sympla - 28.08.23
+    Spend: R$7113.98 | Impressions: 1,029,746 | Clicks: 3,166
+    CPM: R$6.91 | CPC: R$2.25 | CTR: 0.31%
+
+ 7. Blockchain.Rio 2026 Engajamento - 02/04
+    Spend: R$6583.75 | Impressions: 1,010,584 | Clicks: 30,208
+    CPM: R$6.51 | CPC: R$0.22 | CTR: 2.99%
+
+ 8. ? I Engajamento I BLOCKCHAIN RIO
+    Spend: R$5881.38 | Impressions: 1,230,599 | Clicks: 5,482
+    CPM: R$4.78 | CPC: R$1.07 | CTR: 0.45%
+
+ 9. ? I Vendas Exclusiva I BLOCKCHAIN RIO I PROMOCIONAL
+    Spend: R$5570.40 | Impressions: 293,105 | Clicks: 2,869
+    CPM: R$19.00 | CPC: R$1.94 | CTR: 0.98%
+
+10. Campanha Te Leva
+    Spend: R$4819.45 | Impressions: 291,400 | Clicks: 5,534
+    CPM: R$16.54 | CPC: R$0.87 | CTR: 1.90%
+

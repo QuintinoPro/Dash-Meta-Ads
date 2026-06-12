@@ -1,0 +1,22 @@
+AVAILABLE METRICS IN INSIGHTS DATA:
+
+  - account_id
+  - account_name
+  - actions
+  - campaign_id
+  - campaign_name
+  - clicks
+  - cost_per_action_type
+  - cpc
+  - cpm
+  - ctr
+  - date_start
+  - date_stop
+  - frequency
+  - impressions
+  - objective
+  - reach
+  - spend
+
+
+Campaigns with conversions recorded: 0 out of 56

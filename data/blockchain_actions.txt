@@ -1,0 +1,325 @@
+ANALYZING 'ACTIONS' FIELD IN INSIGHTS:
+
+Total unique action types found: 64
+
+  - add_payment_info: 299 total (found in 16 campaigns)
+  - add_to_cart: 4564 total (found in 16 campaigns)
+  - app_site_visit: 16 total (found in 3 campaigns)
+  - comment: 322 total (found in 34 campaigns)
+  - initiate_checkout: 4513 total (found in 17 campaigns)
+  - landing_page_view: 26117 total (found in 43 campaigns)
+  - lead: 2898 total (found in 19 campaigns)
+  - like: 50 total (found in 7 campaigns)
+  - link_click: 140153 total (found in 56 campaigns)
+  - offsite_complete_registration_add_meta_leads: 1 total (found in 1 campaigns)
+  - offsite_content_view_add_20_s_calls: 48 total (found in 5 campaigns)
+  - offsite_content_view_add_meta_leads: 49 total (found in 6 campaigns)
+  - offsite_conversion.custom.356443684087015: 1191 total (found in 4 campaigns)
+  - offsite_conversion.fb_pixel_add_payment_info: 299 total (found in 16 campaigns)
+  - offsite_conversion.fb_pixel_add_to_cart: 4564 total (found in 16 campaigns)
+  - offsite_conversion.fb_pixel_initiate_checkout: 4513 total (found in 17 campaigns)
+  - offsite_conversion.fb_pixel_lead: 2897 total (found in 18 campaigns)
+  - offsite_conversion.fb_pixel_purchase: 2920 total (found in 16 campaigns)
+  - offsite_conversion.fb_pixel_view_content: 48 total (found in 5 campaigns)
+  - offsite_lead_add_20_s_calls: 2897 total (found in 18 campaigns)
+  - offsite_purchase_add_20_s_calls: 2920 total (found in 16 campaigns)
+  - offsite_search_add_meta_leads: 1 total (found in 1 campaigns)
+  - omni_add_to_cart: 4564 total (found in 16 campaigns)
+  - omni_initiated_checkout: 4513 total (found in 17 campaigns)
+  - omni_landing_page_view: 26133 total (found in 44 campaigns)
+  - omni_purchase: 2920 total (found in 16 campaigns)
+  - omni_view_content: 48 total (found in 5 campaigns)
+  - onsite_conversion.lead: 1 total (found in 1 campaigns)
+  - onsite_conversion.lead_grouped: 1 total (found in 1 campaigns)
+  - onsite_conversion.messaging_block: 257 total (found in 10 campaigns)
+  - onsite_conversion.messaging_conversation_replied_7d: 20 total (found in 5 campaigns)
+  - onsite_conversion.messaging_conversation_started_7d: 953 total (found in 39 campaigns)
+  - onsite_conversion.messaging_first_reply: 352 total (found in 24 campaigns)
+  - onsite_conversion.messaging_user_depth_2_message_send: 45 total (found in 6 campaigns)
+  - onsite_conversion.messaging_user_depth_3_message_send: 35 total (found in 5 campaigns)
+  - onsite_conversion.messaging_user_depth_5_message_send: 3 total (found in 2 campaigns)
+  - onsite_conversion.messaging_welcome_message_view: 116 total (found in 2 campaigns)
+  - onsite_conversion.post_net_comment: 322 total (found in 34 campaigns)
+  - onsite_conversion.post_net_like: 117603 total (found in 55 campaigns)
+  - onsite_conversion.post_net_save: 1257 total (found in 37 campaigns)
+  - onsite_conversion.post_save: 1264 total (found in 37 campaigns)
+  - onsite_conversion.post_unlike: 252 total (found in 8 campaigns)
+  - onsite_conversion.post_unsave: 7 total (found in 3 campaigns)
+  - onsite_conversion.total_messaging_connection: 230 total (found in 11 campaigns)
+  - onsite_web_add_to_cart: 4564 total (found in 16 campaigns)
+  - onsite_web_app_add_to_cart: 4564 total (found in 16 campaigns)
+  - onsite_web_app_purchase: 2920 total (found in 16 campaigns)
+  - onsite_web_app_view_content: 48 total (found in 5 campaigns)
+  - onsite_web_initiate_checkout: 4513 total (found in 17 campaigns)
+  - onsite_web_lead: 2898 total (found in 19 campaigns)
+  - onsite_web_purchase: 2920 total (found in 16 campaigns)
+  - onsite_web_view_content: 48 total (found in 5 campaigns)
+  - page_engagement: 1781243 total (found in 55 campaigns)
+  - photo_view: 71 total (found in 3 campaigns)
+  - post: 2654 total (found in 49 campaigns)
+  - post_engagement: 1781194 total (found in 55 campaigns)
+  - post_interaction_gross: 122095 total (found in 56 campaigns)
+  - post_interaction_net: 122354 total (found in 56 campaigns)
+  - post_reaction: 117855 total (found in 55 campaigns)
+  - purchase: 2920 total (found in 16 campaigns)
+  - video_view: 1583636 total (found in 46 campaigns)
+  - view_content: 48 total (found in 5 campaigns)
+  - web_app_in_store_purchase: 2920 total (found in 16 campaigns)
+  - web_in_store_purchase: 2920 total (found in 16 campaigns)
+
+
+TOP 10 CAMPAIGNS BY TOTAL ACTIONS/RESULTS:
+
+ 1. B? I Tr?fego I BLOCKCHAIN On the Road I
+    Spend: R$13090.77 | Clicks: 36866 | Impressions: 4753436
+      - link_click: 31160
+      - post_reaction: 1186
+      - page_engagement: 32735
+      - landing_page_view: 15
+      - omni_landing_page_view: 15
+      - post_engagement: 32730
+      - like: 5
+      - post_interaction_gross: 1498
+      - comment: 16
+      - post_interaction_net: 1498
+      - onsite_conversion.messaging_first_reply: 21
+      - post: 240
+      - onsite_conversion.post_save: 56
+      - onsite_conversion.post_net_comment: 16
+      - onsite_conversion.post_net_save: 56
+      - onsite_conversion.post_net_like: 1186
+      - onsite_conversion.messaging_conversation_started_7d: 30
+      - video_view: 72
+
+ 2. Blockchain.Rio 2026 Engajamento - 02/04
+    Spend: R$6583.75 | Clicks: 30208 | Impressions: 1010584
+      - onsite_conversion.lead: 1
+      - offsite_complete_registration_add_meta_leads: 1
+      - onsite_conversion.messaging_block: 12
+      - link_click: 30222
+      - offsite_search_add_meta_leads: 1
+      - post_reaction: 1098
+      - page_engagement: 200813
+      - landing_page_view: 230
+      - onsite_web_lead: 1
+      - omni_landing_page_view: 230
+      - onsite_conversion.total_messaging_connection: 15
+      - onsite_conversion.post_unlike: 140
+      - post_engagement: 200787
+      - like: 26
+      - post_interaction_gross: 1322
+      - comment: 13
+      - post_interaction_net: 1462
+      - onsite_conversion.messaging_user_depth_2_message_send: 1
+      - onsite_conversion.messaging_first_reply: 13
+      - post: 133
+      - onsite_conversion.post_save: 78
+      - onsite_conversion.post_net_comment: 13
+      - onsite_conversion.post_net_save: 78
+      - onsite_conversion.post_net_like: 958
+      - lead: 1
+      - offsite_content_view_add_meta_leads: 1
+      - onsite_conversion.messaging_conversation_started_7d: 15
+      - onsite_conversion.messaging_conversation_replied_7d: 1
+      - onsite_conversion.lead_grouped: 1
+      - video_view: 169243
+
+ 3. [MEIO] Engajamento 365D + LKL
+    Spend: R$8505.78 | Clicks: 16090 | Impressions: 1376573
+      - onsite_conversion.messaging_block: 4
+      - link_click: 14635
+      - post_reaction: 1154
+      - page_engagement: 107961
+      - landing_page_view: 7445
+      - omni_landing_page_view: 7445
+      - post_engagement: 107961
+      - post_interaction_gross: 1264
+      - comment: 15
+      - post_interaction_net: 1264
+      - onsite_conversion.messaging_first_reply: 4
+      - post: 51
+      - onsite_conversion.post_save: 44
+      - onsite_conversion.post_net_comment: 15
+      - onsite_conversion.post_net_save: 44
+      - onsite_conversion.post_net_like: 1154
+      - onsite_conversion.messaging_conversation_started_7d: 6
+      - video_view: 92062
+
+ 4. Blockchain on the Road - PUC/RIO
+    Spend: R$4239.56 | Clicks: 11350 | Impressions: 1516087
+      - link_click: 10678
+      - post_reaction: 414
+      - page_engagement: 11106
+      - app_site_visit: 3
+      - omni_landing_page_view: 3
+      - post_engagement: 11106
+      - post_interaction_gross: 420
+      - comment: 1
+      - post_interaction_net: 420
+      - onsite_conversion.messaging_first_reply: 1
+      - post: 5
+      - onsite_conversion.post_net_comment: 1
+      - onsite_conversion.post_net_like: 414
+      - onsite_conversion.messaging_conversation_started_7d: 1
+      - video_view: 8
+
+ 5. [VENDAS]Blockchain
+    Spend: R$32109.10 | Clicks: 8974 | Impressions: 2283548
+      - onsite_conversion.messaging_block: 14
+      - web_in_store_purchase: 996
+      - omni_purchase: 996
+      - link_click: 5763
+      - initiate_checkout: 1352
+      - offsite_purchase_add_20_s_calls: 996
+      - add_to_cart: 1368
+      - offsite_conversion.fb_pixel_purchase: 996
+      - offsite_conversion.fb_pixel_initiate_checkout: 1352
+      - offsite_conversion.fb_pixel_add_to_cart: 1368
+      - post_reaction: 1282
+      - offsite_conversion.fb_pixel_add_payment_info: 66
+      - page_engagement: 195630
+      - purchase: 996
+      - landing_page_view: 2036
+      - onsite_web_lead: 810
+      - omni_landing_page_view: 2036
+      - post_engagement: 195630
+      - post_interaction_gross: 1639
+      - comment: 31
+      - onsite_web_app_purchase: 996
+      - onsite_web_add_to_cart: 1368
+      - post_interaction_net: 1639
+      - onsite_conversion.messaging_first_reply: 87
+      - post: 216
+      - onsite_conversion.post_save: 110
+      - onsite_conversion.post_net_comment: 31
+      - web_app_in_store_purchase: 996
+      - onsite_web_app_add_to_cart: 1368
+      - onsite_conversion.post_net_save: 110
+      - onsite_conversion.post_net_like: 1282
+      - onsite_web_initiate_checkout: 1352
+      - omni_initiated_checkout: 1352
+      - omni_add_to_cart: 1368
+      - lead: 810
+      - onsite_web_purchase: 996
+      - onsite_conversion.messaging_conversation_started_7d: 228
+      - add_payment_info: 66
+      - video_view: 188228
+      - offsite_conversion.fb_pixel_lead: 810
+      - offsite_lead_add_20_s_calls: 810
+
+ 6. ? I Vendas I BLOCKCHAIN RIO I 2904
+    Spend: R$8066.62 | Clicks: 6779 | Impressions: 455671
+      - link_click: 3616
+      - post_reaction: 2184
+      - landing_page_view: 2512
+      - omni_landing_page_view: 2512
+      - post_interaction_gross: 2678
+      - comment: 55
+      - post_interaction_net: 2678
+      - post: 383
+      - onsite_conversion.post_save: 56
+      - onsite_conversion.post_net_comment: 55
+      - onsite_conversion.post_net_save: 56
+      - onsite_conversion.post_net_like: 2184
+      - video_view: 58468
+
+ 7. [LKL][TR] BLOCKCHAIN RIO
+    Spend: R$4687.32 | Clicks: 5833 | Impressions: 820186
+      - onsite_conversion.messaging_block: 213
+      - link_click: 5946
+      - post_reaction: 9005
+      - page_engagement: 101597
+      - landing_page_view: 45
+      - omni_landing_page_view: 45
+      - post_engagement: 101597
+      - post_interaction_gross: 9179
+      - comment: 16
+      - post_interaction_net: 9179
+      - onsite_conversion.messaging_first_reply: 2
+      - post: 25
+      - onsite_conversion.post_save: 133
+      - onsite_conversion.post_net_comment: 16
+      - onsite_conversion.post_net_save: 133
+      - onsite_conversion.post_net_like: 9005
+      - onsite_conversion.messaging_conversation_started_7d: 3
+      - video_view: 86472
+
+ 8. Campanha Te Leva
+    Spend: R$4819.45 | Clicks: 5534 | Impressions: 291400
+      - web_in_store_purchase: 490
+      - omni_purchase: 490
+      - link_click: 3257
+      - initiate_checkout: 883
+      - offsite_purchase_add_20_s_calls: 490
+      - add_to_cart: 890
+      - offsite_conversion.fb_pixel_purchase: 490
+      - offsite_conversion.fb_pixel_initiate_checkout: 883
+      - offsite_conversion.fb_pixel_add_to_cart: 890
+      - post_reaction: 600
+      - offsite_conversion.fb_pixel_add_payment_info: 5
+      - page_engagement: 49378
+      - purchase: 490
+      - landing_page_view: 2471
+      - onsite_web_lead: 498
+      - app_site_visit: 4
+      - omni_landing_page_view: 2475
+      - post_engagement: 49374
+      - like: 4
+      - post_interaction_gross: 1016
+      - comment: 17
+      - onsite_web_app_purchase: 490
+      - onsite_web_add_to_cart: 890
+      - post_interaction_net: 1016
+      - onsite_conversion.messaging_first_reply: 6
+      - post: 274
+      - onsite_conversion.post_save: 125
+      - onsite_conversion.post_net_comment: 17
+      - web_app_in_store_purchase: 490
+      - onsite_web_app_add_to_cart: 890
+      - onsite_conversion.post_net_save: 125
+      - onsite_conversion.post_net_like: 600
+      - onsite_web_initiate_checkout: 883
+      - omni_initiated_checkout: 883
+      - omni_add_to_cart: 890
+      - lead: 498
+      - onsite_web_purchase: 490
+      - onsite_conversion.messaging_conversation_started_7d: 15
+      - add_payment_info: 5
+      - video_view: 45101
+      - offsite_conversion.fb_pixel_lead: 498
+      - offsite_lead_add_20_s_calls: 498
+
+ 9. ? I Engajamento I BLOCKCHAIN RIO
+    Spend: R$5881.38 | Clicks: 5482 | Impressions: 1230599
+      - link_click: 63
+      - post_reaction: 84649
+      - page_engagement: 458239
+      - landing_page_view: 3
+      - app_site_visit: 9
+      - omni_landing_page_view: 12
+      - post_engagement: 458239
+      - post_interaction_gross: 84906
+      - comment: 41
+      - post_interaction_net: 84906
+      - post: 168
+      - onsite_conversion.post_save: 48
+      - onsite_conversion.post_net_comment: 41
+      - onsite_conversion.post_net_save: 48
+      - onsite_conversion.post_net_like: 84649
+      - video_view: 373270
+
+10. USP 2026
+    Spend: R$897.40 | Clicks: 5079 | Impressions: 128199
+      - link_click: 5170
+      - post_reaction: 34
+      - page_engagement: 5207
+      - landing_page_view: 513
+      - omni_landing_page_view: 513
+      - onsite_conversion.post_unlike: 15
+      - post_engagement: 5207
+      - post_interaction_gross: 35
+      - post_interaction_net: 50
+      - post: 1
+      - onsite_conversion.post_net_like: 19
+      - video_view: 2
+
