@@ -296,6 +296,7 @@ export default function Dashboard() {
   const [showReportPicker, setShowReportPicker] = useState(false);
   const [reportCampaignIds, setReportCampaignIds] = useState<string[]>([]);
   const [campaignContext, setCampaignContext] = useState<string>("");
+  const [aiLoading, setAiLoading] = useState<boolean>(false);
   const [clientMode, setClientMode] = useState(false);
   const [viewLevel, setViewLevel] = useState<"campaign" | "adsets" | "ads">("campaign");
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -1807,7 +1808,7 @@ export default function Dashboard() {
                                   {thumbnailUrl && (
                                     <div className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
                                       <div className="rounded-xl overflow-hidden shadow-2xl border border-slate-600" style={{ width: "200px", background: "#0f1729" }}>
-                                        <img src={thumbnailUrl} alt={r.name} className="w-full object-cover" style={{ maxHeight: "300px" }} onError={e => { (e.currentTarget.parentElement!.parentElement as HTMLElement).style.display = "none"; }} />
+                                        <img src={thumbnailUrl} alt={r.name} className="w-full object-cover" style={{ maxHeight: "300px" }} onError={e => { const el = e.currentTarget.parentElement?.parentElement as HTMLElement | null; if (el) el.style.display = "none"; }} />
                                         <p className="text-[11px] text-slate-400 px-3 py-2 truncate border-t border-slate-700">{r.name}</p>
                                       </div>
                                     </div>
@@ -1904,7 +1905,7 @@ export default function Dashboard() {
                                 datalabels: { anchor: "end", align: "end", color: "#94a3b8", font: { size: 11 }, formatter: (v: number) => v.toFixed(2) + "×" },
                               },
                               scales: {
-                                x: { title: { display: true, text: "Frequencia media" }, suggestedMax: (Math.max(...adFreqChart.datasets[0].data as number[], 0) || 1) * 1.2 },
+                                x: { title: { display: true, text: "Frequencia media" }, suggestedMax: (Math.max(...((adFreqChart.datasets[0]?.data as number[]) ?? []), 0) || 1) * 1.2 },
                                 y: { ticks: { font: { size: 10 } } },
                               },
                             }} />
@@ -2423,7 +2424,7 @@ export default function Dashboard() {
               impressions: prev.impressions + safeInt(d.impressions),
               reach: prev.reach + safeInt(d.reach),
               clicks: prev.clicks + safeInt(d.clicks),
-              results: prev.results + detectResult(d.actions, campObjective).value,
+              results: prev.results + (aggResult.actionType ? getActionValue(d.actions, aggResult.actionType) : detectResult(d.actions, campObjective).value),
               linkClicks: prev.linkClicks + getActionValue(d.actions, "link_click"),
             });
           });
@@ -2460,14 +2461,6 @@ export default function Dashboard() {
         if (ctr < 0.8) analysisAttention.push(`CTR baixo (${pct(ctr)}) — considerar testar novos criativos`);
         if (costPerResult > 20) analysisAttention.push(`Custo por resultado alto (R$ ${fmt(costPerResult)}) — otimizar segmentacao e criativos`);
         if (impressions > 10000 && clicks < 100) analysisAttention.push("Muitas impressoes com poucos cliques — criativo pode nao estar gerando interesse suficiente");
-
-        // Find best and worst days
-        let bestDay = dailyItems[0];
-        let worstDay = dailyItems[0];
-        dailyItems.forEach(d => {
-          if (!bestDay || d.results > bestDay.results) bestDay = d;
-          if (!worstDay || d.results < worstDay.results || (d.results === worstDay.results && d.spend > worstDay.spend)) worstDay = d;
-        });
 
         const exportPDF = () => {
           // Capture chart canvases as images before opening print window
@@ -2653,32 +2646,6 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              ${(() => {
-                const accountData = data.accounts.find(a => a.id === reportCampaigns[0]?.account_id);
-                if (!accountData?.balance && !accountData?.amount_spent) return "";
-                const bal = safeFloat(accountData.balance) / 100;
-                const spent = safeFloat(accountData.amount_spent) / 100;
-                const balColor = bal < 50 ? "#dc2626" : bal < 200 ? "#d97706" : "#059669";
-                const balBg = bal < 50 ? "#fef2f2" : bal < 200 ? "#fffbeb" : "#f0fdf4";
-                const balBorder = bal < 50 ? "#fecaca" : bal < 200 ? "#fde68a" : "#bbf7d0";
-                return `
-              <!-- Saldo da Conta -->
-              <div style="margin-bottom:32px">
-                <h2 style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:16px">Saldo da Conta</h2>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-                  ${accountData.balance !== undefined ? `<div style="background:${balBg};border:1px solid ${balBorder};border-radius:8px;padding:20px">
-                    <p style="font-size:11px;color:${balColor};margin-bottom:4px">Saldo Disponivel</p>
-                    <p style="font-size:36px;font-weight:700;color:${balColor}">R$ ${fmt(bal)}</p>
-                    <p style="font-size:11px;color:#9ca3af;margin-top:4px">${accountData.name}</p>
-                  </div>` : ""}
-                  ${accountData.amount_spent !== undefined ? `<div style="border:1px solid #e5e7eb;border-radius:8px;padding:20px">
-                    <p style="font-size:11px;color:#6b7280;margin-bottom:4px">Total Gasto na Conta</p>
-                    <p style="font-size:36px;font-weight:700;color:#1f2937">R$ ${fmt(spent)}</p>
-                    <p style="font-size:11px;color:#9ca3af;margin-top:4px">historico acumulado</p>
-                  </div>` : ""}
-                </div>
-              </div>`;
-              })()}
 
               ${isMulti ? `
               <!-- Detalhamento por campanha -->
@@ -2755,7 +2722,57 @@ export default function Dashboard() {
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Contexto da Campanha</h3>
-                      <span className="text-xs text-slate-500">Editável</span>
+                      <button
+                        onClick={async () => {
+                          setAiLoading(true);
+                          try {
+                            const res = await fetch("/api/analyze", {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({
+                                campName,
+                                objective,
+                                objLabel,
+                                spend,
+                                impressions,
+                                clicks,
+                                reach,
+                                linkClicks,
+                                resultValue: resultInfo.value,
+                                resultLabel: resultInfo.label,
+                                costPerResult,
+                                ctr,
+                                cpc,
+                                cpm,
+                                frequency,
+                                dailyItems: dailyItems.map(d => ({ date_start: d.date_start, spend: d.spend, impressions: d.impressions, results: d.results, clicks: d.clicks })),
+                                campaigns: reportCampaigns.map(c => ({ name: c?.name || "", status: c?.status || "" })),
+                              }),
+                            });
+                            const json = await res.json() as { context?: string; error?: string };
+                            if (json.context) {
+                              setCampaignContext(json.context);
+                              localStorage.setItem(`report_context_${selectedCampaign}`, json.context);
+                            }
+                          } catch { /* silently ignore */ }
+                          setAiLoading(false);
+                        }}
+                        disabled={aiLoading}
+                        className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{ background: "rgba(99,102,241,0.15)", border: "1px solid rgba(99,102,241,0.3)", color: "#a5b4fc" }}
+                      >
+                        {aiLoading ? (
+                          <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                          </svg>
+                        ) : (
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                        )}
+                        {aiLoading ? "Analisando..." : "Gerar com IA"}
+                      </button>
                     </div>
                     <textarea
                       value={campaignContext}
@@ -3107,34 +3124,6 @@ export default function Dashboard() {
                     </div>
                   )}
 
-                  {/* Saldo da Conta */}
-                  {(() => {
-                    const accountData = data.accounts.find(a => a.id === reportCampaigns[0]?.account_id);
-                    if (!accountData?.balance && !accountData?.amount_spent) return null;
-                    const balance = safeFloat(accountData.balance) / 100;
-                    const amountSpent = safeFloat(accountData.amount_spent) / 100;
-                    return (
-                      <div>
-                        <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Saldo da Conta</h3>
-                        <div className="grid grid-cols-2 gap-4">
-                          {accountData.balance !== undefined && balance > 0 && (
-                            <div className={`rounded-lg p-5 border ${balance < 50 ? "bg-red-900/20 border-red-800/30" : balance < 200 ? "bg-yellow-900/20 border-yellow-800/30" : "bg-green-900/20 border-green-800/30"}`}>
-                              <p className={`text-xs mb-1 ${balance < 50 ? "text-red-400/70" : balance < 200 ? "text-yellow-400/70" : "text-green-400/70"}`}>Saldo Disponivel</p>
-                              <p className={`text-4xl font-bold ${balance < 50 ? "text-red-400" : balance < 200 ? "text-yellow-400" : "text-green-400"}`}>R$ {fmt(balance)}</p>
-                              <p className="text-xs text-slate-500 mt-1">{accountData.name}</p>
-                            </div>
-                          )}
-                          {accountData.amount_spent !== undefined && (
-                            <div className="bg-slate-800/50 rounded-lg p-5 border border-slate-700/50">
-                              <p className="text-xs text-slate-500 mb-1">Total Gasto na Conta</p>
-                              <p className="text-4xl font-bold text-white">R$ {fmt(amountSpent)}</p>
-                              <p className="text-xs text-slate-500 mt-1">historico acumulado</p>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })()}
 
                   {/* Funil: Conjuntos de Anuncios */}
                   {adsetRows.length > 0 && !isMulti && (
