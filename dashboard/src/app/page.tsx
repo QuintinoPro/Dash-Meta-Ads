@@ -302,6 +302,10 @@ export default function Dashboard() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [customStart, setCustomStart] = useState("");
   const [customEnd, setCustomEnd] = useState("");
+  const [reportDatePeriod, setReportDatePeriod] = useState<string>("all");
+  const [reportCustomStart, setReportCustomStart] = useState("");
+  const [reportCustomEnd, setReportCustomEnd] = useState("");
+  const [showReportDatePicker, setShowReportDatePicker] = useState(false);
 
   // Collect state
   const [collectStatus, setCollectStatus] = useState<"idle" | "running" | "done" | "error">("idle");
@@ -1242,7 +1246,13 @@ export default function Dashboard() {
             {selectedCampaign !== "all" && viewLevel === "campaign" && (
               <button onClick={() => {
                 setReportCampaignIds([selectedCampaign]);
-                setShowReportPicker(true);
+                setReportDatePeriod("all");
+                setReportCustomStart("");
+                setReportCustomEnd("");
+                const camp = data.campaigns.find(c => c.id === selectedCampaign);
+                const saved = localStorage.getItem(`report_context_${selectedCampaign}`);
+                setCampaignContext(saved ?? camp?.ai_context ?? "");
+                setShowReport(true);
               }} aria-label="Gerar relatório da campanha"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white transition-colors"
                 style={{ background: "linear-gradient(135deg, #2563eb, #1d4ed8)", boxShadow: "0 2px 8px rgba(37,99,235,0.35)" }}
@@ -2327,8 +2337,8 @@ export default function Dashboard() {
       )}
 
       {/* ══════════ REPORT PICKER ══════════ */}
-      {showReportPicker && selectedCampaign !== "all" && (() => {
-        const currentCamp = data.campaigns.find(c => c.id === selectedCampaign);
+      {showReportPicker && (selectedCampaign !== "all" || reportCampaignIds.length > 0) && (() => {
+        const currentCamp = data.campaigns.find(c => c.id === selectedCampaign) ?? data.campaigns.find(c => c.id === reportCampaignIds[0]);
         const accountId = currentCamp?.account_id;
         const accountCampaigns = data.campaigns.filter(c => c.account_id === accountId);
         return (
@@ -2383,7 +2393,67 @@ export default function Dashboard() {
       {showReport && reportCampaignIds.length > 0 && (() => {
         const isMulti = reportCampaignIds.length > 1;
         const reportCampaigns = reportCampaignIds.map(id => data.campaigns.find(c => c.id === id)).filter(Boolean) as Campaign[];
-        const reportInsights = reportCampaignIds.map(id => data.insights.find(i => i.campaign_id === id)).filter(Boolean) as Insight[];
+
+        // ── Período do relatório (independente do filtro da sidebar) ──
+        const reportDateCutoff = (() => {
+          if (reportDatePeriod === "7") return daysAgo(7);
+          if (reportDatePeriod === "14") return daysAgo(14);
+          if (reportDatePeriod === "28") return daysAgo(28);
+          if (reportDatePeriod === "30") return daysAgo(30);
+          if (reportDatePeriod === "90") return daysAgo(90);
+          if (reportDatePeriod === "this_month") { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`; }
+          if (reportDatePeriod === "last_month") { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - 1); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`; }
+          if (reportDatePeriod === "custom") return reportCustomStart;
+          return "";
+        })();
+        const reportDateEnd = (() => {
+          if (reportDatePeriod === "last_month") { const d = new Date(); d.setDate(0); return d.toISOString().substring(0, 10); }
+          if (reportDatePeriod === "custom") return reportCustomEnd;
+          return "";
+        })();
+        const reportPeriodLabel = (({
+          today: "Hoje", yesterday: "Ontem",
+          "7": "7 dias", "14": "14 dias", "28": "28 dias", "30": "30 dias", "90": "90 dias",
+          this_month: "Este mes", last_month: "Mes passado",
+          custom: reportCustomStart && reportCustomEnd
+            ? `${new Date(reportCustomStart + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })} - ${new Date(reportCustomEnd + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })}`
+            : "Personalizado",
+        }) as Record<string, string>)[reportDatePeriod] || "";
+
+        const reportDailyFiltered = data.daily_insights.filter(d =>
+          reportCampaignIds.includes(d.campaign_id) &&
+          (!reportDateCutoff || d.date_start >= reportDateCutoff) &&
+          (!reportDateEnd || d.date_start <= reportDateEnd)
+        );
+
+        const reportInsights = reportDatePeriod === "all"
+          ? (reportCampaignIds.map(id => data.insights.find(i => i.campaign_id === id)).filter(Boolean) as Insight[])
+          : reportCampaignIds.map(id => {
+              const rows = reportDailyFiltered.filter(d => d.campaign_id === id);
+              if (rows.length === 0) return null;
+              const actionMap = new Map<string, number>();
+              let spend = 0, impressions = 0, clicks = 0, reach = 0;
+              rows.forEach(d => {
+                spend += safeFloat(d.spend);
+                impressions += safeInt(d.impressions);
+                clicks += safeInt(d.clicks);
+                reach += safeInt(d.reach);
+                d.actions?.forEach(a => actionMap.set(a.action_type, (actionMap.get(a.action_type) || 0) + safeFloat(a.value)));
+              });
+              return {
+                ...rows[0],
+                spend: String(spend),
+                impressions: String(impressions),
+                clicks: String(clicks),
+                reach: String(reach),
+                frequency: String(reach > 0 ? impressions / reach : 0),
+                actions: [...actionMap.entries()].map(([action_type, value]) => ({ action_type, value: String(value) })),
+                objective: rows[0].objective || data.campaigns.find(c => c.id === id)?.objective,
+                ctr: String(impressions > 0 ? (clicks / impressions) * 100 : 0),
+                cpc: clicks > 0 ? String(spend / clicks) : undefined,
+                cpm: impressions > 0 ? String((spend / impressions) * 1000) : undefined,
+              } as Insight;
+            }).filter(Boolean) as Insight[];
         if (reportInsights.length === 0) return null;
 
         // ── Aggregated metrics ──
@@ -2417,7 +2487,7 @@ export default function Dashboard() {
         const dailyMap = new Map<string, { spend: number; impressions: number; reach: number; clicks: number; results: number; linkClicks: number }>();
         reportCampaignIds.forEach(id => {
           const campObjective = data.campaigns.find(c => c.id === id)?.objective || "";
-          data.daily_insights.filter(d => d.campaign_id === id).forEach(d => {
+          reportDailyFiltered.filter(d => d.campaign_id === id).forEach(d => {
             const prev = dailyMap.get(d.date_start) || { spend: 0, impressions: 0, reach: 0, clicks: 0, results: 0, linkClicks: 0 };
             dailyMap.set(d.date_start, {
               spend: prev.spend + safeFloat(d.spend),
@@ -2714,6 +2784,45 @@ export default function Dashboard() {
                       </button>
                     </div>
                   </div>
+                </div>
+
+                {/* Report Filter Bar */}
+                <div className="px-8 py-3 flex items-center gap-3" style={{ background: "rgba(15,23,42,0.4)", borderBottom: "1px solid rgba(100,116,139,0.2)" }}>
+                  <button onClick={() => setShowReportPicker(true)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white transition-colors"
+                    style={{ background: "rgba(51,65,85,0.6)", border: "1px solid rgba(100,116,139,0.3)" }}>
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
+                    Campanhas ({reportCampaignIds.length})
+                  </button>
+                  <div className="relative" style={{ width: "190px" }}>
+                    <DatePickerButton
+                      datePeriod={reportDatePeriod}
+                      periodLabel={reportPeriodLabel}
+                      showDatePicker={showReportDatePicker}
+                      customStart={reportCustomStart}
+                      customEnd={reportCustomEnd}
+                      onToggle={() => setShowReportDatePicker(v => !v)}
+                      onSelect={(period, start, end) => {
+                        setReportDatePeriod(period);
+                        if (period !== "custom") {
+                          setReportCustomStart("");
+                          setReportCustomEnd("");
+                          setShowReportDatePicker(false);
+                        } else {
+                          if (start !== undefined) setReportCustomStart(start);
+                          if (end !== undefined) setReportCustomEnd(end);
+                        }
+                      }}
+                      onApplyCustom={() => setShowReportDatePicker(false)}
+                      onClose={() => setShowReportDatePicker(false)}
+                    />
+                  </div>
+                  {reportDatePeriod !== "all" && (
+                    <button onClick={() => { setReportDatePeriod("all"); setReportCustomStart(""); setReportCustomEnd(""); }}
+                      className="text-xs text-slate-500 hover:text-red-400 transition-colors">
+                      Limpar periodo
+                    </button>
+                  )}
                 </div>
 
                 <div className="px-8 py-6 space-y-8">

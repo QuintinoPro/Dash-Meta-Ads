@@ -245,7 +245,7 @@ export async function POST(req: NextRequest) {
           // Ads metadata
           try {
             const raw = await getPaged(
-              `/${apiVersion}/${accountId}/ads?fields=${AD_FIELDS}&limit=200&access_token=${token}`
+              `/${apiVersion}/${accountId}/ads?fields=${AD_FIELDS}&thumbnail_width=640&thumbnail_height=640&limit=200&access_token=${token}`
             );
             ads = (raw as Array<Record<string, unknown>>).map(a => {
               const creative = a.creative as Record<string, unknown> | undefined;
