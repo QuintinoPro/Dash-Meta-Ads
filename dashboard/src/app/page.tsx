@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect, useRef } from "react";
+import type { ComponentPropsWithoutRef } from "react";
 import { createPortal } from "react-dom";
 import {
   Chart as ChartJS,
@@ -18,6 +19,9 @@ import {
 import type { TooltipItem } from "chart.js";
 import { Bar, Line } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { renderToStaticMarkup } from "react-dom/server";
 import rawData from "../data.json";
 
 ChartJS.register(
@@ -283,6 +287,52 @@ function aggregateInsights(items: Insight[]) {
   return { spend, impressions, clicks, reach, linkClicks, results: aggResult.total, resultLabel: aggResult.label, ctr, cpc, cpm, cplc, costPerResult };
 }
 
+// componentes de renderização do Markdown do "Contexto da Campanha", no tema escuro do dashboard
+/* eslint-disable @typescript-eslint/no-unused-vars -- `node` precisa ser desestruturado pra não vazar pro elemento DOM ao espalhar {...props} */
+const markdownComponents = {
+  h1: ({ node, ...props }: ComponentPropsWithoutRef<"h1"> & { node?: unknown }) => <h1 className="text-lg font-bold text-white mt-4 mb-2 first:mt-0" {...props} />,
+  h2: ({ node, ...props }: ComponentPropsWithoutRef<"h2"> & { node?: unknown }) => <h2 className="text-base font-bold text-white mt-4 mb-2 first:mt-0" {...props} />,
+  h3: ({ node, ...props }: ComponentPropsWithoutRef<"h3"> & { node?: unknown }) => <h3 className="text-sm font-semibold text-slate-200 mt-3 mb-1.5 first:mt-0" {...props} />,
+  p: ({ node, ...props }: ComponentPropsWithoutRef<"p"> & { node?: unknown }) => <p className="text-sm text-slate-300 leading-relaxed mb-2 last:mb-0" {...props} />,
+  strong: ({ node, ...props }: ComponentPropsWithoutRef<"strong"> & { node?: unknown }) => <strong className="font-semibold text-white" {...props} />,
+  em: ({ node, ...props }: ComponentPropsWithoutRef<"em"> & { node?: unknown }) => <em className="italic text-slate-300" {...props} />,
+  ul: ({ node, ...props }: ComponentPropsWithoutRef<"ul"> & { node?: unknown }) => <ul className="list-disc list-outside pl-5 text-sm text-slate-300 mb-2 space-y-1" {...props} />,
+  ol: ({ node, ...props }: ComponentPropsWithoutRef<"ol"> & { node?: unknown }) => <ol className="list-decimal list-outside pl-5 text-sm text-slate-300 mb-2 space-y-1" {...props} />,
+  li: ({ node, ...props }: ComponentPropsWithoutRef<"li"> & { node?: unknown }) => <li {...props} />,
+  a: ({ node, ...props }: ComponentPropsWithoutRef<"a"> & { node?: unknown }) => <a className="text-blue-400 hover:text-blue-300 underline" target="_blank" rel="noopener noreferrer" {...props} />,
+  blockquote: ({ node, ...props }: ComponentPropsWithoutRef<"blockquote"> & { node?: unknown }) => <blockquote className="border-l-2 border-blue-500/50 pl-3 text-sm text-slate-400 italic my-2" {...props} />,
+  hr: ({ node, ...props }: ComponentPropsWithoutRef<"hr"> & { node?: unknown }) => <hr className="border-slate-700/50 my-3" {...props} />,
+  code: ({ node, ...props }: ComponentPropsWithoutRef<"code"> & { node?: unknown }) => <code className="px-1 py-0.5 rounded bg-slate-800 text-xs text-cyan-300 font-mono" {...props} />,
+  table: ({ node, ...props }: ComponentPropsWithoutRef<"table"> & { node?: unknown }) => <div className="overflow-x-auto mb-2"><table className="text-xs border-collapse w-full" {...props} /></div>,
+  thead: ({ node, ...props }: ComponentPropsWithoutRef<"thead"> & { node?: unknown }) => <thead className="border-b border-slate-600" {...props} />,
+  th: ({ node, ...props }: ComponentPropsWithoutRef<"th"> & { node?: unknown }) => <th className="text-left font-semibold text-slate-300 px-2 py-1.5" {...props} />,
+  td: ({ node, ...props }: ComponentPropsWithoutRef<"td"> & { node?: unknown }) => <td className="text-slate-400 px-2 py-1.5 border-b border-slate-800" {...props} />,
+};
+/* eslint-enable @typescript-eslint/no-unused-vars */
+
+// mesma ideia, mas com estilo inline pro tema claro do PDF exportado (documento separado, sem Tailwind)
+/* eslint-disable @typescript-eslint/no-unused-vars -- `node` precisa ser desestruturado pra não vazar pro elemento DOM ao espalhar {...props} */
+const markdownComponentsForPdf = {
+  h1: ({ node, ...props }: ComponentPropsWithoutRef<"h1"> & { node?: unknown }) => <h1 style={{ fontSize: "18px", fontWeight: 700, color: "#111827", margin: "12px 0 6px" }} {...props} />,
+  h2: ({ node, ...props }: ComponentPropsWithoutRef<"h2"> & { node?: unknown }) => <h2 style={{ fontSize: "16px", fontWeight: 700, color: "#111827", margin: "12px 0 6px" }} {...props} />,
+  h3: ({ node, ...props }: ComponentPropsWithoutRef<"h3"> & { node?: unknown }) => <h3 style={{ fontSize: "14px", fontWeight: 600, color: "#1f2937", margin: "10px 0 4px" }} {...props} />,
+  p: ({ node, ...props }: ComponentPropsWithoutRef<"p"> & { node?: unknown }) => <p style={{ fontSize: "14px", color: "#374151", lineHeight: 1.6, margin: "0 0 8px" }} {...props} />,
+  strong: ({ node, ...props }: ComponentPropsWithoutRef<"strong"> & { node?: unknown }) => <strong style={{ fontWeight: 700, color: "#111827" }} {...props} />,
+  em: ({ node, ...props }: ComponentPropsWithoutRef<"em"> & { node?: unknown }) => <em style={{ fontStyle: "italic" }} {...props} />,
+  ul: ({ node, ...props }: ComponentPropsWithoutRef<"ul"> & { node?: unknown }) => <ul style={{ fontSize: "14px", color: "#374151", paddingLeft: "20px", margin: "0 0 8px" }} {...props} />,
+  ol: ({ node, ...props }: ComponentPropsWithoutRef<"ol"> & { node?: unknown }) => <ol style={{ fontSize: "14px", color: "#374151", paddingLeft: "20px", margin: "0 0 8px" }} {...props} />,
+  li: ({ node, ...props }: ComponentPropsWithoutRef<"li"> & { node?: unknown }) => <li style={{ margin: "2px 0" }} {...props} />,
+  a: ({ node, ...props }: ComponentPropsWithoutRef<"a"> & { node?: unknown }) => <a style={{ color: "#2563eb", textDecoration: "underline" }} {...props} />,
+  blockquote: ({ node, ...props }: ComponentPropsWithoutRef<"blockquote"> & { node?: unknown }) => <blockquote style={{ borderLeft: "3px solid #cbd5e1", paddingLeft: "12px", color: "#6b7280", fontStyle: "italic", margin: "8px 0" }} {...props} />,
+  hr: ({ node, ...props }: ComponentPropsWithoutRef<"hr"> & { node?: unknown }) => <hr style={{ border: "none", borderTop: "1px solid #e5e7eb", margin: "12px 0" }} {...props} />,
+  code: ({ node, ...props }: ComponentPropsWithoutRef<"code"> & { node?: unknown }) => <code style={{ background: "#f1f5f9", padding: "2px 4px", borderRadius: "4px", fontFamily: "monospace", fontSize: "12px", color: "#0f172a" }} {...props} />,
+  table: ({ node, ...props }: ComponentPropsWithoutRef<"table"> & { node?: unknown }) => <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px", margin: "8px 0" }} {...props} />,
+  thead: ({ node, ...props }: ComponentPropsWithoutRef<"thead"> & { node?: unknown }) => <thead style={{ borderBottom: "2px solid #e5e7eb" }} {...props} />,
+  th: ({ node, ...props }: ComponentPropsWithoutRef<"th"> & { node?: unknown }) => <th style={{ textAlign: "left", padding: "6px 8px", fontWeight: 600, color: "#374151" }} {...props} />,
+  td: ({ node, ...props }: ComponentPropsWithoutRef<"td"> & { node?: unknown }) => <td style={{ padding: "6px 8px", borderBottom: "1px solid #f1f5f9", color: "#4b5563" }} {...props} />,
+};
+/* eslint-enable @typescript-eslint/no-unused-vars */
+
 /* ══════════════════════════════════════════════ */
 export default function Dashboard() {
   const [selectedAccount, setSelectedAccount] = useState<string>("all");
@@ -296,6 +346,7 @@ export default function Dashboard() {
   const [showReportPicker, setShowReportPicker] = useState(false);
   const [reportCampaignIds, setReportCampaignIds] = useState<string[]>([]);
   const [campaignContext, setCampaignContext] = useState<string>("");
+  const [contextEditing, setContextEditing] = useState<boolean>(true);
   const [aiLoading, setAiLoading] = useState<boolean>(false);
   const [clientMode, setClientMode] = useState(false);
   const [viewLevel, setViewLevel] = useState<"campaign" | "adsets" | "ads">("campaign");
@@ -515,19 +566,17 @@ export default function Dashboard() {
   }, [datePeriod, customEnd]);
 
   const availableCampaigns = useMemo(() => {
-    let ins = data.insights;
-    if (selectedAccount !== "all") ins = ins.filter((i) => i.account_id === selectedAccount);
-    const seen = new Map<string, string>();
-    ins.forEach((i) => seen.set(i.campaign_id, i.campaign_name));
+    // fonte da verdade é data.campaigns (existe mesmo sem insight ainda, ex: campanha recém-criada)
+    let camps = data.campaigns;
+    if (selectedAccount !== "all") camps = camps.filter((c) => c.account_id === selectedAccount);
     // usa daily_insights para achar a última data real de atividade por campanha
     const lastDailyMap = new Map<string, string>();
     data.daily_insights.forEach((i) => {
       const prev = lastDailyMap.get(i.campaign_id) ?? "";
       if (i.date_start > prev) lastDailyMap.set(i.campaign_id, i.date_start);
     });
-    const campaignStatusMap = new Map(data.campaigns.map((c) => [c.id, c.status]));
-    return [...seen.entries()]
-      .map(([id, name]) => ({ id, name, status: campaignStatusMap.get(id) ?? "UNKNOWN", lastActivity: lastDailyMap.get(id) ?? "" }))
+    return camps
+      .map((c) => ({ id: c.id, name: c.name, status: c.status ?? "UNKNOWN", lastActivity: lastDailyMap.get(c.id) ?? "" }))
       .sort((a, b) => {
         const rank = (s: string) => s === "ACTIVE" ? 0 : 1;
         if (rank(a.status) !== rank(b.status)) return rank(a.status) - rank(b.status);
@@ -1251,7 +1300,9 @@ export default function Dashboard() {
                 setReportCustomEnd("");
                 const camp = data.campaigns.find(c => c.id === selectedCampaign);
                 const saved = localStorage.getItem(`report_context_${selectedCampaign}`);
-                setCampaignContext(saved ?? camp?.ai_context ?? "");
+                const loadedContext = saved ?? camp?.ai_context ?? "";
+                setCampaignContext(loadedContext);
+                setContextEditing(loadedContext.trim().length === 0);
                 setShowReport(true);
               }} aria-label="Gerar relatório da campanha"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white transition-colors"
@@ -2375,7 +2426,9 @@ export default function Dashboard() {
                     const firstId = reportCampaignIds[0];
                     const camp = data.campaigns.find(c => c.id === firstId);
                     const saved = localStorage.getItem(`report_context_${reportCampaignIds.join("_")}`);
-                    setCampaignContext(saved ?? camp?.ai_context ?? "");
+                    const loadedContext = saved ?? camp?.ai_context ?? "";
+                    setCampaignContext(loadedContext);
+                    setContextEditing(loadedContext.trim().length === 0);
                     setShowReportPicker(false);
                     setShowReport(true);
                   }}
@@ -2539,6 +2592,11 @@ export default function Dashboard() {
           const chartImages: string[] = [];
           canvases.forEach(c => chartImages.push((c as HTMLCanvasElement).toDataURL("image/png")));
 
+          // renderiza o Markdown do contexto pra HTML estatico (o documento do PDF nao tem Tailwind, so este <style>)
+          const contextHtml = campaignContext.trim()
+            ? renderToStaticMarkup(<ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponentsForPdf}>{campaignContext}</ReactMarkdown>)
+            : "";
+
           const dailyRows = dailyItems.map((d) => {
             const dCpr = d.results > 0 ? d.spend / d.results : 0;
             const dateStr = new Date(d.date_start + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
@@ -2617,11 +2675,11 @@ export default function Dashboard() {
                 <p style="font-size:14px;opacity:0.85">${startDate} a ${endDate} &middot; ${durationDays} dias &middot; ${objLabel}</p>
               </div>
 
-              ${campaignContext ? `
+              ${contextHtml ? `
               <!-- Contexto -->
               <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:20px;margin-bottom:32px">
                 <p style="font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px">Contexto da Campanha</p>
-                <p style="font-size:14px;color:#374151;line-height:1.6">${campaignContext.replace(/\n/g, "<br>")}</p>
+                ${contextHtml}
               </div>` : ""}
 
               <!-- Investimento -->
@@ -2862,6 +2920,7 @@ export default function Dashboard() {
                             if (json.context) {
                               setCampaignContext(json.context);
                               localStorage.setItem(`report_context_${selectedCampaign}`, json.context);
+                              setContextEditing(false);
                             }
                           } catch { /* silently ignore */ }
                           setAiLoading(false);
@@ -2882,18 +2941,40 @@ export default function Dashboard() {
                         )}
                         {aiLoading ? "Analisando..." : "Gerar com IA"}
                       </button>
+                        <button
+                          onClick={() => setContextEditing(v => !v)}
+                          className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium text-slate-300 hover:text-white transition-colors"
+                          style={{ background: "rgba(100,116,139,0.15)", border: "1px solid rgba(100,116,139,0.3)" }}
+                        >
+                          {contextEditing ? "Visualizar" : "Editar"}
+                        </button>
                     </div>
-                    <textarea
-                      value={campaignContext}
-                      onChange={e => {
-                        setCampaignContext(e.target.value);
-                        localStorage.setItem(`report_context_${selectedCampaign}`, e.target.value);
-                      }}
-                      rows={3}
-                      placeholder="Descreva o objetivo e contexto desta campanha..."
-                      className="w-full rounded-lg px-4 py-3 text-sm text-slate-200 placeholder-slate-500 resize-none focus:outline-none focus:ring-1 focus:ring-blue-500/50"
-                      style={{ background: "rgba(30,41,59,0.6)", border: "1px solid rgba(100,116,139,0.3)" }}
-                    />
+                    {contextEditing ? (
+                      <textarea
+                        autoFocus
+                        value={campaignContext}
+                        onChange={e => {
+                          setCampaignContext(e.target.value);
+                          localStorage.setItem(`report_context_${selectedCampaign}`, e.target.value);
+                        }}
+                        rows={8}
+                        placeholder="Descreva o objetivo e contexto desta campanha, ou cole aqui um relatorio em Markdown..."
+                        className="w-full rounded-lg px-4 py-3 text-sm text-slate-200 placeholder-slate-500 resize-y focus:outline-none focus:ring-1 focus:ring-blue-500/50 font-mono"
+                        style={{ background: "rgba(30,41,59,0.6)", border: "1px solid rgba(100,116,139,0.3)" }}
+                      />
+                    ) : (
+                      <div
+                        onClick={() => setContextEditing(true)}
+                        className="w-full rounded-lg px-4 py-3 cursor-text max-h-96 overflow-y-auto"
+                        style={{ background: "rgba(30,41,59,0.6)", border: "1px solid rgba(100,116,139,0.3)" }}
+                      >
+                        {campaignContext.trim() ? (
+                          <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>{campaignContext}</ReactMarkdown>
+                        ) : (
+                          <p className="text-sm text-slate-500">Descreva o objetivo e contexto desta campanha, ou cole aqui um relatorio em Markdown...</p>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   {/* Resumo Investimento */}
