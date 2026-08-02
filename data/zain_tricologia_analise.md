@@ -1,105 +1,100 @@
-# CA - Zaín Tricologia — Análise de Campanhas (jul/2026)
+# CA - Zaín Tricologia — Análise de Campanhas (01/07 a 02/08/2026)
 
 > **Conta:** `act_1533862721121665` · CA - ZAÍN TRICOLOGIA · BRL
-> **Período analisado:** 04/06/2026 a 07/07/2026
-> **Fonte:** Meta Graph API v22.0 (pull ao vivo nível anúncio) + relatório do dashboard
-> **Gerado em:** 07/07/2026
+> **Período analisado:** 01/07/2026 a 02/08/2026 (mês fechado, igual ao filtro do Gerenciador de Anúncios)
+> **Fonte:** Meta Graph API v22.0 (pull por campanha, granularidade mensal) — conferido linha a linha contra o Gerenciador de Anúncios
+> **Gerado em:** 02/08/2026 (substitui a versão "vida toda" gerada mais cedo no mesmo dia — ver nota de reconciliação)
+
+---
+
+## Nota de reconciliação
+
+A versão anterior desta análise comparava o **acumulado desde o lançamento de cada campanha** (a 16/06
+incluía junho inteiro). O gestor conferiu no Gerenciador de Anúncios com o filtro **01/07 até hoje** e os
+números pareciam não bater. Não era erro de coleta — era janela de tempo diferente. Recortando os dados
+exatamente para 01/07–02/08, bate com o Gerenciador (diferença de centavos, só timing de sincronização da API):
+
+| Campanha | Resultados | Custo/resultado | Gasto (API) | Gasto (Gerenciador) |
+|---|---|---|---|---|
+| ENGAJAMENTO - AQUECIMENTO - 04/06 | 3.883 engajamentos | R$ 0,03 | R$ 114,79 | R$ 114,79 |
+| LEADS - WPP - 16/06 | 34 conversas | R$ 15,57 | R$ 529,58 | R$ 529,46 |
+| LEADS - WPP - 07/07 | 31 conversas | R$ 13,32 | R$ 412,97 | R$ 412,96 |
+| DIA DOS PAIS - 01/08 | — | — | R$ 0,00 | R$ 0,00 |
+
+Esta é a versão de referência daqui pra frente para o período de julho.
 
 ---
 
 ## Resumo executivo
 
-As 3 campanhas ativas/recentes formam **um funil de 3 etapas**, e os dados provam que a lógica fecha:
-aquecer a conta a custo baixo → construir público engajado → converter esse público em conversas no WhatsApp.
+No mês fechado (01/07 a 02/08), rodamos **duas frentes**: uma campanha de aquecimento (9 dias, depois
+pausada) e duas campanhas de leads no WhatsApp competindo entre si para decidir qual escalar.
 
-O público aquecido pela campanha de engajamento entregou o **menor CPL (R$ 10,49)** e o **maior volume de conversas**,
-contra R$ 16,76 no público frio — ou seja, o investimento em aquecimento **barateia a conversão no fundo do funil (~37%)**.
+**Resultado do teste de leads:** a **07/07 venceu** — R$ 13,32 por conversa contra R$ 15,57 da 16/06
+(~14,5% mais barata nesta janela, e a diferença cresce se olhar só o mês de julho puro, sem os 2 dias de
+agosto: R$ 14,01 vs R$ 18,21 — ver seção abaixo). Por isso a 16/06 foi pausada em 02/08 e o orçamento
+concentrado na 07/07, que também ganhou criativos novos.
 
-| Etapa | Campanha | Status | Papel | Métrica-chave |
-|---|---|---|---|---|
-| Topo | ENGAJAMENTO - AQUECIMENTO - 04/06 | 🟢 Ativa | Aquecer conta + gerar público/prova social | **R$ 0,14 / engajamento** |
-| Fundo | LEADS - WPP - 16/06 | ⏸️ Pausada (07/07) | Converter aquecido em conversa | **CPL R$ 11,87** |
-| Fundo (escala) | LEADS - WPP - 07/07 | 🟢 Ativa | Achar criativo vencedor e escalar | Recém-lançada |
-
-**Totais do período:** R$ 494,79 investidos · 18 mensagens · 29.165 impressões · 14.416 alcance · 179 cliques no link · 1.999 reações.
-> ⚠️ O "CPL médio R$ 27,49" do relatório é enganoso: mistura a campanha de engajamento (que **não** otimiza mensagem)
-> com as de mensagem. O CPL real de conversão é o da campanha de WhatsApp: **R$ 11,87**.
+No mesmo período foi lançada a **DIA DOS PAIS - 01/08**, ainda sem dados (lançada hoje).
 
 ---
 
-## A leitura macro: o funil está funcionando
+## O que fizemos durante o mês (01/07 a 02/08)
 
-Prova na quebra por público da campanha **LEADS - WPP - 16/06**:
-
-| Público | Gasto | Conversas | CPL |
-|---|---|---|---|
-| 🔥 **Engajados + Seguidores** (aquecido) | R$ 73,44 | **7** | **R$ 10,49** |
-| 🎯 Segmentado (interesse) | R$ 66,19 | 6 | R$ 11,03 |
-| 🧊 Aberto (frio) | R$ 50,29 | 3 | R$ 16,76 |
-
-O público que a campanha de aquecimento construiu trouxe **melhor custo E maior volume**. O gasto em topo de funil não é custo perdido — é o que barateia a conversão lá na frente.
-
----
-
-## Campanha por campanha
-
-### 1) ENGAJAMENTO - AQUECIMENTO - 04/06 🟢 *(ativa · R$ 30/dia · `120252323789180012`)*
-- **Cumprindo o papel:** R$ 0,14 por engajamento · 2.175 engajamentos · 1.988 reações no post · alcance 8.352 · CPM R$ 14,74 · CTR 1,03%.
-- Gera **prova social** (reações/comentários no post) e alimenta o **pool de retargeting** a custo baixíssimo.
-- ⚠️ **Não avaliar por mensagem:** os "2 mensagens / CPL R$ 152" do relatório são irrelevantes — não é o objetivo dela. Mede-se por custo/engajamento e crescimento de público aquecido.
-- ⚠️ **Técnico:** o Advantage+ jogou **86% da verba no AD1** (R$ 263 de R$ 306) e sufocou AD2/AD3/AD4 — que têm CTR 2-3× maior (2,33% / 3,17% / 1,84% vs 0,90% do AD1). Para *aquecer* está ok; para encher o pool mais rápido, vale isolar AD2/AD3 num conjunto separado.
-
-### 2) LEADS - WPP - 16/06 ⏸️ *(pausada 07/07 16:07 · R$ 35/dia · `120253399381730012`)*
-- **CPL R$ 11,87** — sólido para o nicho de tricologia. 16 conversas · alcance 6.064 · frequência ~1,2 (zero fadiga, ainda tinha gás quando foi pausada).
-- ⚠️ **O "teste de 2 criativos" não aconteceu de fato:** o AD1 comeu ~95% da verba em todos os públicos; o AD2 mal teve entrega (R$ 3-9). Na prática rodou **1 criativo + um reserva que nunca jogou**.
-- ✅ **Combo vencedor comprovado:** AD1 + público aquecido = **R$ 10,49/conversa**. Esse é o baseline a bater.
-
-**Quebra por criativo × público:**
-
-| Criativo | Público | Gasto | Conversas | CPL | CTR |
-|---|---|---|---|---|---|
-| AD1 | Engajados + Seguidores | R$ 64,06 | 6 | R$ 10,68 | 1,35% |
-| AD1 | Segmentado | R$ 61,78 | 5 | R$ 12,36 | 1,10% |
-| AD1 | Aberto | R$ 46,94 | 3 | R$ 15,65 | 1,05% |
-| AD2 | Engajados + Seguidores | R$ 9,38 | 1 | R$ 9,38 | 2,33% |
-| AD2 | Segmentado | R$ 4,41 | 1 | R$ 4,41 | 4,48% |
-| AD2 | Aberto | R$ 3,35 | 0 | — | 1,96% |
-
-> O AD2 tem CTR bem maior nas amostras que pegou — indício de que **merecia um teste justo** (foi sufocado pelo algoritmo).
-
-### 3) LEADS - WPP - 07/07 🟢 *(ativa · R$ 50/dia · lançada 07/07 15:55 · `120254884565220012`)*
-- Recém-lançada, **sem entrega ainda** (R$ 0). Traz **mais criativos** — movimento certo, resolve exatamente o problema do teste anterior (só 1 criativo pegou entrega).
+1. **Rodamos a AQUECIMENTO em paralelo por 9 dias** (01/07 a 09/07), até o pool de público aquecido estar
+   formado — R$ 114,79 investidos, 3.883 engajamentos, custo de R$ 0,03 por engajamento. Papel: gerar prova
+   social e alimentar o público que abastece as campanhas de mensagem. Pausada em 09/07.
+2. **Rodamos as duas campanhas de leads no WhatsApp em paralelo** (16/06 e 07/07) pra decidir qual merece
+   receber o orçamento principal:
+   - LEADS - WPP - 16/06: R$ 529,58 · 34 conversas · **R$ 15,57/conversa** · CTR 1,08% · CPM R$ 19,91.
+   - LEADS - WPP - 07/07: R$ 412,97 · 31 conversas · **R$ 13,32/conversa** · CTR 1,29% · CPM R$ 13,12.
+3. **Enfrentamos ~7 dias sem veiculação** (23 a 29/07), provável limite de faturamento, que reduziu o volume
+   de dados coletados no meio do teste.
+4. **Fechamos o teste em 02/08:** pausamos a 16/06 (perdeu), renovamos os criativos da 07/07 (peças fracas
+   desativadas, +2 novas por conjunto) e lançamos a **DIA DOS PAIS - 01/08**, com vários criativos em teste,
+   mirando a data comemorativa de 09/08.
 
 ---
 
-## Recomendações para a LEADS - WPP - 07/07
+## O que vamos fazer agora (próximo período)
 
-1. **Traga o AD1 da 16/06 como controle** — é o vencedor provado (R$ 10,49 no aquecido). Teste os novos contra ele.
-2. **Mantenha Engajados + Seguidores como conjunto principal** — é o público de melhor custo e volume.
-3. **Garanta teste justo dos criativos:** use um conjunto de teste dedicado (ou orçamento por conjunto), senão o algoritmo repete o vício de concentrar tudo em 1 peça.
-4. **Não largue a AQUECIMENTO:** o pool aquecido é pequeno (poucos milhares); a R$ 50/dia a frequência sobe rápido, e é o topo de funil que repõe esse público.
-5. **Billing:** saldo devedor R$ 9,61 — de olho no limite de faturamento para não pausar entrega.
+Só **2 campanhas ativas** daqui pra frente:
+
+1. **LEADS - WPP - 07/07** — continua rodando, agora com criativos renovados. Sinal inicial (01–02/08,
+   amostra pequena de 2 dias): CPL caiu pra R$ 9,76 — acompanhar mais alguns dias antes de confirmar o ganho.
+2. **DIA DOS PAIS - 01/08** — campanha nova, foco em conversas no WhatsApp, testando vários criativos.
+   Janela curta (data-alvo 09/08, só ~1 semana) — acompanhamento diário, não semanal, pra reagir rápido no
+   criativo vencedor.
+
+A **16/06** fica pausada (perdeu o teste) e a **AQUECIMENTO** segue pausada — candidata a reativar com
+orçamento baixo (R$10-15/dia) se o pool de aquecido esfriar ou o CPL das campanhas de mensagem voltar a subir.
+
+**Atenção:** monitorar o limite de faturamento de perto — o gap de 23-29/07 não pode se repetir agora que a
+Dia dos Pais tem só uma semana de janela útil.
 
 ---
 
-## Contextos das campanhas (para colar no dashboard)
+## Julho puro vs. os 2 dias de agosto (detalhe do teste)
 
-**ENGAJAMENTO - AQUECIMENTO - 04/06**
-> Campanha de engajamento criada no início do projeto para aquecer a conta de anúncio e trazer público novo para o perfil. Rodada agora na segunda leva de orçamento, com público aberto (Advantage+) e otimização para engajamento na publicação. Objetivo: gerar prova social (reações/comentários), aquecer a conta e construir um público de engajados + seguidores que alimenta as campanhas de mensagem no fundo do funil. Resultado: R$ 0,14 por engajamento, 2.175 engajamentos e 1.988 reações no post — base de retargeting formada a baixo custo. (Avaliar por custo/engajamento, não por mensagens.)
+| Período | 16/06 — gasto | 16/06 — conversas | 16/06 — CPL | 07/07 — gasto | 07/07 — conversas | 07/07 — CPL |
+|---|---|---|---|---|---|---|
+| Julho (mês cheio) | R$ 455,35 | 25 | R$ 18,21 | R$ 364,17 | 26 | R$ 14,01 |
+| Agosto (1–2, parcial) | R$ 74,23 | 9 | R$ 8,24 | R$ 48,80 | 5 | R$ 9,76 |
+| **01/07–02/08 (janela do relatório)** | **R$ 529,58** | **34** | **R$ 15,57** | **R$ 412,97** | **31** | **R$ 13,32** |
 
-**LEADS - WPP - 16/06**
-> Primeira campanha de mensagens no WhatsApp do projeto, com apenas 2 criativos (AD1 e AD2) testados em 3 públicos: engajados+seguidores (aquecido), segmentado por interesse e aberto. Objetivo: converter em conversas o público aquecido pela campanha de engajamento. Resultado: 16 conversas a CPL médio de R$ 11,87, com destaque para o público aquecido (R$ 10,49 e maior volume) — validando a estratégia de aquecimento. Observação: na prática o algoritmo concentrou quase toda a entrega no AD1; o AD2 não chegou a ser testado de fato. Pausada em 07/07 para dar lugar à nova leva de teste com mais criativos.
-
-**LEADS - WPP - 07/07**
-> Nova campanha de mensagens no WhatsApp, lançada em 07/07 com mais criativos para teste. Objetivo: encontrar os criativos vencedores (o teste anterior ficou limitado porque a entrega concentrou em 1 único criativo) e escalar o CPL de ~R$ 12 já validado na campanha 16/06. Orçamento R$ 50/dia. Estratégia: manter o público aquecido (engajados+seguidores) como conjunto principal por ter o melhor custo, usar o AD1 da 16/06 como controle e renovar/ampliar com os novos criativos.
+A vantagem da 07/07 é mais clara olhando julho puro (23% mais barata) do que a janela cheia (14,5%), porque a
+16/06 teve 2 dias de agosto incomuns (CPL R$ 8,24, amostra de 9 conversas — não é confiável pra reverter a
+decisão, é só ruído de amostra pequena). A decisão de pausar a 16/06 se sustenta no mês fechado de julho, que
+é o dado mais robusto.
 
 ---
 
 ## IDs de referência
 
-| Item | ID |
-|---|---|
-| Conta | `act_1533862721121665` |
-| ENGAJAMENTO - AQUECIMENTO - 04/06 | `120252323789180012` |
-| LEADS - WPP - 16/06 | `120253399381730012` |
-| LEADS - WPP - 07/07 | `120254884565220012` |
+| Item | ID | Status (02/08/2026) |
+|---|---|---|
+| Conta | `act_1533862721121665` | — |
+| ENGAJAMENTO - AQUECIMENTO - 04/06 | `120252323789180012` | ⏸️ Pausada (desde 09/07) |
+| LEADS - WPP - 16/06 | `120253399381730012` | ⏸️ Pausada (desde 02/08) |
+| LEADS - WPP - 07/07 | `120254884565220012` | 🟢 Ativa |
+| DIA DOS PAIS - 01/08 - WPP | `120255595686250012` | 🟢 Ativa |
